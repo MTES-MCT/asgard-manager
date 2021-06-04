@@ -42,7 +42,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 ```bash
 .                        # `Racine où se trouve les sources .py`
 │
-├── i18n                 # `fichiers des langues
+├── i18n                 # `fichiers des langues`
 └── icons                # `icones de l'application, menu, barre d'outils, IHM`
     └── actions          # `icones des actions`
     └── logo             # `icones dans le menu extension et barre d'outils`
@@ -58,6 +58,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 
 - [MTE-MCTRCT Ministère de la Transition Écologique (MTE)
 Ministère de la Cohésion des Territoires et des Relations avec les Collectivités Territoriales(MCTRCT) et de la Mer]
+
 Secrétariat Général
 Service du Numérique
 Sous-direction "Usages du Numérique et Innovations"
