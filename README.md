@@ -59,8 +59,8 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 - [Ministère de la Transition Écologique (MTE)
 Ministère de la Cohésion des Territoires et des Relations avec les Collectivités Territoriales(MCTRCT) et de la Mer]
 
-  Secrétariat Général
-  Service du Numérique
+  Secrétariat Général  
+  Service du Numérique  
   Sous-direction "Usages du Numérique et Innovations"  
   Département "Relation clients"
 
