@@ -33,9 +33,10 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 
 ### Flyers
 
-![Flyer](flyers/am1.svg)
-![Flyer](flyers/am1.png)
-![Flyer](flyers/am1.png)
+![(flyers/am1.svg)
+
+![](flyers/am2.png)
+
 ---
 
 ## Structure des fichiers
