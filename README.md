@@ -33,7 +33,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 
 ### Flyers
 
-![(flyers/am1.svg)
+![](flyers/am1.svg)
 
 ![](flyers/am2.png)
 
