@@ -61,8 +61,7 @@ Ministère de la Cohésion des Territoires et des Relations avec les Collectivit
 
   Secrétariat Général
   Service du Numérique
-  Sous-direction "Usages du Numérique et Innovations"
-  
+  Sous-direction "Usages du Numérique et Innovations"  
   Département "Relation clients"
 
 ### Équipe
