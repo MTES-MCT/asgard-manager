@@ -33,16 +33,16 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 
 ### Flyers
 
-![Flyer](doc/flyer1.svg)
-![Flyer](doc/flyer2.png)
-![Flyer](doc/flyer3.png)
+![Flyer](flyers/am1.svg)
+![Flyer](flyers/am1.png)
+![Flyer](flyers/am1.png)
 ---
 
 ## Structure des fichiers
 ```bash
 .                        # `Racine où se trouve les sources .py`
 │
-├── i18n                 # `fichiers des langues`
+├── i18n                 # `fichiers des langues
 └── icons                # `icones de l'application, menu, barre d'outils, IHM`
     └── actions          # `icones des actions`
     └── logo             # `icones dans le menu extension et barre d'outils`
@@ -56,12 +56,15 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 
 ### Production
 
-- [MTE-MCTRCT Ministère de la Transition Écologique (MTE)
+- [Ministère de la Transition Écologique (MTE)
 Ministère de la Cohésion des Territoires et des Relations avec les Collectivités Territoriales(MCTRCT) et de la Mer]
 
-  Secrétariat Général
+Secrétariat Général
+
 Service du Numérique
+
 Sous-direction "Usages du Numérique et Innovations"
+
 Département "Relation clients"
 
 ### Équipe
