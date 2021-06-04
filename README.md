@@ -22,10 +22,8 @@ et est donc accessible via le menu Extension : Installer / Gérer les extension
 Asgard Manager pourra être installé, mis à jour via ce dispositif.
 
 ### Manuellement
-Soit décompresser le fichier zippé (asgardmanager.zip) qui comprend l’ensemble de l’application et de la recopier :
- - Pour les packages DS/GSG sous : "C:\ProgramFiles\QGIS\profil\python\asgardmanager"
- - Pour la version communautaire sous "MonProfilAMoi\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\asgardmanager"
-
+Procédez via le menu Extension : Installer / Gérer les extensions / item 'Installer depuis un zip'
+![Boite de dialogue 'Installer depuis un zip'](flyers/installe_zip.png)
 ---
 
 ## Documentation
