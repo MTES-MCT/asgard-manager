@@ -22,9 +22,9 @@ et est donc accessible via le menu Extension : Installer / Gérer les extension
 Asgard Manager pourra être installé, mis à jour via ce dispositif.
 
 ### Manuellement
-Procédez via le menu Extension : Installer / Gérer les extensions / Installer depuis un zip
+Procédez via le menu Extension : Installer / Gérer les extensions / item 'Installer depuis un zip'
 
-![](flyers/installe_zip.png)
+![Boite de dialogue 'Installer depuis un zip'](flyers/installe_zip.png)
 ---
 
 ## Documentation
