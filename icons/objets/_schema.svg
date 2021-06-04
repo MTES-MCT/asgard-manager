@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 38.169491 38.305084"
+   version="1.1"
+   id="svg15"
+   sodipodi:docname="_schema.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   width="38.169491"
+   height="38.305084">
+  <metadata
+     id="metadata19">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     id="namedview17"
+     showgrid="false"
+     inkscape:zoom="14.75"
+     inkscape:cx="11.931524"
+     inkscape:cy="18.303231"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg15" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">.cls-1{fill:#fee;}.cls-2{fill:#bd4949;}</style>
+  </defs>
+  <title
+     id="title6">coll-schema</title>
+  <g
+     id="_2"
+     data-name="2"
+     inkscape:export-xdpi="95"
+     inkscape:export-ydpi="95"
+     inkscape:export-filename="schema.png"
+     transform="matrix(1.309329,0,0,1.309329,19.69486,-2.4746318)">
+    <rect
+       class="cls-1"
+       x="4.0500002"
+       y="4.0500002"
+       width="7.8899999"
+       height="7.8899999"
+       transform="rotate(-45,8.0018542,7.9955234)"
+       id="rect8"
+       style="fill:#ffeeee" />
+    <path
+       class="cls-2"
+       d="M 8,3 13,8 8,13 3,8 8,3 M 8,1.89 1.89,8 8,14.11 14.11,8 Z"
+       id="path10"
+       inkscape:connector-curvature="0"
+       style="fill:#bd4949" />
+    <rect
+       class="cls-2"
+       x="6.4400001"
+       y="6.4400001"
+       width="3.1099999"
+       height="3.1099999"
+       transform="rotate(135,7.9981458,7.9992319)"
+       id="rect12"
+       style="fill:#bd4949" />
+  </g>
+  <g
+     id="g856"
+     inkscape:export-xdpi="95"
+     inkscape:export-ydpi="95"
+     inkscape:export-filename="schema_actif.png"
+     transform="matrix(1.309329,0,0,1.309329,18.385864,-1.5513338)">
+    <rect
+       class="cls-1"
+       x="-15.117268"
+       y="-3.9953167"
+       width="7.8899999"
+       height="7.8899999"
+       transform="rotate(-45)"
+       id="rect8-9"
+       style="fill:#f4f7ed" />
+    <path
+       inkscape:connector-curvature="0"
+       class="cls-2"
+       d="m -7.932203,2.8644068 5,5 -5,5.0000002 -5,-5.0000002 5,-5 m 0,-1.11 -6.11,6.11 6.11,6.1100002 6.11,-6.1100002 z"
+       id="path10-9"
+       style="fill:#91ae4f" />
+    <rect
+       class="cls-2"
+       x="9.6125126"
+       y="-1.5094384"
+       width="3.1099999"
+       height="3.1099999"
+       transform="rotate(135)"
+       id="rect12-6"
+       style="fill:#91ae4f" />
+  </g>
+  <g
+     id="g888"
+     inkscape:export-xdpi="95"
+     inkscape:export-ydpi="95"
+     inkscape:export-filename="schema_nonactif.png"
+     transform="matrix(1.309329,0,0,1.309329,20.099976,4.0297372)">
+    <rect
+       class="cls-1"
+       x="-18.520967"
+       y="9.8591824"
+       width="7.8899999"
+       height="7.8899999"
+       transform="rotate(-45)"
+       id="rect8-95"
+       style="fill:#e6e6e6" />
+    <path
+       inkscape:connector-curvature="0"
+       class="cls-2"
+       d="m -0.5423729,15.067797 5,5 -5,5 -5,-5 5,-5 m 0,-1.11 -6.11,6.11 6.11,6.11 6.11,-6.11 z"
+       id="path10-91"
+       style="fill:#808080" />
+    <rect
+       class="cls-2"
+       x="13.016213"
+       y="-15.363937"
+       width="3.1099999"
+       height="3.1099999"
+       transform="rotate(135)"
+       id="rect12-0"
+       style="fill:#808080" />
+  </g>
+</svg>
