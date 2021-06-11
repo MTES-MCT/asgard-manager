@@ -1,4 +1,4 @@
-# PLUGIN QGIS Asgard Manager TEST
+# PLUGIN QGIS Asgard Manager
 > Plugin pour QGIS, AsgardManager est destiné aux administrateurs de données, propose une interface graphique beaucoup plus conviviale que pgAdmin pour les fonctionnalités les plus courantes d’ASGARD. Il permet de gérer au quotidien les schémas, les droits et les rôles.
 
 ---           
