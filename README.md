@@ -39,7 +39,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 ---
 
 ## Structure des fichiers
-```bash
+```
 .                        # `Racine où se trouve les sources .py`
 │
 ├── i18n                 # `fichiers des langues
