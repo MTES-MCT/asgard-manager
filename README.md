@@ -2,6 +2,10 @@
 > Plugin pour QGIS, AsgardManager est destiné aux administrateurs de données, propose une interface graphique beaucoup plus conviviale que pgAdmin pour les fonctionnalités les plus courantes d’ASGARD. Il permet de gérer au quotidien les schémas, les droits et les rôles.
 
 ---           
+## version
+- [1.2.6]
+
+---           
 
 ## Technologies
 - [Python 3.x]
@@ -39,7 +43,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 ---
 
 ## Structure des fichiers
-```
+```bash
 .                        # `Racine où se trouve les sources .py`
 │
 ├── i18n                 # `fichiers des langues
