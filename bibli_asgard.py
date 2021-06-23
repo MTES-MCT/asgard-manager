@@ -47,6 +47,34 @@ def dicListSql(self, mKeySql):
     #------------------
     # REPLICATION
     #-----------------
+    #Fonction Create Schéma, Séquence, Table News Replication 
+    mdicListSql['Fonction_CreateSchemaTableReplication'] = ("""
+                  CREATE SCHEMA IF NOT EXISTS z_replique
+                      AUTHORIZATION postgres;
+                      
+                  CREATE SEQUENCE IF NOT EXISTS z_replique.replique_id_seq
+                      INCREMENT 1
+                      START 1
+                      MINVALUE 1
+                      MAXVALUE 2147483647
+                      CACHE 1;
+                  ALTER SEQUENCE z_replique.replique_id_seq
+                      OWNER TO postgres;
+    
+                  CREATE TABLE IF NOT EXISTS z_replique.replique
+                  (
+                      nombase character varying(255) COLLATE pg_catalog."default",
+                      schema character varying(255) COLLATE pg_catalog."default",
+                      nomobjet character varying(255) COLLATE pg_catalog."default",
+                      typeobjet character varying(100) COLLATE pg_catalog."default",
+                      etat boolean,
+                      id integer NOT NULL DEFAULT nextval('z_replique.replique_id_seq'::regclass),
+                      CONSTRAINT replique_pkey PRIMARY KEY (id)
+                  )
+                  TABLESPACE pg_default;
+                  ALTER TABLE z_replique.replique
+                      OWNER to postgres;
+                                          """) 
     #Fonction Select News Replication 
     mdicListSql['Fonction_Liste_Replication'] = ("""
                   SELECT nombase, schema, nomobjet, typeobjet, etat FROM z_replique.replique;
@@ -1637,8 +1665,10 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
            self.mRolsuper       = False
            self.mRolinherit     = True
            self.mRolreplication = False
+           self.mRolbypassrls   = False
+           self.mRollogin       = False
            self.mRolgestionschema = False
-           self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, mRolcanLogin, self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolgestionschema)
+           self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, mRolcanLogin, self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema)
 
         else :
            mCont = False
@@ -1760,7 +1790,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                         self.mode = "update"
                         self.mRolnameID      = self.ArraymRolesDeGroupe[iParcours][12]   # Gestion pour le Where
                         self.mRolname        = self.ArraymRolesDeGroupe[iParcours][0]
-                        self.mDescription    = self.ArraymRolesDeGroupe[iParcours][13]
+                        self.mDescription    = "" if self.ArraymRolesDeGroupe[iParcours][13] == None else self.ArraymRolesDeGroupe[iParcours][13] 
                         #self.mMdp            = self.ArraymRolesDeGroupe[iParcours][8]
                         self.mMdp = ''
                         self.mRolcreaterole  = self.ArraymRolesDeGroupe[iParcours][3]
@@ -1768,6 +1798,10 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                         self.mRolsuper       = self.ArraymRolesDeGroupe[iParcours][1]
                         self.mRolinherit     = self.ArraymRolesDeGroupe[iParcours][2]
                         self.mRolreplication = self.ArraymRolesDeGroupe[iParcours][6]
+                        
+                        self.mRolbypassrls   = self.ArraymRolesDeGroupe[iParcours][10]
+                        self.mRollogin       = self.ArraymRolesDeGroupe[iParcours][5] 
+                        
                         self.mRolgestionschema = True if (self.ArraymRolesDeGroupe[iParcours][19] and self.ArraymRolesDeGroupe[iParcours][20]) else False
                         self.mDbCreate         = True if self.ArraymRolesDeGroupe[iParcours][19]  else False   # Attention à la confusion avec mRolcreatedb
                         self.mAsgardEdit       = True if self.ArraymRolesDeGroupe[iParcours][20]  else False   # Attention à la confusion avec self.Dialog.asgardEditeur
@@ -1802,20 +1836,20 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                            self.Dialog.label_rolgestionschema.setVisible(False)
                            
                         self.mRolcanLogin = self.ArraymRolesDeGroupe[iParcours][5]
-                        self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, self.ArraymRolesDeGroupe[iParcours][5], self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolgestionschema)
+                        self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, self.ArraymRolesDeGroupe[iParcours][5], self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema)
                         #Affichage si aucune valeur modifiée
                         #--Save Old value Out In
                         self.mListeOutOld, self.mListeInOld =  bibli_asgard.returnOutInListe(self )
                         #--
-                        tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolgestionschema', 'mListeOut', 'mListeIn')
-                        tValue = (str(self.mRolnameID), self.mRolname, self.mDescription, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolgestionschema, self.mListeOutOld, self.mListeInOld)
+                        tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn')
+                        tValue = (str(self.mRolnameID), self.mRolname, self.mDescription, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema, self.mListeOutOld, self.mListeInOld)
                         self.dicOldValueRole = dict(zip(tId, tValue))
                         break
                      iParcours += 1
         return
 
     #------ 
-    def initIhmDroits(self, Dialog, mode,  mServeurNameOut, mServeurNameIn, mRolnameID, mRolname, mRolcanLogin, mDescription, mMdp, mRolcreaterole, mRolcreatedb, mRolsuper, mRolinherit, mRolreplication, mRolgestionschema) :
+    def initIhmDroits(self, Dialog, mode,  mServeurNameOut, mServeurNameIn, mRolnameID, mRolname, mRolcanLogin, mDescription, mMdp, mRolcreaterole, mRolcreatedb, mRolsuper, mRolinherit, mRolreplication, mRolbypassrls, mRollogin, mRolgestionschema) :
         Dialog.zone_rolnameID.setText(str(mRolnameID))
         Dialog.zone_rolname.setText(mRolname)
         Dialog.zone_description.setText(mDescription)
@@ -1825,6 +1859,8 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         Dialog.case_rolsuper.setChecked(mRolsuper)
         Dialog.case_rolinherit.setChecked(mRolinherit)
         Dialog.case_rolreplication.setChecked(mRolreplication) 
+        Dialog.case_rolBYPASSRLS.setChecked(mRolbypassrls) 
+        Dialog.case_rollogin.setChecked(mRollogin)
         Dialog.case_rolgestionschema.setChecked(mRolgestionschema) 
 
         # Tree Out
@@ -2211,7 +2247,73 @@ class TREEVIEWASGARD(QTreeWidget):
         
         # FILTRE
         self.filtreActifSensitive = (True if self.Dialog.caseZoneFilter.isChecked() else False)
+        if self.Dialog.ctrlReplication : 
+           self.filtreActifReplique = (True if self.Dialog.caseZoneFilterRepliquer.isChecked() else False)
+           self.filtreActifDereplique = (True if self.Dialog.caseZoneFilterDerepliquer.isChecked() else False)
+        else :
+           self.filtreActifReplique = False
+           self.filtreActifDereplique = False
         #--
+        #--
+        #Prise en compte des deux cases à cocher pour la réplication
+        if self.Dialog.ctrlReplication :
+           listTemp = []
+           for elem in mArraySchemasTables : 
+               _addElem = False
+               existeDansMetadata, repliquerMetadata, objetIcon = self.returnReplique(elem[0], elem[1], elem[2], self.Dialog.mListeMetadata, self.mListeObjetArepliquer)
+               # si case cochée Répliquer ET Dérépliquer
+               if self.filtreActifReplique and self.filtreActifDereplique : 
+                  if existeDansMetadata : 
+                     _addElem = True
+                  else :
+                     if elem[2] in self.mListeObjetArepliquer :  
+                        _addElem = True
+               # si case cochée Répliquer
+               elif self.filtreActifReplique : 
+                  if existeDansMetadata : 
+                     if repliquerMetadata :
+                        _addElem = True
+               elif self.filtreActifDereplique : 
+               # si case cochée Dérépliquer
+                  if existeDansMetadata : 
+                     if not repliquerMetadata :
+                        _addElem = True
+                  else :
+                     if elem[2] in self.mListeObjetArepliquer :  
+                        _addElem = True
+               else :
+                  _addElem = True
+               #--
+               if _addElem : listTemp.append(elem)  
+           mArraySchemasTables = listTemp
+
+           # si case cochée Répliquer OU Dérépliquer
+           if self.filtreActifReplique or self.filtreActifDereplique : 
+              #--
+              if len(mArraySchemasTables) != 0 :
+                 listTemp = []
+                 for elem in mArraySchemas :
+                     for elemTemp in  mArraySchemasTables :
+                         if elem[0] == elemTemp[0] or elem[0].upper()=='PUBLIC' :
+                            listTemp.append(elem)
+                            break
+                 mArraySchemas = listTemp
+              else :
+                 mArraySchemas = []
+              #--
+              if len(mArraySchemasTables) != 0 :
+                 listTemp = []
+                 for elem in mSchemasBlocs :
+                     for elemTemp in  mArraySchemasTables :
+                         if elem[0] == elemTemp[0] or elem[0].upper()=='PUBLIC':
+                            listTemp.append(elem)
+                            break
+                 mSchemasBlocs = listTemp
+              else :
+                 mSchemasBlocs = []
+        #--
+        #--
+        #Prise en compte du FILTRE
         if filtreActif != "" :
            mArraySchemasTables = ([ elem for elem in mArraySchemasTables if ((re.search(filtreActif,elem[0],flags = re.IGNORECASE) if not self.filtreActifSensitive else re.search(filtreActif,elem[0])) != None or elem[0].upper()=='PUBLIC') or (re.search(filtreActif,elem[1],flags = re.IGNORECASE) if not self.filtreActifSensitive else re.search(filtreActif,elem[1])) != None ])
            #--
@@ -2219,7 +2321,7 @@ class TREEVIEWASGARD(QTreeWidget):
               listTemp = []
               for elem in mArraySchemas :
                   for elemTemp in  mArraySchemasTables :
-                      if elem[0].strip == elemTemp[0] :
+                      if elem[0] == elemTemp[0] :
                          listTemp.append(elem)
                          break
                       else :
@@ -2229,7 +2331,6 @@ class TREEVIEWASGARD(QTreeWidget):
               mArraySchemas = listTemp
            else :
               mArraySchemas = ([ elem for elem in mArraySchemas if ((re.search(filtreActif,elem[0],flags = re.IGNORECASE) if not self.filtreActifSensitive else re.search(filtreActif,elem[0])) != None or elem[0].upper()=='PUBLIC') ])
-           
            #--
            if len(mArraySchemasTables) != 0 :
               listTemp = []
@@ -2247,7 +2348,7 @@ class TREEVIEWASGARD(QTreeWidget):
               mSchemasBlocs = ([ elem for elem in mSchemasBlocs if ((re.search(filtreActif,elem[0],flags = re.IGNORECASE) if not self.filtreActifSensitive else re.search(filtreActif,elem[0])) != None or elem[0].upper()=='PUBLIC') ])
            
         if len(mArraySchemasTables) == 0 and (len(mArraySchemas) == 0 or (len(mArraySchemas) == 1 and mArraySchemas[0][0].upper() == 'PUBLIC')) and len(mSchemasBlocs) == 0 : 
-           #Affiche info si MAJ version
+           #Affiche info si pas de filtre correspondant
            zTitle = QtWidgets.QApplication.translate("bibli_asgard", "Information !!", None)            
            zMess = QtWidgets.QApplication.translate("bibli_asgard", "Please delete or enter another filter.", None)            
            self.Dialog.barInfo.pushMessage(zTitle, zMess, Qgis.Info, duration = self.Dialog.durationBarInfo)        
@@ -3409,6 +3510,51 @@ class BASEPOSTGRES :
         QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
         return ret, zMessError_Code, zMessError_Erreur, zMessError_Diag      
 
+    #----------------------
+    def executeSqlCreate(self, Dialog, pointeurConnection, pointeurBase, mSql) :
+        ret, zMessError_Code, zMessError_Erreur, zMessError_Diag = True, '', '', ''
+        QApplication.instance().setOverrideCursor(Qt.WaitCursor) 
+
+        try :
+          pointeurBase.execute(mSql)
+          pointeurConnection.commit()
+
+        except Exception as err:
+          QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
+          ret = False
+          zMessError_Code   = (str(err.pgcode) if hasattr(err, 'pgcode') else '')
+          zMessError_Erreur = (str(err.pgerror) if hasattr(err, 'pgerror') else '')
+          print("err.pgcode = %s" %(zMessError_Code))
+          print("err.pgerror = %s" %(zMessError_Erreur))
+          zMessError_Erreur = cleanMessError(zMessError_Erreur)
+          
+          mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004","2BP01"] 
+          if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur Asgard
+             mTypeErreur = "ASGARDGEREE" if dicExisteExpRegul(self, 'Search_0', zMessError_Erreur) else "ASGARDNONGEREE"
+          else : 
+             mTypeErreur = "ASGARDMANAGER"
+             
+          #Modif 10/02/2021 pour fichiers Extension n'existent pas et réinstalle sans fermer AM
+          if zMessError_Code == '' and zMessError_Erreur == '' and mSql == "CREATE EXTENSION asgard" :
+             pass # pas d'affichage de la boite de dialogue des erreurs
+          else :
+             dialogueMessageError(mTypeErreur, zMessError_Erreur ) 
+          #-------------
+          self.deconnectBase()  
+
+          if hasattr(Dialog, 'mTreePostgresql') :
+             mReturnItemTreePostgresql, mReturnItemTreePostgresqlSelect = Dialog.returnItemTreePostgresql("LOAD", Dialog.mTreePostgresql, "", "")
+          if hasattr(Dialog, 'mTreePostgresqlDroits') :
+             mReturnItemTreePostgresqlDroits, mReturnItemTreePostgresqlDroitsSelect = Dialog.returnItemTreePostgresql("LOAD", Dialog.mTreePostgresqlDroits, "", "")
+          Dialog.initGeneral(Dialog)
+          if hasattr(Dialog, 'mTreePostgresql') :
+             Dialog.returnItemTreePostgresql("RESTORE", Dialog.mTreePostgresql, mReturnItemTreePostgresql, mReturnItemTreePostgresqlSelect)
+          if hasattr(Dialog, 'mTreePostgresqlDroits') :
+             Dialog.returnItemTreePostgresql("RESTORE", Dialog.mTreePostgresqlDroits, mReturnItemTreePostgresqlDroits, mReturnItemTreePostgresqlDroitsSelect)
+          #-------------
+        QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
+        return ret, zMessError_Code, zMessError_Erreur, zMessError_Diag      
+
     #----------------------           
     def executeSql(self,pointeurBase, mSql) :
         zMessError_Code, zMessError_Erreur, zMessError_Diag = '', '', ''
@@ -3422,8 +3568,8 @@ class BASEPOSTGRES :
           result = None
           zMessError_Code   = (str(err.pgcode) if hasattr(err, 'pgcode') else '')
           zMessError_Erreur = (str(err.pgerror) if hasattr(err, 'pgerror') else '')
-          #print("err.pgcode = %s" %(zMessError_Code))
-          #print("err.pgerror = %s" %(zMessError_Erreur))
+          print("err.pgcode = %s" %(zMessError_Code))
+          print("err.pgerror = %s" %(zMessError_Erreur))
           zMessError_Erreur = cleanMessError(zMessError_Erreur)
           mListeErrorCode = ["42501", "P0000", "P0001", "P0002", "P0003", "P0004"] 
           if zMessError_Code in [ mCodeErreur for mCodeErreur in mListeErrorCode] :   #Erreur Asgard
@@ -3818,7 +3964,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.6"
+def returnVersion() : return "version 1.2.7"
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :
@@ -3849,6 +3995,7 @@ def etatMenuGestionDeLaBase(self, installe_error) :
     self.nettoieRoles.setEnabled(False if installe_error else True)
     self.referencerAllSchemas.setEnabled(False if installe_error else True)
     self.importNomenclature.setEnabled(False if installe_error else True)
+    self.tableauBord.setEnabled(False if installe_error else True)
     #Affichage mess d'informations
     zTitle = QtWidgets.QApplication.translate("bibli_asgard", 'Warning !!!') 
     zTitle = "<font color=\"#0026FF\">" + zTitle + "</font>  "
@@ -3979,6 +4126,9 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     #----
     self.Dialog.displayInformationsDiagnostic.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
     self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, self.displayInformationsDiagnostic.width() -20 ,self.displayInformationsDiagnostic.height() - 20))
+    #----
+    self.Dialog.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
+    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, self.displayInformationsTableauBord.width() -20 ,self.displayInformationsTableauBord.height() - 20))
     #----
 
     self.groupBoxParametre.setGeometry(QtCore.QRect(10,50,self.groupBoxAffichageLeftDash.width() - 20, 235))
@@ -4294,7 +4444,31 @@ def printViewDiagnostic(self, Dialog):
 def deletetViewDiagnostic(self, Dialog):
     Dialog.zone_affichage_diagnostic.setHtml('')
     return
-        
+    
+#--------
+def printViewTableauBord(self, Dialog):
+    printer = QPrinter()
+    printer = QPrinter(QPrinter.HighResolution)
+    printer.setPageSize(QPrinter.A4)
+    printer.setOrientation(QPrinter.Landscape)
+    printer.setPageMargins(10, 10, 10, 10, QPrinter.Millimeter )    
+    printer.setOutputFormat(QPrinter.NativeFormat)
+    #-
+    printDialog = QPrintPreviewDialog(printer)
+    printDialog.setWindowModality(QtCore.Qt.WindowModal)
+    printDialog.setModal(True)
+    zTitle = QtWidgets.QApplication.translate("confirme_ui", "ASGARD MANAGER : Dashboard", None)
+    printDialog.setWindowTitle(zTitle)
+    printDialog.setWindowState(Qt.WindowNoState)
+    #-
+    printDialog.paintRequested.connect(Dialog.zone_affichage_TableauBord.print_)
+    printDialog.exec_() 
+    return
+
+#--------
+def deletetViewTableauBord(self, Dialog):
+    Dialog.zone_affichage_TableauBord.setHtml('')
+    return        
 #==================================================
 #Execute Pdf 
 #==================================================

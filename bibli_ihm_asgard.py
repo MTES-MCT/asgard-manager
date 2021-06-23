@@ -19,17 +19,25 @@ import textwrap
 
 
 #==================================================
-# Gestion de l'IHM pour les schémas
+# Gestion de l'IHM pour le tableau de bord
 #==================================================
-    
+def createIHMAffichageTableauBord(self) :
+    self.zone_affichage_TableauBord = QtWidgets.QTextEdit(self.displayInformationsTableauBord)
+    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, self.displayInformationsTableauBord.width() -20 ,self.displayInformationsTableauBord.height() - 20))
+    self.zone_affichage_TableauBord.setObjectName("zone_affichage_TableauBord") 
+    self.zone_affichage_TableauBord.setAcceptRichText(True)
+    return
+
+#==================================================
+# Gestion de l'IHM pour Diagnostics
+#==================================================
 def createIHMAffichageDiagnostic(self) :
     self.zone_affichage_diagnostic = QtWidgets.QTextEdit(self.displayInformationsDiagnostic)
     self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, self.displayInformationsDiagnostic.width() -20 ,self.displayInformationsDiagnostic.height() - 20))
     self.zone_affichage_diagnostic.setObjectName("zone_affichage_diagnostic") 
     self.zone_affichage_diagnostic.setAcceptRichText(True)
-
-    
     return
+
 #==================================================
 # Gestion de l'IHM pour les schémas
 #==================================================
@@ -491,14 +499,14 @@ def createIHMAffichageDroits(self) :
     self.zone_mdp.setEnabled(False)
     #--------  
     self.groupBoxAffichageRoleAttributDroits = QtWidgets.QGroupBox(self.groupBoxAffichageRoleAttribut)
-    self.groupBoxAffichageRoleAttributDroits.setGeometry(QtCore.QRect(5, 130, 380, 50))
+    self.groupBoxAffichageRoleAttributDroits.setGeometry(QtCore.QRect(5, 130, 380, 70))
     self.groupBoxAffichageRoleAttributDroits.setObjectName("groupBoxAffichageRoleAttributDroits")  
     self.groupBoxAffichageRoleAttributDroits.setStyleSheet("QGroupBox {   \
                                 border-width: 2px;       \
                                 border-color: #958B62;     \
                                 font: bold 11px;         \
                                 }") 
-    #--------  
+    #-------- 
     self.label_simplecomplet = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
     self.label_simplecomplet.setGeometry(QtCore.QRect(80,9,160,18))
     self.label_simplecomplet.setObjectName("label_simplecomplet")
@@ -507,82 +515,153 @@ def createIHMAffichageDroits(self) :
     self.label_simplecomplet.setStyleSheet("QLabel {   \
                                 font :italic; font-weight: bold ;     \
                                 color: #958B62;      \
-                                }") 
+                                }")
+    self.label_simplecomplet.setVisible(False) 
     #--------                            
     self.case_simplecomplet = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
     self.case_simplecomplet.setGeometry(QtCore.QRect(250,5,30,23))
     self.case_simplecomplet.setObjectName("case_simplecomplet")
-    self.case_simplecomplet.setChecked(False) 
+    self.case_simplecomplet.setVisible(False) 
     #Connections 
-    self.case_simplecomplet.clicked.connect(lambda : showHideCtrlSimpleComplet(self, self.case_simplecomplet.isChecked()))
-    #--------  
-    self.label_rolcreaterole = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolcreaterole.setGeometry(QtCore.QRect(0,29,120,18))
-    self.label_rolcreaterole.setObjectName("label_rolcreaterole")
-    self.label_rolcreaterole.setAlignment(Qt.AlignRight)
+    #self.case_simplecomplet.clicked.connect(lambda : showHideCtrlSimpleComplet(self, self.case_simplecomplet.isChecked()))
     #--------                            
-    self.case_rolcreaterole = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolcreaterole.setGeometry(QtCore.QRect(130,24,23,23))
-    self.case_rolcreaterole.setObjectName("case_rolcreaterole")
-    self.case_rolcreaterole.setChecked(False)                                  
-    #--------  
+    self.button_simplecomplet = QtWidgets.QPushButton(self.groupBoxAffichageRoleAttributDroits)
+    y, l, h = 8, 100, 15 
+    x = (self.groupBoxAffichageRoleAttributDroits.width() / 2) - (l/2)    
+    self.button_simplecomplet.setGeometry(QtCore.QRect(x, y, l, h))
+    self.button_simplecomplet.setObjectName("button_simplecomplet")
+    self.button_simplecomplet.setChecked(False) 
+    self.button_simplecomplet.setStyleSheet("QPushButton {   \
+                                font-weight: bold ;     \
+                                color: #958B62;      \
+                                }") 
+    #Connections 
+    self.button_simplecomplet.clicked.connect(lambda : showHideCtrlSimpleCompletButton(self, self.case_simplecomplet.isChecked()))
+    
+    #-------- 
     mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Grant the 'CREATE' right on the database and make the schema editor member role Z_ASGARD", None)
     self.label_rolgestionschema = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolgestionschema.setGeometry(QtCore.QRect(160,29,160,18))
+    self.label_rolgestionschema.setGeometry(QtCore.QRect(0,29,170,18))
     self.label_rolgestionschema.setObjectName("label_rolgestionschema")
     self.label_rolgestionschema.setAlignment(Qt.AlignRight)
     self.label_rolgestionschema.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
     #--------                            
     self.case_rolgestionschema = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolgestionschema.setGeometry(QtCore.QRect(330,24,23,23))
+    self.case_rolgestionschema.setGeometry(QtCore.QRect(170,24,23,23))
     self.case_rolgestionschema.setObjectName("case_rolgestionschema")          
     self.case_rolgestionschema.setChecked(False)
     self.case_rolgestionschema.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------  
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "CREATEROLE attribute: if active, authorizes the role to create, modify and delete roles, as well as to give or revoke permissions on the roles.", None)
+    self.label_rolcreaterole = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
+    self.label_rolcreaterole.setGeometry(QtCore.QRect(190,29,130,18))
+    self.label_rolcreaterole.setObjectName("label_rolcreaterole")
+    self.label_rolcreaterole.setAlignment(Qt.AlignRight)
+    self.label_rolcreaterole.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                            
+    self.case_rolcreaterole = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
+    self.case_rolcreaterole.setGeometry(QtCore.QRect(320,24,23,23))
+    self.case_rolcreaterole.setObjectName("case_rolcreaterole")
+    self.case_rolcreaterole.setChecked(False)                                  
+    self.case_rolcreaterole.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------  
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "CREATEDB attribute: if active, authorizes the role to create databases and to modify or delete those it owns.", None)
+    self.label_rolcreatedb = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
+    self.label_rolcreatedb.setGeometry(QtCore.QRect(0,54,170,18))
+    self.label_rolcreatedb.setObjectName("label_rolcreatedb")
+    self.label_rolcreatedb.setAlignment(Qt.AlignRight)
+    self.label_rolcreatedb.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                            
+    self.case_rolcreatedb = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
+    self.case_rolcreatedb.setGeometry(QtCore.QRect(170,49,23,23))
+    self.case_rolcreatedb.setObjectName("case_rolcreatedb")
+    self.case_rolcreatedb.setChecked(False)         
+    self.case_rolcreatedb.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                                  
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'LOGIN attribute: if active, the role is authorized to establish a connection on the PostgreSQL server (so-called "connection" role)', None)
+    self.label_rollogin = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
+    self.label_rollogin.setGeometry(QtCore.QRect(190,54,130,23))
+    self.label_rollogin.setObjectName("label_rollogin")
+    self.label_rollogin.setAlignment(Qt.AlignRight)
+    self.label_rollogin.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                            
+    self.case_rollogin = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
+    self.case_rollogin.setGeometry(QtCore.QRect(320,49,23,23))
+    self.case_rollogin.setObjectName("case_rollogin")
+    self.case_rollogin.setChecked(False)         
+    self.case_rollogin.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+     #Connections 
+    self.case_rollogin.clicked.connect(lambda : showHideCtrlMdpForLogin(self, self.case_rollogin.isChecked()))
     #-------- 
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "[CANNOT BE MODIFIED in AsgardManager] SUPERUSER attribute: if active, the role is a super-user and can act without restriction on all objects on the server.", None)
     self.label_rolsuper = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolsuper.setGeometry(QtCore.QRect(0,54,120,18))
+    self.label_rolsuper.setGeometry(QtCore.QRect(0,79,170,18))
     self.label_rolsuper.setObjectName("label_rolsuper")
     self.label_rolsuper.setAlignment(Qt.AlignRight)
+    self.label_rolsuper.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    self.label_rolsuper.setStyleSheet("QLabel {   \
+                                font :italic; \
+                                }") 
     #--------                            
     self.case_rolsuper = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolsuper.setGeometry(QtCore.QRect(130,50,23,23))
+    self.case_rolsuper.setGeometry(QtCore.QRect(170,74,23,23))
     self.case_rolsuper.setObjectName("case_rolsuper")
     self.case_rolsuper.setChecked(False)                                  
     self.case_rolsuper.setEnabled(False)                                  
+    self.case_rolsuper.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
     #--------  
-    self.label_rolinherit = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolinherit.setGeometry(QtCore.QRect(160,54,160,18))
-    self.label_rolinherit.setObjectName("label_rolinherit")
-    self.label_rolinherit.setAlignment(Qt.AlignRight)
-    #--------                            
-    self.case_rolinherit = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolinherit.setGeometry(QtCore.QRect(330,50,23,23))
-    self.case_rolinherit.setObjectName("case_rolinherit")
-    self.case_rolinherit.setChecked(False)
-    self.case_rolinherit.setEnabled(False)
-                                      
-    #--------  
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "[CANNOT BE MODIFIED in AsgardManager] REPLICATION attribute: if active, the role is authorized to connect to the server in replication mode.", None)
     self.label_rolreplication = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolreplication.setGeometry(QtCore.QRect(0,79,120,18))
+    self.label_rolreplication.setGeometry(QtCore.QRect(190,79,130,18))
     self.label_rolreplication.setObjectName("label_rolreplication")
     self.label_rolreplication.setAlignment(Qt.AlignRight)
+    self.label_rolreplication.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    self.label_rolreplication.setStyleSheet("QLabel {   \
+                                font :italic; \
+                                }") 
     #--------                            
     self.case_rolreplication = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolreplication.setGeometry(QtCore.QRect(130,75,23,23))
+    self.case_rolreplication.setGeometry(QtCore.QRect(320,74,23,23))
     self.case_rolreplication.setObjectName("case_rolreplication")
     self.case_rolreplication.setChecked(False)                                  
     self.case_rolreplication.setEnabled(False)                                  
+    self.case_rolreplication.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
     #--------  
-    self.label_rolcreatedb = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
-    self.label_rolcreatedb.setGeometry(QtCore.QRect(160,79,160,18))
-    self.label_rolcreatedb.setObjectName("label_rolcreatedb")
-    self.label_rolcreatedb.setAlignment(Qt.AlignRight)
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "[CANNOT BE MODIFIED in AsgardManager] BYPASSRLS attribute: if active, the role ignores row level security", None)
+    self.label_rolBYPASSRLS  = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
+    self.label_rolBYPASSRLS.setGeometry(QtCore.QRect(0,104,170,18))
+    self.label_rolBYPASSRLS.setObjectName("label_rolBYPASSRLS")
+    self.label_rolBYPASSRLS.setAlignment(Qt.AlignRight)
+    self.label_rolBYPASSRLS.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    self.label_rolBYPASSRLS.setStyleSheet("QLabel {   \
+                                font :italic; \
+                                }") 
     #--------                            
-    self.case_rolcreatedb = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
-    self.case_rolcreatedb.setGeometry(QtCore.QRect(330,75,23,23))
-    self.case_rolcreatedb.setObjectName("case_rolcreatedb")
-    self.case_rolcreatedb.setChecked(False)         #--------                                  
-                                                                
+    self.case_rolBYPASSRLS  = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
+    self.case_rolBYPASSRLS.setGeometry(QtCore.QRect(170,99,23,23))
+    self.case_rolBYPASSRLS.setObjectName("case_rolBYPASSRLS")
+    self.case_rolBYPASSRLS.setChecked(False)         
+    self.case_rolBYPASSRLS.setEnabled(False)
+    self.case_rolBYPASSRLS.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                                  
+    mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "[CANNOT BE MODIFIED in AsgardManager] INHERIT attribute: if active, the role automatically inherits the privileges of the roles of which it is a member.", None)
+    self.label_rolinherit = QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)     
+    self.label_rolinherit.setGeometry(QtCore.QRect(190,104,130,18))
+    self.label_rolinherit.setObjectName("label_rolinherit")
+    self.label_rolinherit.setAlignment(Qt.AlignRight)
+    self.label_rolinherit.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    self.label_rolinherit.setStyleSheet("QLabel {   \
+                                font :italic; \
+                                }") 
+   #--------                            
+    self.case_rolinherit = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAttributDroits)    
+    self.case_rolinherit.setGeometry(QtCore.QRect(320,99,23,23))
+    self.case_rolinherit.setObjectName("case_rolinherit")
+    self.case_rolinherit.setChecked(False)
+    self.case_rolinherit.setEnabled(False)
+    self.case_rolinherit.setToolTip("{}".format('\n'.join(returnListeTexte(self, mMessToolTipTexte, 50))))           
+    #--------                            
+
     #==================================================
     #Option Roles et Groupes Appartenance
     self.groupBoxAffichageRoleAppart= QtWidgets.QGroupBox(self.groupBoxAffichageRightDroits)
@@ -641,6 +720,7 @@ def createIHMAffichageDroits(self) :
     #Translation                                                                                                                           
     self.executeButtonRole.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Apply", None))
     self.label_simplecomplet.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Simplified / Complete : ", None))
+    self.button_simplecomplet.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Simplified / Complete : ", None))
     self.label_rolname.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Name : ", None))
     self.label_description.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Comments : ", None))
     self.label_mdp.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Password : ", None))
@@ -650,6 +730,9 @@ def createIHMAffichageDroits(self) :
     self.label_rolinherit.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Inherits rights : ", None))
     self.label_rolreplication.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Replications : ", None))
     self.label_rolgestionschema.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "schema management : ", None))
+    self.label_rollogin.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Connection to the server : ", None))
+    self.label_rolBYPASSRLS.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Unrestricted access : ", None))
+
     self.groupBoxAffichageRoleAttributGenerale.setTitle(QtWidgets.QApplication.translate("bibli_ihm_asgard", "General", None))
     self.groupBoxAffichageRoleAttributDroits.setTitle(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Rights", None))
     self.entete_GroupBoxAffichageRoleAppar_groupe = QtWidgets.QApplication.translate("bibli_ihm_asgard", "", None)
@@ -681,20 +764,26 @@ def executeSqlRole(self, Dialog) :
         mRolsuperNew, mRolsuperOld = (True if self.Dialog.case_rolsuper.isChecked() else False), "#mRolsuper#"
         mRolinheritNew, mRolinheritOld = (True if self.Dialog.case_rolinherit.isChecked() else False), "#mRolinherit#"
         mRolreplicationNew, mRolreplicationOld = (True if self.Dialog.case_rolreplication.isChecked() else False), "#mRolreplication#"
+
+        mRolbypassrlsNew, mRolbypassrlsnOld = (True if self.Dialog.case_rolBYPASSRLS.isChecked() else False), "#mRolbypassrls#"
+        mRolloginNew, RolloginnOld = (True if self.Dialog.case_rollogin.isChecked() else False), "#mRollogin#"
+
         mRolgestionschemaNew, mRolgestionschemaOld = (True if self.Dialog.case_rolgestionschema.isChecked() else False), "#mRolgestionschema#"
         mListeOut, mListeIn =  bibli_asgard.returnOutInListe(self )
         mListeOutNew, mListeOutOld = mListeOut, "#mListeOutNew#"
         mListeInNew, mListeInOld = mListeIn, "#mListeInNew#"
                                                                                         
         mContinue = True                                                              
-        #Contrôles
-        if mRolnameNew == '' and (mMdpNew == '' and self.Dialog.mTreePostgresqlDroits.mRolcanLogin and mode == "create") :
+        #Contrôles 
+        #if mRolnameNew == '' and (mMdpNew == '' and self.Dialog.mTreePostgresqlDroits.mRolcanLogin and mode == "create") :
+        if mRolnameNew == '' and (mMdpNew == '' and mRolloginNew and mode == "create") :
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "name and password required", None) 
            mContinue = False
         elif mRolnameNew == '' : 
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "name required", None) 
            mContinue = False
-        elif mMdpNew == '' and self.Dialog.mTreePostgresqlDroits.mRolcanLogin and mode == "create" : 
+        #elif mMdpNew == '' and self.Dialog.mTreePostgresqlDroits.mRolcanLogin and mode == "create" : 
+        elif mMdpNew == '' and mRolloginNew : 
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "password required", None) 
            mContinue = False
         elif mRolnameNew in [ mName[0] for mName in self.Dialog.mTreePostgresqlDroits.ArraymRolesDeGroupe] :
@@ -713,11 +802,12 @@ def executeSqlRole(self, Dialog) :
             pass
          elif mode == "update": 
            #Affichage si aucune valeur modifiée
-           tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolgestionschema', 'mListeOut', 'mListeIn')
-           tValue = (mRolnameNewID, mRolnameNew, mDescriptionNew, mRolcreateroleNew, mRolcreatedbNew, mRolsuperNew, mRolinheritNew, mRolreplicationNew, mRolgestionschemaNew, mListeOutNew, mListeInNew)
+           tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn')
+           tValue = (mRolnameNewID, mRolnameNew, mDescriptionNew, mRolcreateroleNew, mRolcreatedbNew, mRolsuperNew, mRolinheritNew, mRolreplicationNew, mRolbypassrlsNew, mRolloginNew, mRolgestionschemaNew, mListeOutNew, mListeInNew)
            self.dicNewValueRole = dict(zip(tId, tValue))
            dicOldValueRole =  self.mTreePostgresqlDroits.dicOldValueRole
-           
+           print("dicOldValueRole   %s" %(str(dicOldValueRole)))
+           print("dicNewValueRole   %s" %(str(self.dicNewValueRole)))
            if not bibli_asgard.returnChange(dicOldValueRole, self.dicNewValueRole) and mMdpNew == '':           
               zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "No value changed", None)
               mContinue = False
@@ -762,7 +852,7 @@ def executeSqlRole(self, Dialog) :
                   mValue = value
                dicReplace[key] = mValue
                  
-           dicReplace["#mdpLogin#"] = ('NOLOGIN' if self.Dialog.mTreePostgresqlDroits.mRolcanLogin != True else 'LOGIN')   
+           dicReplace["#mdpLogin#"] = ('NOLOGIN' if self.Dialog.case_rollogin.isChecked() != True else 'LOGIN')   
            #-- Permet de controler si le compte est g_admin ou parent de g_admin avec CREATEROLE   SET ROLE;
            if self.role_g_admin_createrole != self.userConnecteEnCours :
               dicReplace['#Role_g_admin_createrole#'] = "SET ROLE " + str(self.role_g_admin_createrole) + ";"
@@ -771,7 +861,7 @@ def executeSqlRole(self, Dialog) :
               dicReplace['#Role_g_admin_createrole#'] = ''
               dicReplace['#ResetRole#'] = ''
            dicReplace['#Rolgestionschema_cond1#'] = ''
-           dicReplace['#Rolgestionschema_cond2#'] = ''
+           dicReplace['#Rolgestionschema_cond2#'] = ''      
            #-
            #------                                        
            for key, value in dicReplace.items():
@@ -844,7 +934,7 @@ def executeSqlRole(self, Dialog) :
                   mValue = str(value)
                   
                mKeySql = mKeySql.replace(key, mValue)
-           #print(mKeySql)
+           print(mKeySql)
            #------ 
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSqlNoReturn(Dialog, self.mBaseAsGard.mConnectEnCours, self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
 
@@ -860,13 +950,29 @@ def executeSqlRole(self, Dialog) :
         return 
 
 #=========================
-def showHideCtrlSimpleComplet(self, mFlags) : 
+def showHideCtrlMdpForLogin(self, mFlags) : 
+    return self.zone_mdp.setEnabled(mFlags)
+
+#=========================
+def showHideCtrlSimpleCompletButton(self, mFlags) : 
+    self.case_simplecomplet.setChecked(False if self.case_simplecomplet.isChecked() else True)
+    showHideCtrlSimpleComplet(self, self.case_simplecomplet.isChecked())
+    return 
+
+#=========================
+def showHideCtrlSimpleComplet(self, mFlags) :
+    mtextComplete  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Complete", None)
+    mtextSimplifie = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Simplified", None)
     if mFlags :
-       mHauteurRoleAttribut       = 240
-       mHauteurRoleAttributDroits = 105
+       mHauteurRoleAttribut       = 260
+       mHauteurRoleAttributDroits = 125
+       mtext = mtextSimplifie
     else :
-       mHauteurRoleAttribut       = 185
-       mHauteurRoleAttributDroits = 50
+       mHauteurRoleAttribut       = 210
+       mHauteurRoleAttributDroits = 75
+       mtext = mtextComplete
+    self.button_simplecomplet.setText(mtext)
+    self.button_simplecomplet.setToolTip("{}".format(mtextComplete + " / " + mtextSimplifie))           
 
     self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(5,5,self.Dialog.groupBoxAffichageRightDroits.width() - 10, mHauteurRoleAttribut))
     self.groupBoxAffichageRoleAttributDroits.setGeometry(QtCore.QRect(5, 130, 380 , mHauteurRoleAttributDroits))

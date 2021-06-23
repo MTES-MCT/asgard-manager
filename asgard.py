@@ -70,8 +70,8 @@ class MainPlugin(object):
      self.toolbar = self.iface.addToolBar(self.toolBarName)
      # Pour faire une action
      self.toolbar.addAction(self.asgard2)
-     self.toolbar.addSeparator()
-     self.toolbar.addAction(self.about)
+     #self.toolbar.addSeparator()
+     #self.toolbar.addAction(self.about)
      #=========================
      
   def clickAbout(self):

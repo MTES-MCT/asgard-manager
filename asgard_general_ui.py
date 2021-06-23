@@ -72,6 +72,7 @@ class Ui_Dialog_Asgard(object):
         iconReinitAllSchemas  = returnIcon(myPathIcon + "\\actions\\reinitialise_droits.png")
         iconDiagnosticAsgard  = returnIcon(myPathIcon + "\\actions\\diagnostic.png")
         iconMembreGconsult  = returnIcon(myPathIcon + "\\actions\\gconsult_roles.png")
+        iconTableauBord  = returnIcon(myPathIcon + "\\actions\\tableaubord.png")
         iconNettoieRoles  = returnIcon(myPathIcon + "\\actions\\nettoyage_roles.png")
         iconReferencerAllSchemas  = returnIcon(myPathIcon + "\\actions\\referencerconservedroits.png")
         iconImportNomenclature  = returnIcon(myPathIcon + "\\actions\\nomenclature.png")
@@ -99,6 +100,12 @@ class Ui_Dialog_Asgard(object):
         self.nettoieRoles = QAction(QIcon(iconNettoieRoles),"Refresh the role names in the management table ",Dialog)
         self.nettoieRoles.setText(QtWidgets.QApplication.translate("asgard_main", "Refresh the role names in the management table "))
         self.mMenuDialog.addAction(self.nettoieRoles)
+        #-
+        self.mMenuDialog.addSeparator()
+        #-
+        self.tableauBord = QAction(QIcon(iconTableauBord),"Dashboard",Dialog)
+        self.tableauBord.setText(QtWidgets.QApplication.translate("asgard_main", "Dashboard"))
+        self.mMenuDialog.addAction(self.tableauBord)
         #-
         self.mMenuDialog.addSeparator()
         #-
@@ -135,6 +142,7 @@ class Ui_Dialog_Asgard(object):
         self.diagnosticAsgard.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONdiagnosticAsgard', ''))
         self.membreGconsult.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONmembreGconsult', ''))
         self.nettoieRoles.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONnettoieRoles', ''))
+        self.tableauBord.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONTableauBord', ''))
         self.referencerAllSchemas.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONreferencerAllSchemasFunction', ''))
         self.importNomenclature.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONimportNomenclature', ''))
         self.installerAsgard.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONinstallerAsgard', ''))
@@ -229,10 +237,16 @@ class Ui_Dialog_Asgard(object):
         self.labelTab_Diagnostic = QtWidgets.QApplication.translate("asgard_general_ui", "   diagnostics   ", None)
         self.tabWidget.addTab(self.tab_widget_Diagnostic,self.labelTab_Diagnostic)
         #--------------------------
+        self.tab_widget_TableauBord = QWidget()
+        self.tab_widget_TableauBord.setObjectName("tab_widget_TableauBord")
+        self.labelTab_TableauBord = QtWidgets.QApplication.translate("asgard_general_ui", "   dashboard   ", None)
+        self.tabWidget.addTab(self.tab_widget_TableauBord,self.labelTab_TableauBord)
+        #--------------------------
 
-        #Menu contextuel QTabWidget for Diagnostic
+        #Menu contextuel QTabWidget for Diagnostic and Dashboard
         self.tabWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabWidget.customContextMenuRequested.connect(self.menuContextuelDiag) 
+        #self.tabWidget.tabBarClicked.connect(self.clickOngletTabWidget)
 
         #==========================              
         #Zone affichage  displayInformations                
@@ -273,16 +287,64 @@ class Ui_Dialog_Asgard(object):
         self.zoneFilter.textChanged.connect(self.onChanged)
         self.zoneFilter.setToolTip(QtWidgets.QApplication.translate("asgard_general_ui", "Enter text to filter ...", None))
         # 
-        self.labelCaseZoneFilter = QtWidgets.QLabel(self.groupBoxAffichageLeft)
-        self.labelCaseZoneFilter.setGeometry(QtCore.QRect(205, 10, 95, 20))
-        self.labelCaseZoneFilter.setObjectName("labelCaseZoneFilter")
-        self.labelCaseZoneFilter.setAlignment(Qt.AlignLeft)
+        self.sep2 = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.sep2.setGeometry(QtCore.QRect(200, 8, 5, 18))
+        self.sep2.setText("|")
+        self.sep2.setStyleSheet("QLabel {   \
+                                font: bold 18px;         \
+                                }")  
         self.caseZoneFilter = QtWidgets.QCheckBox(self.groupBoxAffichageLeft)    
-        self.caseZoneFilter.setGeometry(QtCore.QRect(305,6,23,23))
+        self.caseZoneFilter.setGeometry(QtCore.QRect(210,6,23,23))
         self.caseZoneFilter.setObjectName("caseZoneFilter")
         self.caseZoneFilter.setChecked(False) 
         self.caseZoneFilter.toggled.connect(lambda : self.onChangeCaseFilter(self.zoneFilter.text())) 
         self.caseZoneFilter.setToolTip(QtWidgets.QApplication.translate("asgard_general_ui", "Sensibilite Case", None))
+        self.labelCaseZoneFilter = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.labelCaseZoneFilter.setGeometry(QtCore.QRect(230, 10, 95, 20))
+        self.labelCaseZoneFilter.setObjectName("labelCaseZoneFilter")
+        self.labelCaseZoneFilter.setAlignment(Qt.AlignLeft)
+        # 
+        self.sep3 = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.sep3.setGeometry(QtCore.QRect(325, 8, 5, 18))
+        self.sep3.setText("|")
+        self.sep3.setStyleSheet("QLabel {   \
+                                font: bold 18px;         \
+                                }")  
+        self.caseZoneFilterRepliquer = QtWidgets.QCheckBox(self.groupBoxAffichageLeft)    
+        self.caseZoneFilterRepliquer.setGeometry(QtCore.QRect(335,6,23,23))
+        self.caseZoneFilterRepliquer.setObjectName("caseZoneFilterRepliquer")
+        self.caseZoneFilterRepliquer.setChecked(False) 
+        self.caseZoneFilterRepliquer.toggled.connect(lambda : self.onChangeCaseFilter(self.zoneFilter.text())) 
+        self.caseZoneFilterRepliquer.setToolTip(QtWidgets.QApplication.translate("asgard_general_ui", "Check to display only replicated objects", None))
+        self.labelCaseZoneFilterRepliquer = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.labelCaseZoneFilterRepliquer.setGeometry(QtCore.QRect(355, 10, 60, 20))
+        self.labelCaseZoneFilterRepliquer.setObjectName("labelCaseZoneFilterRepliquer")
+        self.labelCaseZoneFilterRepliquer.setAlignment(Qt.AlignLeft)
+        self.labelCaseZoneFilterRepliquer.setStyleSheet("QLabel {   \
+                                font-weight: bold ;     \
+                                color: #5770BE;      \
+                                }")                   
+        # 
+        self.sep4 = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.sep4.setGeometry(QtCore.QRect(410, 8, 5, 18))
+        self.sep4.setText("|")
+        self.sep4.setStyleSheet("QLabel {   \
+                                font: bold 18px;         \
+                                }")  
+        self.caseZoneFilterDerepliquer = QtWidgets.QCheckBox(self.groupBoxAffichageLeft)    
+        self.caseZoneFilterDerepliquer.setGeometry(QtCore.QRect(420,6,23,23))
+        self.caseZoneFilterDerepliquer.setObjectName("caseZoneFilterDerepliquer")
+        self.caseZoneFilterDerepliquer.setChecked(False) 
+        self.caseZoneFilterDerepliquer.toggled.connect(lambda : self.onChangeCaseFilter(self.zoneFilter.text())) 
+        self.caseZoneFilterDerepliquer.setToolTip(QtWidgets.QApplication.translate("asgard_general_ui", "Check to display only non-replicated objects ", None))
+        self.labelCaseZoneFilterDerepliquer = QtWidgets.QLabel(self.groupBoxAffichageLeft)
+        self.labelCaseZoneFilterDerepliquer.setGeometry(QtCore.QRect(440, 10, 75, 20))
+        self.labelCaseZoneFilterDerepliquer.setObjectName("labelCaseZoneFilterDerepliquer")
+        self.labelCaseZoneFilterDerepliquer.setAlignment(Qt.AlignLeft)
+        self.labelCaseZoneFilterDerepliquer.setStyleSheet("QLabel {   \
+                                font-weight: bold ;     \
+                                color: #958B62;      \
+                                }") 
         #-- FILTRE schémas / obj
 
         self.groupBoxAffichageLeft.setVisible(False)
@@ -368,6 +430,23 @@ class Ui_Dialog_Asgard(object):
         createIHMAffichageDiagnostic(self)
         #==========================                                                 
         #==========================              
+        #Zone affichage  displayInformationsDiagnostic               
+        self.displayInformationsTableauBord = QtWidgets.QGroupBox(self.tab_widget_TableauBord)
+        self.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformationsTableauBord.setObjectName("displayInformationsTableauBord") 
+        self.displayInformationsTableauBord.setStyleSheet("QGroupBox {   \
+                                border-style: outset;    \
+                                border-width: 0px;       \
+                                border-radius: 10px;     \
+                                border-color: #958B62;      \
+                                font: bold 11px;         \
+                                padding: 6px;            \
+                                }")      
+        #==========================              
+        #==========================              
+        createIHMAffichageTableauBord(self)
+        #==========================                                                 
+        #==========================              
         #Groupe liseré bas
         self.groupBoxDown = QtWidgets.QGroupBox(Dialog)
         self.groupBoxDown.setGeometry(QtCore.QRect(10,self.hScreenDialog - 50,self.lScreenDialog -20,40))
@@ -425,6 +504,8 @@ class Ui_Dialog_Asgard(object):
         return
         
     def retranslateUi(self, Dialog):
+        self.labelCaseZoneFilterRepliquer.setText(QtWidgets.QApplication.translate("asgard_general_ui", "Replica  : ", None))
+        self.labelCaseZoneFilterDerepliquer.setText(QtWidgets.QApplication.translate("asgard_general_ui", "Not réplicated  : ", None))
         self.labelCaseZoneFilter.setText(QtWidgets.QApplication.translate("asgard_general_ui", "Case sensitive  : ", None))
         self.labelFilter.setText(QtWidgets.QApplication.translate("asgard_general_ui", "Filter : ", None))
         Dialog.setWindowTitle(QtWidgets.QApplication.translate("asgard_general_ui", "ASGARD Manager - Automatic and Simplified GrAnting for Rights in Databases", None) + "  (" + str(bibli_asgard.returnVersion()) + ")")
@@ -457,9 +538,10 @@ class Ui_Dialog_Asgard(object):
         self.caseTitreGraph.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Title", None))
         self.caseAnimationGraph.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Animation", None))
        
-    #Menu contextuel QTabWidget for Diagnostic
+    #Menu contextuel QTabWidget for Diagnostic and Dashboard
     #------    
     def menuContextuelDiag(self, point):
+        #Diagnostics
         self.diagMenu = QMenu(self.Dialog.tab_widget_Diagnostic)
         menuIcon = bibli_asgard.returnIcon(os.path.dirname(__file__) + "\\icons\\actions\\graph_print.png")          
         zTitleMenu = QtWidgets.QApplication.translate("asgard_general_ui", "Diagnostic: Print preview", None)
@@ -482,7 +564,30 @@ class Ui_Dialog_Asgard(object):
         #-
         self.treeActionDiagPrint.setEnabled(False if self.Dialog.zone_affichage_diagnostic.toPlainText() == '' else True)
         self.treeActionDiagDelete.setEnabled(False if self.Dialog.zone_affichage_diagnostic.toPlainText() == '' else True)
-        self.diagMenu.exec_(self.Dialog.tab_widget_Diagnostic.mapToGlobal(point))
+        #-------
+        #Dashboard
+        menuIcon = bibli_asgard.returnIcon(os.path.dirname(__file__) + "\\icons\\actions\\graph_print.png")          
+        zTitleMenu = QtWidgets.QApplication.translate("asgard_general_ui", "Dashboard: Print preview", None)
+        self.treeActionTableauBordPrint = QAction(QIcon(menuIcon), zTitleMenu, self.diagMenu)
+        self.diagMenu.addAction(self.treeActionTableauBordPrint)
+        #-
+        zTitleMenu = QtWidgets.QApplication.translate("asgard_general_ui", "Dashboard: Delele result", None)
+        menuIcon = bibli_asgard.returnIcon(os.path.dirname(__file__) + "\\icons\\actions\\diagnostic_efface.png")          
+        self.treeActionTableauBordDelete = QAction(QIcon(menuIcon), zTitleMenu, self.diagMenu)
+        self.diagMenu.addAction(self.treeActionTableauBordDelete)
+        #-
+        self.treeActionTableauBordPrint.triggered.connect( lambda : bibli_asgard.printViewTableauBord(self, self))
+        self.treeActionTableauBordDelete.triggered.connect( lambda : bibli_asgard.deletetViewTableauBord(self, self))
+        #-
+        try :
+           self.treeActionTableauBordPrint.setVisible(False if self.tabWidget.currentIndex() != 4 else True)
+           self.treeActionTableauBordDelete.setVisible(False if self.tabWidget.currentIndex() != 4 else True)
+        except :
+           pass
+        #-
+        self.treeActionTableauBordPrint.setEnabled(False if self.Dialog.zone_affichage_TableauBord.toPlainText() == '' else True)
+        self.treeActionTableauBordDelete.setEnabled(False if self.Dialog.zone_affichage_TableauBord.toPlainText() == '' else True)
+        self.diagMenu.exec_(self.tabWidget.mapToGlobal(point))
         #-------
         return   
     #Menu contextuel QTabWidget for Diagnostic
@@ -637,6 +742,7 @@ class Ui_Dialog_Asgard(object):
                                #print("ListeRolesProducteurs II  %s" %(str(format(time.time()-debut,".3f"))))
                                #gestion des roles de groupes
                                mKeySql = dicListSql(self,'listeDesRolesDeGroupeEtConnexions')
+                               #print(mKeySql)
                                r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
                                if r != None : 
                                   #print("listeDesRolesDeGroupeEtConnexions   %s" %(str(format(time.time()-debut,".3f"))))
@@ -661,11 +767,28 @@ class Ui_Dialog_Asgard(object):
                                   self.comboBloc.setModel(modelcomboBloc)
                                   #print("Fin des requêtes et début TreeViews   %s" %(str(format(time.time()-debut,".3f"))))
                                   #-----
-                                  self.ctrlReplication = False   #controle pour exploiter la réplicaition ou pas
+                                  self.ctrlReplication = False   #controle pour exploiter la réplication ou pas
                                   #-----
                                   #=======================
                                   #gestion des réplications
+                                  #--
+                                  self.labelCaseZoneFilterRepliquer.setVisible(self.ctrlReplication)
+                                  self.caseZoneFilterRepliquer.setVisible(self.ctrlReplication)
+                                  self.labelCaseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
+                                  self.caseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
+                                  self.sep3.setVisible(self.ctrlReplication)
+                                  self.sep4.setVisible(self.ctrlReplication)
+                                  #--
                                   if self.ctrlReplication :
+                                     #Création Schéma, Séquence, Table si elle n'existe pas 
+                                     mKeySql = dicListSql(self,'Fonction_CreateSchemaTableReplication')
+                                     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSqlCreate(Dialog, self.mBaseAsGard.mConnectEnCours, self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
+                                     if r != False :
+                                        pass
+                                     else :
+                                        #Géré en amont dans la fonction executeSqlNoReturn
+                                        pass 
+                                     #-- 
                                      mKeySql = dicListSql(self,'Fonction_Liste_Replication')
                                      r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
                                      if r != None :
@@ -973,8 +1096,6 @@ class Ui_Dialog_Asgard(object):
 
         #-- FILTRE schémas / obj
         self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter = mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs
-        #mTextFilter               = self.mTextFilter    if hasattr(self, 'mTextFilter') else "" #Récupére la zone de filtre pour chaque retour serveur
-        #self.filtreActifSensitive = True if self.caseZoneFilter.isChecked() else False #Récupére la case de filtre pour chaque retour serveur
         #-- FILTRE schémas / obj
         
         Dialog.resize(self.lScreenDialog, self.hScreenDialog)
@@ -1035,7 +1156,6 @@ class Ui_Dialog_Asgard(object):
 
     # FILTER -----------------------------------
     def onChanged(self,mTextFilter):
-        print("onChanged")
         self.Dialog.groupBoxAffichageSchema.setVisible(False)
         self.Dialog.groupBoxAffichageHelp.setVisible(False)
         mReturnItemTreePostgresql, mReturnItemTreePostgresqlSelect = self.returnItemTreePostgresql("LOAD", self.mTreePostgresql, "", "")
@@ -1153,4 +1273,11 @@ class Ui_Dialog_Asgard(object):
     # Gestion des actions générales du menu de la boite de dialogue
     def dialogueConfirmationAction(self, mDialog, mBaseAsGard, mTypeAction, mKeySqlTransformee):
         d = doconfirme.Dialog(mDialog, mBaseAsGard, mTypeAction, mKeySqlTransformee)
-        d.exec_()          
+        d.exec_() 
+        
+    #==================================================
+    # Gestion du click sur les onglets pour traiter le tableau de bord
+    def clickOngletTabWidget(self, posTab):
+        print("toto")
+        print(posTab)
+                 
