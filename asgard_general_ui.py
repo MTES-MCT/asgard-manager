@@ -1119,17 +1119,26 @@ class Ui_Dialog_Asgard(object):
         self.mTreePostgresqlDroits.show()
         #print("mTreePostgresqlDroits   %s" %(str(format(time.time()-debut,".3f"))))
         
-        if hasattr(self, 'mTreePostgresqlMembresOut') :
+        if hasattr(self, 'mTreePostgresqlMembresOutGroupe') :
            self.mTreePostgresqlMembresOut.setVisible(False)
         self.mTreePostgresqlMembresOut = TREEVIEWASGARDMEMBRESOUT(self.groupBoxAffichageRoleAppartOut)
         self.mTreePostgresqlMembresOut.clear()
-        #print("mTreePostgresqlMembresOut   %s" %(str(format(time.time()-debut,".3f"))))
+        #-
+        if hasattr(self, 'mTreePostgresqlMembresOutBIS') :
+           self.mTreePostgresqlMembresOutBIS.setVisible(False)
+        self.mTreePostgresqlMembresOutBIS = TREEVIEWASGARDMEMBRESOUT(self.groupBoxAffichageRoleAppartOutBIS)
+        self.mTreePostgresqlMembresOutBIS.clear()
            
         if hasattr(self, 'mTreePostgresqlMembresIn') :
            self.mTreePostgresqlMembresIn.setVisible(False)
         self.mTreePostgresqlMembresIn  = TREEVIEWASGARDMEMBRESIN(self.groupBoxAffichageRoleAppartIn)
         self.mTreePostgresqlMembresIn.clear()
-        #print("mTreePostgresqlMembresIn   %s" %(str(format(time.time()-debut,".3f"))))
+        #-
+        if hasattr(self, 'mTreePostgresqlMembresInBIS') :
+           self.mTreePostgresqlMembresInBIS.setVisible(False)
+        self.mTreePostgresqlMembresInBIS  = TREEVIEWASGARDMEMBRESIN(self.groupBoxAffichageRoleAppartInBIS)
+        self.mTreePostgresqlMembresInBIS.clear()
+        #print("mTreePostgresqlMembresOut   %s" %(str(format(time.time()-debut,".3f"))))
 
         mServeurName = QtWidgets.QApplication.translate("bibli_asgard", "Does not belong", None)
         mServeurName = QtWidgets.QApplication.translate("bibli_asgard", "Belongs", None)

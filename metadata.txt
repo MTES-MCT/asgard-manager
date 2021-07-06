@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.2.7
+version=1.2.8
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -11,6 +11,14 @@ changelog:
     ==========================================================================
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
+    ==========================================================================
+    ** 1.2.8 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.18
+       *------------- 
+         ** Dans la gestion des roles, ajout d un bouton bascule offrant les possibilites :
+            * Pour les roles de groupe, de gerer les membres/non-membres et d appartenance ou non
+            * Pour les roles de connexions, de gerer les appartenances ou pas et les membres/non-membres
+         ** Ajout de lignes animees de part et d autres des boutons pour les signaler
     ==========================================================================
     ** 1.2.7 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.18

@@ -324,6 +324,8 @@ def dicListSql(self, mKeySql):
                 #mMdp#;
                 #mListeRevokeNew#
                 #mListeGrantNew# 
+                #mListeRevokeBISNew#
+                #mListeGrantBISNew# 
                 COMMENT ON ROLE "#mRolname#" IS '#mDescription#';
                 
                 #Rolgestionschema_cond2#       
@@ -346,6 +348,8 @@ def dicListSql(self, mKeySql):
                 #mMdp#;
                 #mListeRevokeNew#
                 #mListeGrantNew# 
+                #mListeRevokeBISNew#
+                #mListeGrantBISNew# 
                 COMMENT ON ROLE "#mRolname#" IS '#mDescription#';
                 
                 #Rolgestionschema_cond2#       
@@ -574,7 +578,7 @@ def dicExpRegul(self, mPattern, mText):
     mDicExpRegul = {}
     #------------------
     #Find : [Un car au début plus '_' et Retour Un car au début, la chaine sans le préfixe)
-    mDicExpRegul['Find_(FirstCar_)&Ret_FirstCar'] = ('^([a-z])_')
+    mDicExpRegul['Find_(FirstCar_)&Ret_FirstCar'] = ('^([A-Z])_')
     #------------------
     
     #Traitement Retourne une liste (bloc, chaine sans préfixe)          
@@ -1055,13 +1059,85 @@ class TREEVIEWASGARDMEMBRESOUT(QTreeWidget):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelAsgardOut)
 
+    #===============================              
+    def afficheDroitsOutBIS(self, Dialog, myPathIcon, mServeurName, mRolnameID, mRolcanLogin, mConfigConnection,  ArraymlisteDesRolesDeGroupeEtConnexions):
+        self.Dialog = Dialog 
+        iconCursorInterdit = returnIcon(myPathIcon + "\\treeview\\cursor_interdit.png")
+        iconGestion = returnIcon(myPathIcon + "\\treeview\\racine.png")
+        iconRoleConnex = returnIcon(myPathIcon + "\\treeview\\connexion.png")
+        iconRoleGroupe = returnIcon(myPathIcon + "\\treeview\\groupe.png")
+        iconConnex = returnIcon(myPathIcon + "\\objets\\role.png")
+        iconGroupe = returnIcon(myPathIcon + "\\objets\\groupe.png")
+        zMessHeaderLabels = ""
+        for t in  mConfigConnection : 
+            if "password" not in t:
+               zMessHeaderLabels += t + " / "
+        self.setHeaderLabels([mServeurName])
+        self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
+        self.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() -10 )
+        #---
+        self.header().setStretchLastSection(False)
+        self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        
+        #===============================
+        #============
+        self.ArraymRolesDeGroupe = ArraymlisteDesRolesDeGroupeEtConnexions
+        #============
+        i = 0
+        #rolid + rolname + login + mOutIn 
+        mBoucleMembre, mBoucleParent  = returnOutInAppartNonappart(self, self.ArraymRolesDeGroupe, Dialog.mTreePostgresqlDroits.mRolnameID)
+        
+        #INVERSION membres Parents pour bouton Membres / Appartenance
+        if mRolcanLogin == True : #Parents
+          while i in range(len(mBoucleMembre)) :
+            if not mBoucleMembre[i][3] : # Out
+                  self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(mBoucleMembre[i][1]) ] ) ] )
+                  rootOut = self.topLevelItem( 0 )
+                  if mBoucleMembre[i][2] == False : #ROLANLOGIN
+                     rootOut.setIcon(0, iconGroupe)
+                  else :                                                                 
+                     rootOut.setIcon(0, iconConnex)
+            i += 1
+        else : #Membres
+          while i in range(len(mBoucleParent)) :
+            if not mBoucleParent[i][3] : # Out
+               if mBoucleParent[i][2] == False : #ROLANLOGIN
+                  self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(mBoucleParent[i][1]) ] ) ] )
+                  rootOut = self.topLevelItem( 0 )
+                  if mBoucleMembre[i][2] == False : #ROLANLOGIN
+                     rootOut.setIcon(0, iconGroupe)
+                  else :                                                                 
+                     rootOut.setIcon(0, iconConnex)
+
+                  #--Pour ToolTip
+                  mTipID = mBoucleMembre[i][0]   # ID de l'Item ex : g_admin
+                  mBoucleMembreTip, mBoucleParentTip  = returnOutInAppartNonappart(self, self.ArraymRolesDeGroupe, mTipID)
+                  iListLabelToolTip, mListLabelToolTip = 0, []
+                  while iListLabelToolTip in range(len(mBoucleMembreTip)) :
+                     if mBoucleMembreTip[iListLabelToolTip][3] : # In
+                        mListLabelToolTip.append(str(mBoucleMembreTip[iListLabelToolTip][1]))
+                     iListLabelToolTip += 1
+                  rootOut.setToolTip(0, "{}".format(", ".join(mListLabelToolTip)))    #pour chaque bloc
+                  #--Pour ToolTip
+
+            i += 1
+            
+        self.itemClicked.connect( self.ihmsDroitsOut ) 
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect( self.menuContextuelAsgardOut)
+
     #-------------                                                    
     def menuContextuelAsgardOut(self, point):
         index = self.indexAt(point)
         if not index.isValid():
            return
-        self.Dialog.executeDroits.setVisible(False) 
-        self.Dialog.labelOutIn.setText("OUT")
+        self.Dialog.executeDroits.setVisible(False)
+        
+        if self.Dialog.case_membreappartient.isChecked():         
+           self.Dialog.labelOutIn.setText("OUT")
+        else :
+           self.Dialog.labelOutIn.setText("OUTBIS")
+        
         self.treeMenu = QMenu(self)
         #-------   
         menuIcon = returnIcon(self.Dialog.myPathIcon + "\\treeview\\flechedroite.png")          
@@ -1078,8 +1154,23 @@ class TREEVIEWASGARDMEMBRESOUT(QTreeWidget):
         img = imgOut.replace("\\","/")
         self.Dialog.executeDroits.setStyleSheet("background-image : url(" + img + ");")
         self.Dialog.executeDroits.setVisible(True)        
-        self.Dialog.labelOutIn.setText("OUT")
+
+        if self.Dialog.case_membreappartient.isChecked():         
+           self.Dialog.labelOutIn.setText("OUT")
+        else :
+           self.Dialog.labelOutIn.setText("OUTBIS")
         
+#============     
+#============ 
+#Création GIF et Déplacement 
+def addDeplaceGif(**kwargs) :
+    if kwargs['_action'] == "ADD" :
+       _movie = QtGui.QMovie(kwargs['_gif'])
+       kwargs['_objet'].setMovie(_movie)
+       _movie.start()
+    kwargs['_objet'].setGeometry(QtCore.QRect(kwargs['_x'], kwargs['_y'], kwargs['_l'], kwargs['_h']))
+    return
+
 #============     
 #============ 
 #Déplace les items Buttons 
@@ -1090,6 +1181,14 @@ def deplaceItemOutIn(self ) :
             return
     elif self.Dialog.labelOutIn.text() == "IN" :
        selectedItems = self.Dialog.mTreePostgresqlMembresIn.selectedItems()
+       if len(selectedItems) < 1:
+            return
+    elif self.Dialog.labelOutIn.text() == "OUTBIS" :
+       selectedItems = self.Dialog.mTreePostgresqlMembresOutBIS.selectedItems()
+       if len(selectedItems) < 1:
+            return
+    elif self.Dialog.labelOutIn.text() == "INBIS" :
+       selectedItems = self.Dialog.mTreePostgresqlMembresInBIS.selectedItems()
        if len(selectedItems) < 1:
             return
     #----
@@ -1140,12 +1239,61 @@ def deplaceItemOutIn(self ) :
           if len(selectedItems) < 1:
              mBoucleItemSelect = False
        #----
+    #----
+    if self.Dialog.labelOutIn.text() == "OUTBIS" :
+       #----
+       mBoucleItemSelect = True 
+       while mBoucleItemSelect :                 
+          #----
+          selectedItems = self.Dialog.mTreePostgresqlMembresOutBIS.selectedItems()
+          mItemWidgetID  = selectedItems[0]       #Id
+          mItemWidgetLIB = mItemWidgetID.text(0)  #Lib
+          #----
+          mIndex = 0                              #pos
+          while mIndex < self.Dialog.mTreePostgresqlMembresOutBIS.topLevelItemCount() :
+             if mItemWidgetLIB == self.Dialog.mTreePostgresqlMembresOutBIS.topLevelItem(mIndex).text(0) :
+                self.Dialog.mTreePostgresqlMembresOutBIS.takeTopLevelItem(mIndex)
+                self.Dialog.mTreePostgresqlMembresInBIS.insertTopLevelItem(0, mItemWidgetID)
+                selectedItems = self.Dialog.mTreePostgresqlMembresOutBIS.selectedItems()
+                if len(selectedItems) < 1:
+                   self.Dialog.executeDroits.setVisible(False)        
+                break
+             else :
+                mIndex += 1
+          if len(selectedItems) < 1:
+             mBoucleItemSelect = False
+       #----
+    #----
+    if self.Dialog.labelOutIn.text() == "INBIS" : 
+       #----
+       mBoucleItemSelect = True 
+       while mBoucleItemSelect :                 
+          #----
+          selectedItems = self.Dialog.mTreePostgresqlMembresInBIS.selectedItems()
+          mItemWidgetID  = selectedItems[0]       #Id
+          mItemWidgetLIB = mItemWidgetID.text(0)  #Lib
+          #----
+          mIndex = 0                              #pos
+          while mIndex < self.Dialog.mTreePostgresqlMembresInBIS.topLevelItemCount() :
+             if mItemWidgetLIB == self.Dialog.mTreePostgresqlMembresInBIS.topLevelItem(mIndex).text(0) :
+                self.Dialog.mTreePostgresqlMembresInBIS.takeTopLevelItem(mIndex)
+                self.Dialog.mTreePostgresqlMembresOutBIS.insertTopLevelItem(0, mItemWidgetID)
+                selectedItems = self.Dialog.mTreePostgresqlMembresInBIS.selectedItems()
+                if len(selectedItems) < 1:
+                   self.Dialog.executeDroits.setVisible(False)        
+                break
+             else :
+                mIndex += 1
+          if len(selectedItems) < 1:
+             mBoucleItemSelect = False
+       #----
     return    
  
 #============ 
-#Pour les deux Tree OUT et IN
+#Pour les Quatre Tree OUT et IN
 # = return Listes  
 def returnOutInListe(self ) :
+
     mListOut = []
     mIndexOUT = 0 
     while mIndexOUT < self.Dialog.mTreePostgresqlMembresOut.topLevelItemCount() :
@@ -1158,7 +1306,19 @@ def returnOutInListe(self ) :
        mListIn.append(self.Dialog.mTreePostgresqlMembresIn.topLevelItem(mIndexIN).text(0))
        mIndexIN += 1
        
-    return mListOut, mListIn      
+    mListOutBIS = []
+    mIndexOUTBIS = 0 
+    while mIndexOUTBIS < self.Dialog.mTreePostgresqlMembresOutBIS.topLevelItemCount() :
+       mListOutBIS.append(self.Dialog.mTreePostgresqlMembresOutBIS.topLevelItem(mIndexOUTBIS).text(0))
+       mIndexOUTBIS += 1
+    #---                   
+    mListInBIS = []
+    mIndexINBIS = 0 
+    while mIndexINBIS < self.Dialog.mTreePostgresqlMembresInBIS.topLevelItemCount() :
+       mListInBIS.append(self.Dialog.mTreePostgresqlMembresInBIS.topLevelItem(mIndexINBIS).text(0))
+       mIndexINBIS += 1
+
+    return mListOut, mListIn, mListOutBIS, mListInBIS      
        
 #============ 
 #Pour les deux Tree OUT et IN
@@ -1373,6 +1533,73 @@ class TREEVIEWASGARDMEMBRESIN(QTreeWidget):
         self.itemClicked.connect( self.ihmsDroitsIn ) 
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect( self.menuContextuelAsgardIn)
+      
+    #===============================
+    def afficheDroitsInBIS(self, Dialog, myPathIcon, mServeurName, mRolnameID, mRolcanLogin, mConfigConnection, ArraymlisteDesRolesDeGroupeEtConnexions): 
+        self.Dialog = Dialog 
+        iconCursorInterdit = returnIcon(myPathIcon + "\\treeview\\cursor_interdit.png")
+        iconGestion = returnIcon(myPathIcon + "\\treeview\\racine.png")
+        iconRoleConnex = returnIcon(myPathIcon + "\\treeview\\connexion.png")
+        iconRoleGroupe = returnIcon(myPathIcon + "\\treeview\\groupe.png")
+        iconConnex = returnIcon(myPathIcon + "\\objets\\role.png")
+        iconGroupe = returnIcon(myPathIcon + "\\objets\\groupe.png")
+        zMessHeaderLabels = ""
+        for t in  mConfigConnection : 
+            if "password" not in t:
+               zMessHeaderLabels += t + " / "
+        self.setHeaderLabels([mServeurName])
+        self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
+        self.setGeometry(5,5, self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        #---
+        self.header().setStretchLastSection(False)
+        self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        
+        #===============================
+        #============
+        self.ArraymRolesDeGroupe = ArraymlisteDesRolesDeGroupeEtConnexions
+        #============
+        i = 0
+        #rolid + rolname + login + mOutIn 
+        mBoucleMembre, mBoucleParent  = returnOutInAppartNonappart(self, self.ArraymRolesDeGroupe, Dialog.mTreePostgresqlDroits.mRolnameID)
+        if mRolcanLogin == True : #Parents
+          while i in range(len(mBoucleMembre)) :
+            if mBoucleMembre[i][3] : # In   
+                  self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(mBoucleMembre[i][1]) ] ) ] )
+                  rootOut = self.topLevelItem( 0 )
+                  if mBoucleMembre[i][2] == False : #ROLANLOGIN
+                     rootOut.setIcon(0, iconGroupe)
+                  else :                                                                 
+                     rootOut.setIcon(0, iconConnex) 
+            i += 1
+        else : #Membres
+          while i in range(len(mBoucleParent)) :
+            if mBoucleParent[i][3] : # In
+               if mBoucleParent[i][2] == False : #ROLANLOGIN
+                  self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ str(mBoucleParent[i][1]) ] ) ] )
+                  rootOut = self.topLevelItem( 0 )
+                  #if self.Dialog.mTreePostgresqlDroits.mode == "create" :   #désactive la sélection
+                  #   rootOut.setFlags(Qt.NoItemFlags)
+                  if mBoucleMembre[i][2] == False : #ROLANLOGIN
+                     rootOut.setIcon(0, iconGroupe)
+                  else :                                                                 
+                     rootOut.setIcon(0, iconConnex)
+               
+                  #--Pour ToolTip
+                  mTipID = mBoucleParent[i][0]   # ID de l'Item ex : g_admin
+                  mBoucleMembreTip, mBoucleParentTip  = returnOutInAppartNonappart(self, self.ArraymRolesDeGroupe, mTipID)
+                  iListLabelToolTip, mListLabelToolTip = 0, []
+                  while iListLabelToolTip in range(len(mBoucleMembreTip)) :
+                     if mBoucleMembreTip[iListLabelToolTip][3] : # In
+                        mListLabelToolTip.append(str(mBoucleMembreTip[iListLabelToolTip][1]))
+                     iListLabelToolTip += 1
+                  rootOut.setToolTip(0, "{}".format(", ".join(mListLabelToolTip)))    #pour chaque bloc
+                  #--Pour ToolTip
+
+            i += 1
+        #-----------
+        self.itemClicked.connect( self.ihmsDroitsIn ) 
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect( self.menuContextuelAsgardIn)
 
     #-------------                                                    
     def menuContextuelAsgardIn(self, point):
@@ -1380,7 +1607,12 @@ class TREEVIEWASGARDMEMBRESIN(QTreeWidget):
         if not index.isValid():
            return
         self.Dialog.executeDroits.setVisible(False) 
-        self.Dialog.labelOutIn.setText("IN")
+        
+        if self.Dialog.case_membreappartient.isChecked():         
+           self.Dialog.labelOutIn.setText("IN")
+        else :
+           self.Dialog.labelOutIn.setText("INBIS")
+        
         self.treeMenu = QMenu(self)
         #-------   
         menuIcon = returnIcon(self.Dialog.myPathIcon + "\\treeview\\flechegauche.png")          
@@ -1397,8 +1629,11 @@ class TREEVIEWASGARDMEMBRESIN(QTreeWidget):
         img = imgOut.replace("\\","/")
         self.Dialog.executeDroits.setStyleSheet("background-image : url(" + img + ");")
         self.Dialog.executeDroits.setVisible(True) 
-        self.Dialog.labelOutIn.setText("IN")
-        
+
+        if self.Dialog.case_membreappartient.isChecked():         
+           self.Dialog.labelOutIn.setText("IN")
+        else :
+           self.Dialog.labelOutIn.setText("INBIS")
 #========================================================
 # Class pour le tree View Droits    
 class TREEVIEWASGARDDROITS(QTreeWidget):
@@ -1836,13 +2071,15 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                            self.Dialog.label_rolgestionschema.setVisible(False)
                            
                         self.mRolcanLogin = self.ArraymRolesDeGroupe[iParcours][5]
+                        self.Dialog.case_membreappartient.setChecked(True)
                         self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, self.ArraymRolesDeGroupe[iParcours][5], self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema)
+                        bibli_ihm_asgard.showHideCtrlBascule_Normal_A_Bis(self.Dialog, True, mRolCanLogin = self.ArraymRolesDeGroupe[iParcours][5])
                         #Affichage si aucune valeur modifiée
                         #--Save Old value Out In
-                        self.mListeOutOld, self.mListeInOld =  bibli_asgard.returnOutInListe(self )
+                        self.mListeOutOld, self.mListeInOld, self.mListeOutBISOld, self.mListeInBISOld =  bibli_asgard.returnOutInListe(self )
                         #--
-                        tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn')
-                        tValue = (str(self.mRolnameID), self.mRolname, self.mDescription, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema, self.mListeOutOld, self.mListeInOld)
+                        tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn', 'mListeOutBIS', 'mListeInBIS')
+                        tValue = (str(self.mRolnameID), self.mRolname, self.mDescription, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema, self.mListeOutOld, self.mListeInOld, self.mListeOutBISOld, self.mListeInBISOld)
                         self.dicOldValueRole = dict(zip(tId, tValue))
                         break
                      iParcours += 1
@@ -1861,18 +2098,39 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         Dialog.case_rolreplication.setChecked(mRolreplication) 
         Dialog.case_rolBYPASSRLS.setChecked(mRolbypassrls) 
         Dialog.case_rollogin.setChecked(mRollogin)
-        Dialog.case_rolgestionschema.setChecked(mRolgestionschema) 
+        Dialog.case_rolgestionschema.setChecked(mRolgestionschema)
+
+        mHeader_A = QtWidgets.QApplication.translate("bibli_asgard", "Non-member role :", None)
+        mHeader_B = QtWidgets.QApplication.translate("bibli_asgard", "Group member roles :", None)
+        #-
+        mHeader_C = QtWidgets.QApplication.translate("bibli_asgard", "Does not belong to :", None)
+        mHeader_D = QtWidgets.QApplication.translate("bibli_asgard", "Belongs to group :", None)    
+        #-
+        mServeurNameOutBIS = mHeader_A if mRolcanLogin else mHeader_C
+        mServeurNameInBIS  = mHeader_B if mRolcanLogin else mHeader_D
 
         # Tree Out
         Dialog.mTreePostgresqlMembresOut.clear()
         Dialog.mTreePostgresqlMembresOut.afficheDroitsOut(self.Dialog, self.myPathIcon, mServeurNameOut, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresOut.show()
         Dialog.mTreePostgresqlMembresOut.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() - 10 )
+        #-
+        Dialog.mTreePostgresqlMembresOutBIS.clear()
+        Dialog.mTreePostgresqlMembresOutBIS.afficheDroitsOutBIS(self.Dialog, self.myPathIcon, mServeurNameOutBIS, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
+        Dialog.mTreePostgresqlMembresOutBIS.show()
+        Dialog.mTreePostgresqlMembresOutBIS.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() - 10 )
         # Tree In
         Dialog.mTreePostgresqlMembresIn.clear()
         Dialog.mTreePostgresqlMembresIn.afficheDroitsIn(self.Dialog, self.myPathIcon, mServeurNameIn, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresIn.show()
         Dialog.mTreePostgresqlMembresIn.setGeometry(5 ,5 , self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        #-
+        Dialog.mTreePostgresqlMembresInBIS.clear()
+        Dialog.mTreePostgresqlMembresInBIS.afficheDroitsInBIS(self.Dialog, self.myPathIcon, mServeurNameInBIS, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
+        Dialog.mTreePostgresqlMembresInBIS.show()
+        Dialog.mTreePostgresqlMembresInBIS.setGeometry(5 ,5 , self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+
+        #mServeurNameIn = QtWidgets.QApplication.translate("bibli_asgard", "Belongs to group :", None)    
 
         # Tree Schémas
         Dialog.mTreePostgresqlSchemaLecteur.clear()
@@ -3964,7 +4222,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.7"
+def returnVersion() : return "version 1.2.8"
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :
@@ -4118,8 +4376,10 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
     #----
     self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(0,0,self.Dialog.groupBoxAffichageRightDroits.width() , self.Dialog.groupBoxAffichageRightDroits.height()/2 - 5))
     self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(0, self.Dialog.groupBoxAffichageRightDroits.height()/2 + 5,self.Dialog.groupBoxAffichageRightDroits.width() , self.Dialog.groupBoxAffichageRightDroits.height()/2 - 5))
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(0, 0,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height()))
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 0,(self.groupBoxAffichageRoleAppart.width() /2) - 10, self.groupBoxAffichageRoleAppart.height() ))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height()))
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height()))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10, self.groupBoxAffichageRoleAppart.height() ))
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10, self.groupBoxAffichageRoleAppart.height() ))
     #----
     self.Dialog.displayInformationsDash.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
     self.groupBoxAffichageLeftDash.setGeometry(QtCore.QRect(0,0,(self.displayInformationsDash.width() - 10) * self.mSectionGauche,self.displayInformationsDash.height() - 0))

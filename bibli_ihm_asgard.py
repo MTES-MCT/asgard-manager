@@ -522,19 +522,27 @@ def createIHMAffichageDroits(self) :
     self.case_simplecomplet.setGeometry(QtCore.QRect(250,5,30,23))
     self.case_simplecomplet.setObjectName("case_simplecomplet")
     self.case_simplecomplet.setVisible(False) 
-    #Connections 
+    #-- 
     #self.case_simplecomplet.clicked.connect(lambda : showHideCtrlSimpleComplet(self, self.case_simplecomplet.isChecked()))
-    #--------                            
+    #-------- Simple/Complet                            
     self.button_simplecomplet = QtWidgets.QPushButton(self.groupBoxAffichageRoleAttributDroits)
     y, l, h = 8, 100, 15 
     x = (self.groupBoxAffichageRoleAttributDroits.width() / 2) - (l/2)    
     self.button_simplecomplet.setGeometry(QtCore.QRect(x, y, l, h))
     self.button_simplecomplet.setObjectName("button_simplecomplet")
-    self.button_simplecomplet.setChecked(False) 
+    #self.button_simplecomplet.setChecked(False) 
     self.button_simplecomplet.setStyleSheet("QPushButton {   \
                                 font-weight: bold ;     \
                                 color: #958B62;      \
                                 }") 
+    x, y, l, h = self.button_simplecomplet.x() - 20, self.button_simplecomplet.y() + 6, 20, 3  
+    self._gifsimplecomplet =  QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)
+    bibli_asgard.addDeplaceGif(_action="ADD", _objet=self._gifsimplecomplet, _gif=self.Dialog.myPathIcon + "\\gif\\leddore.gif", _x=x, _y=y, _l=l, _h=h)
+    #-- 
+    x, y, l, h = self.button_simplecomplet.x() + self.button_simplecomplet.width() + 2, self.button_simplecomplet.y() + 6, 20, 3  
+    self._gifsimplecompletinverse =  QtWidgets.QLabel(self.groupBoxAffichageRoleAttributDroits)
+    bibli_asgard.addDeplaceGif(_action="ADD", _objet=self._gifsimplecompletinverse, _gif=self.Dialog.myPathIcon + "\\gif\\leddoreinverse.gif", _x=x, _y=y, _l=l, _h=h)
+
     #Connections 
     self.button_simplecomplet.clicked.connect(lambda : showHideCtrlSimpleCompletButton(self, self.case_simplecomplet.isChecked()))
     
@@ -672,15 +680,60 @@ def createIHMAffichageDroits(self) :
                                 border-color: #958B62;      \
                                 }") 
     #--------                                  
+    self.y_button_membreappartient = 8 + 15
+    #--------                                  
     self.groupBoxAffichageRoleAppartOut= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
     self.groupBoxAffichageRoleAppartOut.setObjectName("groupBoxAffichageRoleAppartOut")
     self.groupBoxAffichageRoleAppartOut.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
                                 border-color: #958B62;      \
                                 }") 
+    #-                                  
+    self.groupBoxAffichageRoleAppartOutBIS= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartOutBIS.setObjectName("groupBoxAffichageRoleAppartOutBIS")
+    self.groupBoxAffichageRoleAppartOutBIS.setStyleSheet("QGroupBox {   \
+                                border-width: 0px;       \
+                                border-color: red;      \
+                                }") 
+    self.groupBoxAffichageRoleAppartOutBIS.setVisible(False)
     #------ 
     #Boutons  
+    #------ 
+    #-------- MembreAppartient
+    #-  (modif juillet 2021) 
+    #- Utile pour savoir si je suis sur un rôle de groupe ou de connexion
+    #- Suite ajout du bouton membres/appartenance Coché MEMBRES, sinon APPARTENANCE                           
+    self.case_membreappartient = QtWidgets.QCheckBox(self.groupBoxAffichageRoleAppart)    
+    self.case_membreappartient.setGeometry(QtCore.QRect(20,5,30,23))
+    self.case_membreappartient.setObjectName("case_membreappartient")
+    self.case_membreappartient.setEnabled(False)
+    self.case_membreappartient.setChecked(True)
+    self.case_membreappartient.setVisible(False)
+     
+    #-- 
+    self.button_membreappartient = QtWidgets.QPushButton(self.groupBoxAffichageRoleAppart)
+    y, l, h = 8, 160, 15 
+    x = (self.groupBoxAffichageRoleAppart.width() / 2) - (l/2)    
+    self.button_membreappartient.setGeometry(QtCore.QRect(x, y, l, h))
+    self.button_membreappartient.setObjectName("button_membreappartient")
+    #self.button_membreappartient.setChecked(False) 
+    self.button_membreappartient.setStyleSheet("QPushButton {   \
+                                font-weight: bold ;     \
+                                color: #958B62;      \
+                                }")
+    x, y, l, h = self.button_membreappartient.x() - 20, self.button_membreappartient.y() + 6, 20, 3  
+    self._gif =  QtWidgets.QLabel(self.groupBoxAffichageRoleAppart)
+    bibli_asgard.addDeplaceGif(_action="ADD", _objet=self._gif, _gif=self.Dialog.myPathIcon + "\\gif\\leddore.gif", _x=x, _y=y, _l=l, _h=h)
+    #-- 
+    x, y, l, h = self.button_membreappartient.x() + self.button_membreappartient.width() + 2, self.button_membreappartient.y() + 6, 20, 3  
+    self._gifinverse =  QtWidgets.QLabel(self.groupBoxAffichageRoleAppart)
+    bibli_asgard.addDeplaceGif(_action="ADD", _objet=self._gifinverse, _gif=self.Dialog.myPathIcon + "\\gif\\leddoreinverse.gif", _x=x, _y=y, _l=l, _h=h)
+
+    #Connections 
+    self.button_membreappartient.clicked.connect(lambda : showHideCtrlBascule_Normal_A_BisButton(self, self.case_membreappartient.isChecked(), self.zone_mdp.isEnabled()))
+    #------ 
     #------ 
     self.executeDroits = QtWidgets.QPushButton(self.groupBoxAffichageRoleAppart)
     self.executeDroits.setGeometry(QtCore.QRect(self.groupBoxAffichageRoleAppartOut.width() , (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) , 20, 60))
@@ -696,13 +749,21 @@ def createIHMAffichageDroits(self) :
                                 
     #--------                                  
     self.groupBoxAffichageRoleAppartIn= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 ))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
     self.groupBoxAffichageRoleAppartIn.setObjectName("groupBoxAffichageRoleAppartIn")
     self.groupBoxAffichageRoleAppartIn.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
                                 border-color: #958B62;      \
                                 }")                                         
-
+    #-                                  
+    self.groupBoxAffichageRoleAppartInBIS= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartInBIS.setObjectName("groupBoxAffichageRoleAppartInBIS")
+    self.groupBoxAffichageRoleAppartInBIS.setStyleSheet("QGroupBox {   \
+                                border-width: 0px;       \
+                                border-color: red;      \
+                                }") 
+    self.groupBoxAffichageRoleAppartInBIS.setVisible(False)
     #==================================================
     self.groupBoxAffichageRoleAppart.setVisible(False)
     self.groupBoxAffichageRoleAttribut.setVisible(False)
@@ -721,6 +782,8 @@ def createIHMAffichageDroits(self) :
     self.executeButtonRole.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Apply", None))
     self.label_simplecomplet.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Simplified / Complete : ", None))
     self.button_simplecomplet.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Simplified / Complete : ", None))
+    self.button_membreappartient.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Membership / Members ", None))
+    self.button_membreappartient.setToolTip("{}".format(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Switch from 'membership' mode to 'Members' mode", None)))           
     self.label_rolname.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Name : ", None))
     self.label_description.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Comments : ", None))
     self.label_mdp.setText(QtWidgets.QApplication.translate("bibli_ihm_asgard", "Password : ", None))
@@ -769,9 +832,11 @@ def executeSqlRole(self, Dialog) :
         mRolloginNew, RolloginnOld = (True if self.Dialog.case_rollogin.isChecked() else False), "#mRollogin#"
 
         mRolgestionschemaNew, mRolgestionschemaOld = (True if self.Dialog.case_rolgestionschema.isChecked() else False), "#mRolgestionschema#"
-        mListeOut, mListeIn =  bibli_asgard.returnOutInListe(self )
+        mListeOut, mListeIn, mListeOutBIS, mListeInBIS =  bibli_asgard.returnOutInListe(self )
         mListeOutNew, mListeOutOld = mListeOut, "#mListeOutNew#"
-        mListeInNew, mListeInOld = mListeIn, "#mListeInNew#"
+        mListeInNew, mListeInOld   = mListeIn, "#mListeInNew#"
+        mListeOutBISNew, mListeOutBISOld = mListeOutBIS, "#mListeOutBISNew#"
+        mListeInBISNew, mListeInBISOld   = mListeInBIS, "#mListeInBISNew#"
                                                                                         
         mContinue = True                                                              
         #Contrôles 
@@ -802,12 +867,12 @@ def executeSqlRole(self, Dialog) :
             pass
          elif mode == "update": 
            #Affichage si aucune valeur modifiée
-           tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn')
-           tValue = (mRolnameNewID, mRolnameNew, mDescriptionNew, mRolcreateroleNew, mRolcreatedbNew, mRolsuperNew, mRolinheritNew, mRolreplicationNew, mRolbypassrlsNew, mRolloginNew, mRolgestionschemaNew, mListeOutNew, mListeInNew)
+           tId    = ('mRolnameID', 'mRolname', 'mDescription', 'mRolcreaterole', 'mRolcreatedb', 'mRolsuper', 'mRolinherit', 'mRolreplication', 'mRolbypassrls', 'mRollogin', 'mRolgestionschema', 'mListeOut', 'mListeIn', 'mListeOutBIS', 'mListeInBIS')
+           tValue = (mRolnameNewID, mRolnameNew, mDescriptionNew, mRolcreateroleNew, mRolcreatedbNew, mRolsuperNew, mRolinheritNew, mRolreplicationNew, mRolbypassrlsNew, mRolloginNew, mRolgestionschemaNew, mListeOutNew, mListeInNew, mListeOutBISNew, mListeInBISNew)
            self.dicNewValueRole = dict(zip(tId, tValue))
            dicOldValueRole =  self.mTreePostgresqlDroits.dicOldValueRole
-           print("dicOldValueRole   %s" %(str(dicOldValueRole)))
-           print("dicNewValueRole   %s" %(str(self.dicNewValueRole)))
+           #print("dicOldValueRole   %s" %(str(dicOldValueRole)))
+           #print("dicNewValueRole   %s" %(str(self.dicNewValueRole)))
            if not bibli_asgard.returnChange(dicOldValueRole, self.dicNewValueRole) and mMdpNew == '':           
               zMess  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "No value changed", None)
               mContinue = False
@@ -820,16 +885,32 @@ def executeSqlRole(self, Dialog) :
            #------ #Gestion des diff revoke et grant      
            if mode == "create" :
               mListeRevokeNew, mListeRevokeOld = [], "#mListeRevokeNew#"  #pas de Revoke pour Create
+              """ 
               mListeGrantNew,  mListeGrantOld  = mListeInNew,  "#mListeGrantNew#"
-           elif mode == "update": 
+              """ 
+              mListeGrantNew,  mListeGrantOld, mListeGrantBISNew,  mListeGrantBISOld  = mListeInNew,  "#mListeGrantNew#", mListeInBISNew,  "#mListeGrantBISNew#"
+           elif mode == "update":
+              """ 
               mListeRevoke =  [value for value in      dicOldValueRole["mListeIn"] if value not in self.dicNewValueRole["mListeIn"]]
               mListeGrant  =  [value for value in self.dicNewValueRole["mListeIn"] if value not in      dicOldValueRole["mListeIn"]]
               mListeRevokeNew, mListeRevokeOld = mListeRevoke, "#mListeRevokeNew#"
               mListeGrantNew,  mListeGrantOld  = mListeGrant,  "#mListeGrantNew#"
+              """
+              mListeRevoke =  [value for value in      dicOldValueRole["mListeIn"] if value not in self.dicNewValueRole["mListeIn"]]
+              mListeGrant  =  [value for value in self.dicNewValueRole["mListeIn"] if value not in      dicOldValueRole["mListeIn"]]
+              mListeRevokeNew, mListeRevokeOld = mListeRevoke, "#mListeRevokeNew#"
+              mListeGrantNew,  mListeGrantOld  = mListeGrant,  "#mListeGrantNew#"
+              #-
+              mListeRevokeBIS =  [value for value in      dicOldValueRole["mListeInBIS"] if value not in self.dicNewValueRole["mListeInBIS"]]
+              mListeGrantBIS  =  [value for value in self.dicNewValueRole["mListeInBIS"] if value not in      dicOldValueRole["mListeInBIS"]]
+              mListeRevokeBISNew, mListeRevokeBISOld = mListeRevokeBIS, "#mListeRevokeBISNew#"
+              mListeGrantBISNew,  mListeGrantBISOld  = mListeGrantBIS,  "#mListeGrantBISNew#"
 
            dicReplace = {mRolnameOldID: mRolnameNewID, mRolnameOld: mRolnameNew, mDescriptionOld: mDescriptionNew, mMdpOld: mMdpNew, mRolcreateroleOld: mRolcreateroleNew, 
                          mRolcreatedbOld: mRolcreatedbNew, mRolsuperOld: mRolsuperNew, mRolinheritOld: mRolinheritNew, mRolreplicationOld: mRolreplicationNew,
-                         mListeRevokeOld: mListeRevokeNew, mListeGrantOld: mListeGrantNew, mRolgestionschemaOld: mRolgestionschemaNew}
+                         mListeRevokeOld: mListeRevokeNew, mListeGrantOld: mListeGrantNew, 
+                         mListeRevokeBISOld: mListeRevokeBISNew, mListeGrantBISOld: mListeGrantBISNew, 
+                         mRolgestionschemaOld: mRolgestionschemaNew}
 
            #------ Substitution       
            for key, value in dicReplace.items():
@@ -888,8 +969,26 @@ def executeSqlRole(self, Dialog) :
                             else :                    #Groupe
                               value = 'GRANT "'  + str(dicReplace['#mRolname#']) + '" TO '   + '{}'.format(', '.join( [ '"' + str(l) + '"' for l in dicReplace[key] ] )) + ' ;'
                         else :
+                           value = ''
+                     #--- pour les BIS   
+                     elif key == '#mListeRevokeBISNew#': 
+                        if len(dicReplace[key]) > 0 :
+                            if not mGConnexionOuGroupe :  #Connexion
+                               value = 'REVOKE {}'.format(', '.join( [ '"' + str(l) + '"' for l in dicReplace[key] ] )) + ' FROM "' + str(dicReplace['#mRolname#']) + '" ;'
+                            else :                    #Groupe
+                               value = 'REVOKE "' + str(dicReplace['#mRolname#']) + '" FROM ' + '{}'.format(', '.join( [ '"' + str(l) + '"' for l in dicReplace[key] ] )) + ' ;'
+                        else :
+                           value = ''
+                     elif key == '#mListeGrantBISNew#':   
+                        if len(dicReplace[key]) > 0 :
+                            if not mGConnexionOuGroupe :  #Connexion
+                              value = 'GRANT {}'.format(', '.join( [ '"' + str(l) + '"' for l in dicReplace[key] ] )) + ' TO "'   + str(dicReplace['#mRolname#']) + '" ;'
+                            else :                    #Groupe
+                              value = 'GRANT "'  + str(dicReplace['#mRolname#']) + '" TO '   + '{}'.format(', '.join( [ '"' + str(l) + '"' for l in dicReplace[key] ] )) + ' ;'
+                        else :
                            value = ''   
-
+                     #--- pour les BIS
+                        
                      #Gestion Gestion des schémas Case mRolgestionschema   self.asgardEditeur / self.dbName
                      elif key == '#mRolgestionschema#' : 
 
@@ -934,7 +1033,7 @@ def executeSqlRole(self, Dialog) :
                   mValue = str(value)
                   
                mKeySql = mKeySql.replace(key, mValue)
-           print(mKeySql)
+           #print(mKeySql)
            #------ 
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSqlNoReturn(Dialog, self.mBaseAsGard.mConnectEnCours, self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
 
@@ -953,6 +1052,31 @@ def executeSqlRole(self, Dialog) :
 def showHideCtrlMdpForLogin(self, mFlags) : 
     return self.zone_mdp.setEnabled(mFlags)
 
+
+#=========================
+def showHideCtrlBascule_Normal_A_BisButton(self, mFlags, mRolCanLogin) : 
+    self.case_membreappartient.setChecked(False if self.case_membreappartient.isChecked() else True)
+    showHideCtrlBascule_Normal_A_Bis(self, self.case_membreappartient.isChecked(), mRolCanLogin)
+    return 
+
+#=========================
+def showHideCtrlBascule_Normal_A_Bis(self, mFlags, mRolCanLogin) :
+    mtextMembre  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Members", None)
+    mtextAppartient = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Membership", None)
+
+    if mRolCanLogin :   
+       self.button_membreappartient.setText(mtextMembre     if mFlags else mtextAppartient)
+    else :
+       self.button_membreappartient.setText(mtextAppartient if mFlags else mtextMembre)
+       
+    self.button_membreappartient.setToolTip("{}".format(mtextMembre + " / " + mtextAppartient))           
+    self.groupBoxAffichageRoleAppartOut.setVisible(mFlags)
+    self.groupBoxAffichageRoleAppartOutBIS.setVisible(False if mFlags else True)
+    self.groupBoxAffichageRoleAppartIn.setVisible(mFlags)
+    self.groupBoxAffichageRoleAppartInBIS.setVisible(False if mFlags else True)
+
+    return   
+    
 #=========================
 def showHideCtrlSimpleCompletButton(self, mFlags) : 
     self.case_simplecomplet.setChecked(False if self.case_simplecomplet.isChecked() else True)
@@ -978,12 +1102,18 @@ def showHideCtrlSimpleComplet(self, mFlags) :
     self.groupBoxAffichageRoleAttributDroits.setGeometry(QtCore.QRect(5, 130, 380 , mHauteurRoleAttributDroits))
 
     self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(10, self.groupBoxAffichageRoleAttribut.y() + self.groupBoxAffichageRoleAttribut.height() ,self.Dialog.groupBoxAffichageRoleAttributGenerale.width(), self.Dialog.groupBoxAffichageRightDroits.height() - self.groupBoxAffichageRoleAttribut.height() - 50))
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4))
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 ))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
 
 
     if hasattr(self.Dialog, 'mTreePostgresqlMembresOut') :  #Pas d'affichage de l'instance Treeview
        self.mTreePostgresqlMembresOut.setGeometry(5, 5, self.groupBoxAffichageRoleAppartOut.width() - 10, self.groupBoxAffichageRoleAppartOut.height() - 10 )
+    #-   
+    if hasattr(self.Dialog, 'mTreePostgresqlMembresOutBIS') :  #Pas d'affichage de l'instance Treeview
+       self.mTreePostgresqlMembresOutBIS.setGeometry(5, 5, self.groupBoxAffichageRoleAppartOut.width() - 10, self.groupBoxAffichageRoleAppartOut.height() - 10 )
+
     if hasattr(self.Dialog, 'mTreePostgresqlMembresIn') :  #Pas d'affichage de l'instance Treeview
        self.mTreePostgresqlMembresIn.setGeometry(5 ,5 , self.groupBoxAffichageRoleAppartIn.width() - 10, self.groupBoxAffichageRoleAppartIn.height() - 10 )
 

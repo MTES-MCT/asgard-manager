@@ -3,7 +3,7 @@
 
 ---           
 ## version
-- [1.2.7]
+- [1.2.8]
 
 ---           
 
@@ -49,6 +49,7 @@ La documentation sous scenari au format dokiel [est disponible ici](https://snum
 ├── i18n                 # `fichiers des langues
 └── icons                # `icones de l'application, menu, barre d'outils, IHM`
     └── actions          # `icones des actions`
+    └── gif              # `gif pour les boutons actions des rôles`
     └── logo             # `icones dans le menu extension et barre d'outils`
     └── objets           # `icones des objets type postgresql`
     └── treeview         # `icones dans les treeview`
