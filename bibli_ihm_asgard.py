@@ -884,7 +884,8 @@ def executeSqlRole(self, Dialog) :
         else :
            #------ #Gestion des diff revoke et grant      
            if mode == "create" :
-              mListeRevokeNew, mListeRevokeOld = [], "#mListeRevokeNew#"  #pas de Revoke pour Create
+              mListeRevokeNew   , mListeRevokeOld    = [], "#mListeRevokeNew#"  #pas de Revoke pour Create
+              mListeRevokeBISNew, mListeRevokeBISOld = [], "#mListeRevokeBISNew#"  #pas de Revoke pour Create
               """ 
               mListeGrantNew,  mListeGrantOld  = mListeInNew,  "#mListeGrantNew#"
               """ 

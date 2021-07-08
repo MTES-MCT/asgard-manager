@@ -15,6 +15,8 @@ changelog:
     ** 1.2.8 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.18
        *------------- 
+         ** 2021.07.08 : Correction sur une variable mListeRevokeBISOld
+       *------------- 
          ** Dans la gestion des roles, ajout d un bouton bascule offrant les possibilites :
             * Pour les roles de groupe, de gerer les membres/non-membres et d appartenance ou non
             * Pour les roles de connexions, de gerer les appartenances ou pas et les membres/non-membres
