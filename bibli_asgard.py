@@ -273,6 +273,7 @@ def dicListSql(self, mKeySql):
            if elem[0] in mTypListINI : mDicTypList[elem[0]] = elem 
        #--- 
        typlist = [ value for value in mDicTypList.values() ] if len(mDicTypList) > 0 else typlistOrigine
+    self.typlist = typlist   
     #---
     r = "" 
     for i in range(len(typlist)):                                 
@@ -578,7 +579,7 @@ def dicExpRegul(self, mPattern, mText):
     mDicExpRegul = {}
     #------------------
     #Find : [Un car au début plus '_' et Retour Un car au début, la chaine sans le préfixe)
-    mDicExpRegul['Find_(FirstCar_)&Ret_FirstCar'] = ('^([A-Z])_')
+    mDicExpRegul['Find_(FirstCar_)&Ret_FirstCar'] = ('^([A-Za-z])_')
     #------------------
     
     #Traitement Retourne une liste (bloc, chaine sans préfixe)          
@@ -666,7 +667,7 @@ class TREEVIEWASGARDGRAPHOPTIONS(QTreeWidget):
             #Gestion du titre
             if mListNiv1[i][0] == "Titre" :                      
                mLibelleTitre = "Mon titre à moi"
-               print(mLibelleTitre)
+               #print(mLibelleTitre)
                mRootChildNiv2 = QTreeWidgetItem(None, [ mLibelleTitre ])
                mRootChildNiv2.setFlags(mRootChildNiv2.flags() | Qt.ItemIsEditable)               
                mRootChildNiv1.addChild( mRootChildNiv2 )
@@ -1911,7 +1912,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
            if mAction == "treeActionDeleteRole" :
               mTitre = QtWidgets.QApplication.translate("bibli_asgard", "Confirmation", None)
               mLib = QtWidgets.QApplication.translate("bibli_asgard", "Are you sure you want to delete this role ?", None)
-              if QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
+              if not self.Dialog.displayMessage or QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
                  mCont = True
                  mKeySql = dicListSql(self,mAction)
                  mRoleNewID, mRoleOldID = mGetItem, "#nom_role#" 
@@ -1931,7 +1932,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
            elif mAction == "treeActionRevoquerRole" :
               mTitre = QtWidgets.QApplication.translate("bibli_asgard", "Confirmation", None)
               mLib = QtWidgets.QApplication.translate("bibli_asgard", "Are you sure you want to revoke all rights for the role ?", None)
-              if QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
+              if not self.Dialog.displayMessage or QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
                  mCont = True
                  mKeySql = dicListSql(self,mAction)
                  mRoleNewID, mRoleOldID = mGetItem, "#nom_role#" 
@@ -1985,7 +1986,8 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
               #==============================
               r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.Dialog.mBaseAsGard.executeSqlNoReturn(self.Dialog, self.Dialog.mBaseAsGard.mConnectEnCours, self.Dialog.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
               if r != False :
-                 QMessageBox.information(self, zTitre, zMess)  
+                 bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                 #QMessageBox.information(self, zTitre, zMess)  
               else :
                  pass 
            #==============================
@@ -2237,7 +2239,7 @@ class TREEVIEWASGARD(QTreeWidget):
         QTreeWidget.__init__(self, *args)
         self.setColumnCount(1)
         self.setHeaderLabels(["server"])
-        
+
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDragEnabled(True)
@@ -2248,8 +2250,7 @@ class TREEVIEWASGARD(QTreeWidget):
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
         #---
-        #self.setVerticalScrollBarPolicy (Qt.ScrollBarAlwaysOn)
-        #self.setVerticalScrollMode(self.sScrollPerPixel)
+        #self.setVerticalScrollMode(QAbstractItemView.ScrollPerItem)
     def mimeTypes(self):
         mimetypes = QTreeWidget.mimeTypes(self)
         mimetypes.append(TREEVIEWASGARD.customMimeType)
@@ -2261,11 +2262,18 @@ class TREEVIEWASGARD(QTreeWidget):
         mimedata.setData(TREEVIEWASGARD.customMimeType, QByteArray())
         drag.setMimeData(mimedata)
         drag.exec_(supportedActions)
-
+    """
+    def dragLeaveEvent(self, event):    #//Hors de la vue
+        #ui->treeWidget->scrollToItem(item);
+        #const QRect r = ui->treeWidget->visualItemRect(item);
+        self.verticalScrollBar().setValue(100)
+        #self.scrollToItem(QAbstractItemView.PositionAtCenter)
+        print(event)
+        event.accept()
+    """
     def dragEnterEvent(self, event):    #//DEPART
         self.mDepart = [None,None]
         selectedItems = self.selectedItems()
-
         if len(selectedItems) < 1:
             return
         mItemWidget = selectedItems[0].text(0)
@@ -2284,7 +2292,8 @@ class TREEVIEWASGARD(QTreeWidget):
               # si type objet dans la liste des types d'objets
               #print(self.mArraySchemasTables)
               for mNameObjet in self.mArraySchemasTables  :
-                  mSchemaDepart = self.returnValueItem(self.currentItem(), 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+                  #mSchemaDepart = self.returnValueItem(self.currentItem(), 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+                  mSchemaDepart = self.returnValueItem(self.currentItem(), 0)[2] if self.Dialog.arboObjet else self.returnValueItem(self.currentItem(), 0)[1] # Hyper important si noms objets identiques dans schéma diff.
                   #print(mSchemaDepart)
                   #Meme Type
                   if (self.returnTypeObjeEtAsgard(mItemWidget)[0] == mNameObjet[2])  :
@@ -2325,9 +2334,8 @@ class TREEVIEWASGARD(QTreeWidget):
                 mTestExisteSchema = mCodeBloc + "_" + self.mDepart[0][2:]
                 
                 mFindSchemaKillPrefixe = True if dicExpRegul(self, 'Find_(FirstCar_)&Ret_FirstCar', self.mDepart[0])[0] != '' else False
-                mChaine =  dicExpRegul(self, 'Find_(FirstCar_)&Ret_FirstCar', self.mDepart[0])[1] 
+                mChaine =  dicExpRegul(self, 'Find_(FirstCar_)&Ret_FirstCar', self.mDepart[0])[1]
                 mTestExisteSchema = (mCodeBloc  + "_" + mChaine) if (mCodeBloc != None and mCodeBloc != 'autre') else mChaine
-                #print("mTestExisteSchema '%s' mCodeBloc '%s' r '%s'" %(str(mTestExisteSchema), str(mCodeBloc), str(r))) 
                 #print("mListSchemaActifs %s" %(str(self.mListSchemaActifs))) 
                 #print("mListSchemaNonActifs %s" %(str(self.mListSchemaNonActifs))) 
                 #print("mListSchemaExistants %s" %(str(self.mListSchemaExistants))) 
@@ -2388,7 +2396,8 @@ class TREEVIEWASGARD(QTreeWidget):
            if self.mDepart[1] == "SCHEMA_ACTIF" or self.mDepart[1] == "SCHEMA_NONACTIF":
               mTitre = QtWidgets.QApplication.translate("bibli_asgard", "Confirmation", None)
               mLib = QtWidgets.QApplication.translate("bibli_asgard", "Are you sure you want to move this diagram?", None)
-              if QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
+              #▬if QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
+              if not self.Dialog.displayMessage or QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
                  mDicListBlocs = returnLoadBlocParam()
                  #Ajout des blocs qui sont dans gestion_schema_usr mais pas dans le qgis_global_settings
                  mDicListBlocs = returnDicBlocUniquementNonReference(mDicListBlocs, self.mSchemasBlocs)
@@ -2415,7 +2424,8 @@ class TREEVIEWASGARD(QTreeWidget):
                  if r != False :
                     zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "Good, you have moved your diagram", None)
                     zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
-                    QMessageBox.information(self, zTitre, zMess) 
+                    bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                    #QMessageBox.information(self, zTitre, zMess) 
                  else :
                     #Géré en amont dans la fonction executeSqlNoReturnDragDrop
                     pass 
@@ -2444,7 +2454,8 @@ class TREEVIEWASGARD(QTreeWidget):
               if r != False :
                  zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "Good, you have moved your objet", None)
                  zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
-                 QMessageBox.information(self, zTitre, zMess) 
+                 bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                 #QMessageBox.information(self, zTitre, zMess) 
               else :
                  #Géré en amont dans la fonction executeSqlNoReturnDragDrop
                  pass 
@@ -2479,6 +2490,22 @@ class TREEVIEWASGARD(QTreeWidget):
                       "function"          : returnIcon(myPathIcon + "\\objets\\function.png"),
                       "type"              : returnIcon(myPathIcon + "\\objets\\type.png"),
                       "domain"            : returnIcon(myPathIcon + "\\objets\\domain.png")
+                       }
+        dicIcoObjetsTraduction = {
+                      "table"             : "Tables",
+                      "tablereplique"     : "Tables",
+                      "tabledereplique"   : "Tables",
+                      "view"              : "Vues",
+                      "viewreplique"      : "Vues",
+                      "viewdereplique"    : "Vues",
+                      "materialized view" : "Vues matérialisées",
+                      "materialized viewreplique"     : "Vues matérialisées",
+                      "materialized viewdereplique"   : "Vues matérialisées",
+                      "foreign table"     : "Tables étrangères",
+                      "sequence"          : "Séquences",
+                      "function"          : "Fonctions",
+                      "type"              : "Types",
+                      "domain"            : "Domaines"
                        }
         #=====
         if self.Dialog.ctrlReplication : 
@@ -2633,7 +2660,7 @@ class TREEVIEWASGARD(QTreeWidget):
         #===============================
         #============
         #Alimentation des schemas actifs, non actifs et existants en dehors d asgard 
-        mListSchemaActifs, mListSchemaNonActifs, mListSchemaExistants = [], [], []
+        mListSchemaActifs, mListSchemaNonActifs, mListSchemaExistants, mListObjetsType = [], [], [], []
         mListSchemaCorbeilleActifs, mListSchemaCorbeilleNonActifs = [], [] 
         for mSchema in mArraySchemas : #sur tous les schémas de la bdd
             mExistAsgard = False
@@ -2663,7 +2690,7 @@ class TREEVIEWASGARD(QTreeWidget):
         #print("Schémas NON actifs == %s" %(str(self.mListSchemaNonActifs)))
         #print("Schémas Existants == %s" %(str(self.mListSchemaExistants)))
         #============ 
-
+        #Retoune la liste des blocs objets non vides
         #============
         #Affiche Schémas Hors Asgard 
         self.insertTopLevelItems( 0, [ QTreeWidgetItem(None, [ QtWidgets.QApplication.translate("bibli_asgard", "Schemes outside Asgard", None) ] ) ] )
@@ -2678,6 +2705,7 @@ class TREEVIEWASGARD(QTreeWidget):
             nodeHorsAsgard = QTreeWidgetItem(None, [ mRootHorsAsgard[0] ] )
             nodeHorsAsgard.setIcon(0, mListHorsAsgardsIcons)
             root.addChild( nodeHorsAsgard )
+            #print(self.mArraySchemasTables)
             #Affiche Tables       
             for mRootTable in self.mArraySchemasTables :
                 if mRootHorsAsgard[0] == mRootTable[0] :
@@ -2722,6 +2750,8 @@ class TREEVIEWASGARD(QTreeWidget):
             #Affiche Schémas actifs        
             mListSchemaActifs, mListSchemaActifsIcons = mListSchemaActifs , iconSchemaactif
             iListSchemaActifs = 0
+            mDicArboObjet_TypeQTreeWidgetItem = {} #Dictionnaire type objet = QTreeWidgetItem en cours au fur et à mesure si il existe
+            
             while iListSchemaActifs in range(len(mListSchemaActifs)) :
                 mSchemaActif, mListSchemaActifsIcons = mListSchemaActifs[iListSchemaActifs], mListSchemaActifsIcons
                 if (mListBlocs[i][1] == mSchemaActif[1]) :
@@ -2729,16 +2759,54 @@ class TREEVIEWASGARD(QTreeWidget):
                    nodeSchemaActif.setIcon(0, mListSchemaActifsIcons)
                    nodeBlocs.addChild( nodeSchemaActif )
                    labelToolTip.append(mSchemaActif[0])
+
                    #Affiche Tables       
-                   for mRootTable in self.mArraySchemasTables :
-                       if mSchemaActif[0] == mRootTable[0] :
-                          nodeTable = QTreeWidgetItem(None, [mRootTable[1]] )
-                          #--
-                          #Replication iconographie
-                          existeDansMetadata, repliquerMetadata, objetIcon = self.returnReplique(mSchemaActif[0], mRootTable[1], mRootTable[2], self.Dialog.mListeMetadata, self.mListeObjetArepliquer)
-                          nodeTable.setIcon(0, dicIcoObjets[objetIcon ])
-                          #--
-                          nodeSchemaActif.addChild( nodeTable )
+                   # Si arborescence des objets
+                   if self.Dialog.arboObjet :                   
+                      for mRootTable in self.mArraySchemasTables :
+                          if mSchemaActif[0] == mRootTable[0] :
+                             #Replication iconographie
+                             existeDansMetadata, repliquerMetadata, objetIcon = self.returnReplique(mSchemaActif[0], mRootTable[1], mRootTable[2], self.Dialog.mListeMetadata, self.mListeObjetArepliquer)
+                             #-
+                             if objetIcon[-10:] == "dereplique" :
+                                objetNoeud = objetIcon[0:-10]
+                             elif objetIcon[-8:] == "replique" :
+                                objetNoeud = objetIcon[0:-8]
+                             else :
+                                objetNoeud = objetIcon
+
+                             if (str(mRootBlocs) + "_" + str(mSchemaActif[0]) + "_" + str(objetNoeud)) not in mDicArboObjet_TypeQTreeWidgetItem : #Création de l'arbre si il n'existe pas
+                                nodeArbo = QTreeWidgetItem(None, [ dicIcoObjetsTraduction[objetNoeud] ] )
+                                mDicArboObjet_TypeQTreeWidgetItem[ str(mRootBlocs) + "_" + str(mSchemaActif[0]) + "_" + str(objetNoeud) ] = nodeArbo
+                                #"""
+                                #si regroupement, prendre l'icone par defaut
+                                if existeDansMetadata : 
+                                   if repliquerMetadata :
+                                      objetIconNoeud = objetIcon[0:-8] if objetIcon[-8:] == "replique" else objetIcon
+                                      nodeArbo.setIcon(0, dicIcoObjets[objetIconNoeud ])
+                                   else :
+                                      nodeArbo.setIcon(0, dicIcoObjets[objetIcon ])
+                                else :
+                                   nodeArbo.setIcon(0, dicIcoObjets[objetIcon ])
+                                #"""
+                                nodeSchemaActif.addChild( nodeArbo )
+                             #--
+                             nodeTable = QTreeWidgetItem(None, [mRootTable[1]] )
+                             nodeTable.setIcon(0, dicIcoObjets[objetIcon ])
+                             #--
+                             mDicArboObjet_TypeQTreeWidgetItem[(str(mRootBlocs) + "_" + str(mSchemaActif[0]) + "_" + str(objetNoeud))].addChild( nodeTable )
+                   else :                   
+                      for mRootTable in self.mArraySchemasTables :
+                          if mSchemaActif[0] == mRootTable[0] :
+                             nodeTable = QTreeWidgetItem(None, [mRootTable[1]] )
+                             #--
+                             #Replication iconographie
+                             existeDansMetadata, repliquerMetadata, objetIcon = self.returnReplique(mSchemaActif[0], mRootTable[1], mRootTable[2], self.Dialog.mListeMetadata, self.mListeObjetArepliquer)
+                             nodeTable.setIcon(0, dicIcoObjets[objetIcon ])
+                             #--
+                             nodeSchemaActif.addChild( nodeTable )
+
+
                 iListSchemaActifs += 1
             nodeBlocs.setToolTip(0, "{}".format(",".join(labelToolTip)))    #pour chaque bloc
             #============
@@ -2995,7 +3063,9 @@ class TREEVIEWASGARD(QTreeWidget):
                     #-------
                     #-------
                     mReturnValueItemTemp = self.returnValueItem(item, 0)
-                    mSchemaClic, mObjetClic = mReturnValueItemTemp[1], mReturnValueItemTemp[0]
+                   # Si arborescence des objets
+                    mSchemaClic = mReturnValueItemTemp[2] if self.Dialog.arboObjet else mReturnValueItemTemp[1]
+                    mObjetClic  = mReturnValueItemTemp[0]
                     #----
                     for mNameObjet in self.mArraySchemasTables  :
                        # et Meme Nom
@@ -3167,7 +3237,8 @@ class TREEVIEWASGARD(QTreeWidget):
            mKeySql  = mKeySqlFirst + ";" + mKeySqlSecond
            r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.Dialog.mBaseAsGard.executeSqlNoReturn(self.Dialog, self.Dialog.mBaseAsGard.mConnectEnCours, self.Dialog.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
            if r != False :
-              QMessageBox.information(self, zTitre, zMess) 
+              bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+              #QMessageBox.information(self, zTitre, zMess) 
            else :
               #Géré en amont dans la fonction executeSqlNoReturnDragDrop
               pass 
@@ -3211,7 +3282,7 @@ class TREEVIEWASGARD(QTreeWidget):
         elif mAction == "treeActionCorbeillevide" : 
            mTitre = QtWidgets.QApplication.translate("bibli_asgard", "Confirmation", None)
            mLib = QtWidgets.QApplication.translate("bibli_asgard", "Are you sure you want to empty your recycle bin ?", None)
-           if QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
+           if not self.Dialog.displayMessage or QMessageBox.question(None, mTitre, mLib,QMessageBox.Yes|QMessageBox.No) ==  QMessageBox.Yes : 
              mKeySqlUn = dicListSql(self,"treeActionCorbeillevide_Un")
              mcreationNew, mcreationOld = False, "#creation#"
              mBlocNew, mBlocOld         = 'd', "#bloc#" 
@@ -3245,7 +3316,8 @@ class TREEVIEWASGARD(QTreeWidget):
                 if r2 != False :
                    zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "You have just emptied your trash !!", None)
                    zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
-                   QMessageBox.information(self, zTitre, zMess) 
+                   bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                   #QMessageBox.information(self, zTitre, zMess) 
                 else :
                    #Géré en amont dans la fonction executeSqlNoReturn
                    pass
@@ -3258,7 +3330,10 @@ class TREEVIEWASGARD(QTreeWidget):
         elif mAction == "treeActionDeplaceCouper" or mAction == "treeActionDeplaceColler" or mAction == "treeActionDeplaceAnnuler":
            #--- 
            if mAction == "treeActionDeplaceCouper" :
-             mSchemaDepart = self.returnValueItem(mNode, 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+             # Si arborescence des objets
+             #mSchemaDepart = self.returnValueItem(mNode, 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+             mSchemaDepart = self.returnValueItem(mNode, 0)[2] if self.Dialog.arboObjet else self.returnValueItem(mNode, 0)[1] # Hyper important si noms objets identiques dans schéma diff.
+
              for mNameObjet in self.mArraySchemasTables  :
                  # et Meme Nom
                  if mGetItem == mNameObjet[1] and mSchemaDepart == mNameObjet[0] :
@@ -3291,7 +3366,8 @@ class TREEVIEWASGARD(QTreeWidget):
               if r != False :
                  zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "Good, you have moved your objet", None)
                  zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
-                 QMessageBox.information(self, zTitre, zMess) 
+                 bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                 #QMessageBox.information(self, zTitre, zMess) 
               else :
                  #Géré en amont dans la fonction executeSqlNoReturnDragDrop
                  pass 
@@ -3392,7 +3468,10 @@ class TREEVIEWASGARD(QTreeWidget):
                 zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
            #----------------------
            elif mAction == "treeActionReinitDroitsObjets" : 
-                mSchemaDepart = self.returnValueItem(mNode, 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+                # Si arborescence des objets
+                #mSchemaDepart = self.returnValueItem(mNode, 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
+                mSchemaDepart = self.returnValueItem(mNode, 0)[2] if self.Dialog.arboObjet else  self.returnValueItem(mNode, 0)[1] # Hyper important si noms objets identiques dans schéma diff.
+
                 for mNameObjet in self.mArraySchemasTables  :
                     # et Meme Nom
                     if mGetItem == mNameObjet[1] and mSchemaDepart == mNameObjet[0] :
@@ -3411,7 +3490,9 @@ class TREEVIEWASGARD(QTreeWidget):
            #----------------------
            elif mAction == "treeActionRepliquer" or mAction == "treeActionDerepliquer" :
                 mReturnValueItemTemp = self.returnValueItem(mNode, 0)
-                mSchemaClic, mObjetClic = mReturnValueItemTemp[1], mReturnValueItemTemp[0]
+                # Si arborescence des objets
+                mSchemaClic = mReturnValueItemTemp[2] if self.Dialog.arboObjet else mReturnValueItemTemp[1]
+                mObjetClic  = mReturnValueItemTemp[0]
                 #----
                 for mNameObjet in self.mArraySchemasTables  :
                     # et Meme Nom
@@ -3464,7 +3545,8 @@ class TREEVIEWASGARD(QTreeWidget):
               #==============================
               r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.Dialog.mBaseAsGard.executeSqlNoReturn(self.Dialog, self.Dialog.mBaseAsGard.mConnectEnCours, self.Dialog.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
               if r != False :
-                 QMessageBox.information(self, zTitre, zMess) 
+                 bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+                 #QMessageBox.information(self, zTitre, zMess) 
               else :
                  pass 
               #==============================
@@ -3554,6 +3636,7 @@ class TREEVIEWASGARD(QTreeWidget):
     #-------------
     def processItem(self, item, column):
         #self.Dialog.groupBoxAffichagesetVisible(False)
+        if item == None : return None 
         mItemValue = self.returnValueItem(item, column)
         mText = ">>>  j'ai cliqué sur : "
         for mGetItem in mItemValue:
@@ -3562,6 +3645,7 @@ class TREEVIEWASGARD(QTreeWidget):
         return
     #-------------
     def returnValueItem(self, item, column):
+        if item == None : return None 
         mReturnValueItem, mItem = [], item
         while True :
            mReturnValueItem.append(mItem.data(column, Qt.DisplayRole))
@@ -4056,6 +4140,8 @@ def returnAndSaveDialogParam(self, mAction):
        valueDefautH = 640
        valueDefautDisplayObject = "all"
        valueDefautDashBoard = "true"
+       valueDefautDisplayMessage = "dialogBox"
+       valueDefautArboObjet = "true"
        valueDefautFileHelp  = "html"
        valueDefautFileHelpPdf   = "https://snum.scenari-community.org/Asgard/PDF/GuideAsgardManager"
        valueDefautFileHelpHtml  = "https://snum.scenari-community.org/Asgard/Documentation/#SEC_AsgardManager"
@@ -4064,6 +4150,8 @@ def returnAndSaveDialogParam(self, mAction):
        mDicAutre["dialogHauteur"]  = valueDefautH
        mDicAutre["displayObjects"] = valueDefautDisplayObject
        mDicAutre["dashBoard"]      = valueDefautDashBoard
+       mDicAutre["displayMessage"] = valueDefautDisplayMessage
+       mDicAutre["arboObjet"]      = valueDefautArboObjet
        mDicAutre["fileHelp"]       = valueDefautFileHelp
        mDicAutre["fileHelpPdf"]    = valueDefautFileHelpPdf
        mDicAutre["fileHelpHtml"]   = valueDefautFileHelpHtml
@@ -4222,7 +4310,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.8"
+def returnVersion() : return "version 1.2.9"
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :
@@ -4676,7 +4764,10 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
 
         else : 
           bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [0])
-
+    #Réinit les dimensions de l'IHM
+    bibli_asgard.returnAndSaveDialogParam(self, "Save")
+    mDic_LH = bibli_asgard.returnAndSaveDialogParam(self, "Load")
+    self.Dialog.lScreenDialog, self.Dialog.hScreenDialog = int(mDic_LH["dialogLargeur"]), int(mDic_LH["dialogHauteur"])
     #----
     return  
     
@@ -4769,6 +4860,18 @@ def transformeBorneXml(zText) :
     
 #==================================================
 #==================================================
+#==================================================
+#==================================================
+def displayMess(mDialog, type,zTitre,zMess, level=Qgis.Critical, duration = 10):
+    #type 1 = MessageBar
+    #type 2 = QMessageBox
+    if type == 1 :
+       mDialog.barInfo.clearWidgets()
+       mDialog.barInfo.pushMessage(zTitre, zMess, level=level, duration = duration)
+    else :
+       QMessageBox.information(None,zTitre,zMess)
+    return  
+#--
 def debugMess(type,zTitre,zMess, level=Qgis.Critical):
     #type 1 = MessageBar
     #type 2 = QMessageBox

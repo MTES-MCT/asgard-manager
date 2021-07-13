@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.2.8
+version=1.2.9
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -11,6 +11,14 @@ changelog:
     ==========================================================================
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
+    ==========================================================================
+    ** 1.2.9 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.18
+       *------------- 
+         ** Gestion du regroupement par type d objets dans l arborescence du treeview des schemas
+         ** Gestion des affichages des messages soit dans une QMessageBox, soit dans la barre de menu (non bloquant)
+         ** Correction redimenssionement de la boite de dialogue apres une action
+         ** Selection d'un item en dehors de la zone de selection (zone blanche) 
     ==========================================================================
     ** 1.2.8 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.18

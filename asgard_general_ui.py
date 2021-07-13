@@ -20,7 +20,7 @@ from qgis.core import *
 from qgis.gui import *
 from qgis.PyQt.QtCore import QUrl
 
-import qgis
+import qgis  
 import os
 import subprocess
 import time
@@ -28,6 +28,8 @@ import sys
 
 class Ui_Dialog_Asgard(object):
     def __init__(self):
+        QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+        QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
         self.iface = qgis.utils.iface
         self.firstOpen = True
         self.firstOpenConnect = True
@@ -40,11 +42,12 @@ class Ui_Dialog_Asgard(object):
         self.mDic_LH = mDic_LH
         self.lScreenDialog, self.hScreenDialog = int(mDic_LH["dialogLargeur"]), int(mDic_LH["dialogHauteur"])
         self.dashBoard       = mDic_LH["dashBoard"]     #Onglet dashBord
+        self.displayMessage  = False if mDic_LH["displayMessage"] == 'dialogTitle' else True #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
+        self.arboObjet       = False if mDic_LH["arboObjet"] != 'true' else True     #Arborescence des objets dans le treeview schéma
         self.fileHelp        = mDic_LH["fileHelp"]      #Type Fichier Help
         self.fileHelpPdf     = mDic_LH["fileHelpPdf"]   #Fichier Help  PDF
         self.fileHelpHtml    = mDic_LH["fileHelpHtml"]  #Fichier Help  HTML
         self.durationBarInfo = int(mDic_LH["durationBarInfo"])  #durée d'affichage des messages d'information
-
         #--------
         Dialog.resize(QtCore.QSize(QtCore.QRect(0,0,self.lScreenDialog, self.hScreenDialog).size()).expandedTo(Dialog.minimumSizeHint()))
         Dialog.setWindowTitle("ASGARD Automatic and Simplified GrAnting for Rights in Databases")
@@ -60,7 +63,7 @@ class Ui_Dialog_Asgard(object):
         #Affiche info si MAJ version
         self.barInfo = QgsMessageBar(self)
         self.barInfo.setSizePolicy( QSizePolicy.Minimum, QSizePolicy.Fixed )
-        self.barInfo.setGeometry(120, 0, Dialog.width()-10, 30)
+        self.barInfo.setGeometry(220, 0, Dialog.width()-230, 25)
         #=====================================================
         #Path Icon
         myPathIcon = os.path.dirname(__file__)+"\\icons\\"
@@ -85,6 +88,24 @@ class Ui_Dialog_Asgard(object):
         self.mMenuDialog = QMenu(self)
         self.mMenuBarDialog.addMenu(self.mMenuDialog)
         self.mMenuDialog.setTitle(QtWidgets.QApplication.translate("asgard_general_ui", "Settings"))
+        #---
+        self.mMenuParam = QMenu(self)
+        self.mMenuBarDialog.addMenu(self.mMenuParam)
+        self.mMenuParam.setTitle(QtWidgets.QApplication.translate("asgard_general_ui", "ParamSettings"))
+        #---
+        self.paramArbo = QAction("Object tree grouping ",Dialog)
+        self.paramArbo.setCheckable(True) 
+        self.paramArbo.setChecked(self.arboObjet)     #Arborescence des objets dans le treeview schéma
+        self.paramArbo.setText(QtWidgets.QApplication.translate("asgard_main", "Object tree grouping "))
+        self.mMenuParam.addAction(self.paramArbo)
+        #-
+        self.mMenuParam.addSeparator()
+        #-
+        self.paramDisplayMessage = QAction("Object tree grouping ",Dialog)
+        self.paramDisplayMessage.setCheckable(True) 
+        self.paramDisplayMessage.setChecked(self.displayMessage)      #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
+        self.paramDisplayMessage.setText(QtWidgets.QApplication.translate("asgard_main", "Dialog box for information messages"))
+        self.mMenuParam.addAction(self.paramDisplayMessage)
         #---
         self.aboutMenuDialog = QAction("?",Dialog)
         self.mMenuBarDialog.addAction(self.aboutMenuDialog)
@@ -149,6 +170,8 @@ class Ui_Dialog_Asgard(object):
         self.majAsgard.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONmajAsgard', ''))
         self.desinstallerAsgard.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONdesinstallerAsgard', ''))
         self.aboutMenuDialog.triggered.connect(self.clickAboutMenuDialog)
+        self.paramArbo.triggered.connect(self.clickParamArbo)
+        self.paramDisplayMessage.triggered.connect(self.clickParamDisplayMessage)
       
         self.mMenuDialog.addSeparator()
         #------------
@@ -501,6 +524,48 @@ class Ui_Dialog_Asgard(object):
     def clickAboutMenuDialog(self):
         d = doabout.Dialog()
         d.exec_()
+        return
+
+    def clickParamArbo(self):
+        mDicAutre = {}
+        mSettings = QgsSettings()
+        mSettings.beginGroup("ASGARD_MANAGER")
+        mSettings.beginGroup("Generale")
+    
+        mDicAutre["arboObjet"] = "false"
+        for key, value in mDicAutre.items():
+            if not mSettings.contains(key) :
+               mSettings.setValue(key, value)
+            else :
+               mDicAutre[key] = 'true' if self.paramArbo.isChecked() else 'false'
+        #--                 
+        for key, value in mDicAutre.items():
+            mSettings.setValue(key, value)
+        mSettings.endGroup()
+        mSettings.endGroup()
+        #--
+        self.arboObjet = self.paramArbo.isChecked()     #Arborescence des objets dans le treeview schéma
+        self.reloadBase()
+        return
+
+    def clickParamDisplayMessage(self):
+        mDicAutre = {}
+        mSettings = QgsSettings()
+        mSettings.beginGroup("ASGARD_MANAGER")
+        mSettings.beginGroup("Generale")
+        mDicAutre["displayMessage"] = "dialogBox"
+        for key, value in mDicAutre.items():
+            if not mSettings.contains(key) :
+               mSettings.setValue(key, value)
+            else :
+               mDicAutre[key] = 'dialogBox' if self.paramDisplayMessage.isChecked() else 'dialogTitle'
+        #--                 
+        for key, value in mDicAutre.items():
+            mSettings.setValue(key, value)
+        mSettings.endGroup()
+        mSettings.endGroup()
+        #--
+        self.displayMessage = self.paramDisplayMessage.isChecked()  #Qmessage box (dialogBox) ou barre de progression (dialogTitle)
         return
         
     def retranslateUi(self, Dialog):
@@ -880,7 +945,8 @@ class Ui_Dialog_Asgard(object):
         self.groupBoxAffichageRightDroitsSchemasZone.setVisible(False)
         self.groupBoxAffichageLeftDash.setVisible(False)
         self.groupBoxAffichageRightDash.setVisible(False)
-        QMessageBox.information(self, zTitre, zMess)
+        bibli_asgard.displayMess(self, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+        #QMessageBox.information(self, zTitre, zMess)
         return
 
     #------       
@@ -1040,7 +1106,8 @@ class Ui_Dialog_Asgard(object):
         #------       
         if not mContinue :
            zTitre = QtWidgets.QApplication.translate("asgard_general_ui", "ASGARD MANAGER : Warning", None)
-           QMessageBox.warning(self, zTitre, zMess)
+           bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+           #QMessageBox.warning(self, zTitre, zMess)
         else :
            #------       
            dicReplace = {mSchemaOldID: mSchemaNewID, mSchemaOld: mSchemaNew, mBlocOld: mBlocNew, mNomenclatureOld: mNomenclatureNew, 
@@ -1063,7 +1130,8 @@ class Ui_Dialog_Asgard(object):
 
            if r != False :
               zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("asgard_general_ui", "Information !!!", None)
-              QMessageBox.information(self, zTitre, zMess) 
+              bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+              #QMessageBox.information(self, zTitre, zMess) 
            else :
               #Géré en amont dans la fonction executeSqlNoReturn
               pass 

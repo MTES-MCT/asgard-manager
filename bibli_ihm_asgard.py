@@ -8,9 +8,12 @@ from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDi
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
+from qgis.core import *
+from qgis.gui import *
 
 from . import bibli_asgard
 from .bibli_asgard import *
+import qgis
 import os
 import sys
 from qgis.PyQt.QtCore import QUrl
@@ -880,7 +883,8 @@ def executeSqlRole(self, Dialog) :
         #------       
         if not mContinue :
            zTitre = QtWidgets.QApplication.translate("bibli_ihm_asgard", "ASGARD MANAGER : Warning", None)
-           QMessageBox.warning(self, zTitre, zMess)
+           bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Warning, self.Dialog.durationBarInfo)
+           #QMessageBox.warning(self, zTitre, zMess)
         else :
            #------ #Gestion des diff revoke et grant      
            if mode == "create" :
@@ -1040,7 +1044,8 @@ def executeSqlRole(self, Dialog) :
 
            if r != False :
               zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_ihm_asgard", "Information !!!", None)
-              QMessageBox.information(self, zTitre, zMess) 
+              bibli_asgard.displayMess(self.Dialog, (2 if self.Dialog.displayMessage else 1), zTitre, zMess, Qgis.Info, self.Dialog.durationBarInfo)
+              #QMessageBox.information(self, zTitre, zMess) 
            else :
               #Géré en amont dans la fonction executeSqlNoReturn
               pass 

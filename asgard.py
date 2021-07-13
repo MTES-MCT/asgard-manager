@@ -17,11 +17,16 @@ from . import bibli_asgard
 from .bibli_asgard import *
 from . import doabout
 
+QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True) #enable highdpi scaling
+QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True) #use highdpi icons
+
 class MainPlugin(object):
   def __init__(self, iface):
      self.name = "asgardmanager"
      self.iface = iface
-    
+     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+     os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+      
      # Generation de la traduction selon la langue choisie   
      overrideLocale = QSettings().value("locale/overrideFlag", False)
      localeFullName = QLocale.system().name() if not overrideLocale else QSettings().value("locale/userLocale", "")
