@@ -4,7 +4,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSvg
 from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QLineEdit,  QMainWindow, 
                             QTableView, QListView, QHeaderView, QTreeWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QStyledItemDelegate, QStyleOptionButton, QStyle,
-                            QVBoxLayout, QTabWidget, QWidget, QAbstractItemView)
+                            QVBoxLayout, QTabWidget, QWidget, QAbstractItemView, QScrollArea)
 from PyQt5.QtWebKitWidgets import QWebView, QWebPage
 from . import bibli_graph_asgard
 from .bibli_graph_asgard import * 
@@ -1357,7 +1357,8 @@ def returnOutInAppartNonappart(self, ArraymRolesDeGroupe, mIdFind) :
           mListTemp.append(ArraymRolesDeGroupe[iBoucle][12])
           mListTemp.append(ArraymRolesDeGroupe[iBoucle][0])
           mListTemp.append(ArraymRolesDeGroupe[iBoucle][5])
-          mListTemp.append(True if (ArraymRolesDeGroupe[iBoucle][0] == "g_consult" and self.Dialog.mTreePostgresqlDroits.mRolcanLogin) else False)       #Non Membres
+          #mListTemp.append(True if (ArraymRolesDeGroupe[iBoucle][0] == "g_consult" and self.Dialog.mTreePostgresqlDroits.mRolcanLogin) else False)       #Non Membres
+          mListTemp.append(False)       #Non Parents #Modif 2021/08 pour ne pas avoir g_consult dans la liste des membres à la création
           mListRoleGroupMembreComplet.append(tuple(mListTemp))
        iBoucle += 1                
     #-------
@@ -1902,9 +1903,23 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
            self.mRolinherit     = True
            self.mRolreplication = False
            self.mRolbypassrls   = False
-           self.mRollogin       = False
+           self.mRollogin       = True if self.mRolcanLogin else False
            self.mRolgestionschema = False
+           self.Dialog.case_membreappartient.setChecked(True)
+           
+           #Gestion du libellé du bouton appartenance/Membres quand Create
+           mtextMembre  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Members", None)
+           mtextAppartient = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Membership", None)
+           if self.mRolcanLogin :   
+              self.Dialog.button_membreappartient.setText(mtextMembre     if self.Dialog.case_membreappartient.isChecked() else mtextAppartient)
+           else :
+              self.Dialog.button_membreappartient.setText(mtextAppartient if self.Dialog.case_membreappartient.isChecked() else mtextMembre)
+           #Gestion du libellé du bouton appartenance/Membres
+
            self.initIhmDroits(self.Dialog, self.mode, mServeurNameOut, mServeurNameIn, self.mRolnameID, self.mRolname, mRolcanLogin, self.mDescription, self.mMdp, self.mRolcreaterole, self.mRolcreatedb, self.mRolsuper, self.mRolinherit, self.mRolreplication, self.mRolbypassrls, self.mRollogin, self.mRolgestionschema)
+           #Essentiel passage si clic sur rôle (g ou c) et bascule membres/appartenance et apr_s NEW ROLE 
+           bibli_ihm_asgard.showHideCtrlBascule_Normal_A_Bis(self.Dialog, True, mRolCanLogin = self.mRolcanLogin)
+           #
 
         else :
            mCont = False
@@ -2110,7 +2125,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         #-
         mServeurNameOutBIS = mHeader_A if mRolcanLogin else mHeader_C
         mServeurNameInBIS  = mHeader_B if mRolcanLogin else mHeader_D
-
+        
         # Tree Out
         Dialog.mTreePostgresqlMembresOut.clear()
         Dialog.mTreePostgresqlMembresOut.afficheDroitsOut(self.Dialog, self.myPathIcon, mServeurNameOut, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
@@ -2239,22 +2254,22 @@ class TREEVIEWASGARD(QTreeWidget):
         QTreeWidget.__init__(self, *args)
         self.setColumnCount(1)
         self.setHeaderLabels(["server"])
-
+        
         self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDragEnabled(True)
-        self.setDropIndicatorShown(True)
         self.viewport().setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setAcceptDrops(True)
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
-        #---
-        #self.setVerticalScrollMode(QAbstractItemView.ScrollPerItem)
+
     def mimeTypes(self):
         mimetypes = QTreeWidget.mimeTypes(self)
         mimetypes.append(TREEVIEWASGARD.customMimeType)
         return mimetypes
+
 
     def startDrag(self, supportedActions):
         drag = QDrag(self)
@@ -2262,21 +2277,14 @@ class TREEVIEWASGARD(QTreeWidget):
         mimedata.setData(TREEVIEWASGARD.customMimeType, QByteArray())
         drag.setMimeData(mimedata)
         drag.exec_(supportedActions)
-    """
-    def dragLeaveEvent(self, event):    #//Hors de la vue
-        #ui->treeWidget->scrollToItem(item);
-        #const QRect r = ui->treeWidget->visualItemRect(item);
-        self.verticalScrollBar().setValue(100)
-        #self.scrollToItem(QAbstractItemView.PositionAtCenter)
-        print(event)
-        event.accept()
-    """
+
     def dragEnterEvent(self, event):    #//DEPART
         self.mDepart = [None,None]
         selectedItems = self.selectedItems()
         if len(selectedItems) < 1:
             return
         mItemWidget = selectedItems[0].text(0)
+
         if event.mimeData().hasFormat('text/plain'):
            #-----------
            if schemaExiste(mItemWidget, self.mListSchemaActifs) :
@@ -2311,7 +2319,7 @@ class TREEVIEWASGARD(QTreeWidget):
            
     def dragMoveEvent(self, event):    #//EN COURS
         index = self.indexAt(event.pos())
-        #self.expand(index)
+
         try :
           r = self.itemFromIndex(index).text(0)
           #print("%s %s VUE ou TABLE '%s'" %("EN COURS dragMoveEvent r", str(r), str(self.returnTypeObjeEtAsgard(r)[0])  ))
@@ -2387,6 +2395,7 @@ class TREEVIEWASGARD(QTreeWidget):
                 event.ignore()
           #----------- 
         except :
+          print("EXCEPT")
           event.ignore()
 
     def dropEvent(self, event):  #//ARRIVEE
@@ -4310,7 +4319,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.9"
+def returnVersion() : return "version 1.2.10"
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :

@@ -718,7 +718,8 @@ def createIHMAffichageDroits(self) :
     #-- 
     self.button_membreappartient = QtWidgets.QPushButton(self.groupBoxAffichageRoleAppart)
     y, l, h = 8, 160, 15 
-    x = (self.groupBoxAffichageRoleAppart.width() / 2) - (l/2)    
+    x = (self.groupBoxAffichageRoleAppart.width() / 2) - (l/2) # alignement centré    
+    #x = (self.groupBoxAffichageRoleAppart.width() - (l + 30)) # alignement à droite    
     self.button_membreappartient.setGeometry(QtCore.QRect(x, y, l, h))
     self.button_membreappartient.setObjectName("button_membreappartient")
     #self.button_membreappartient.setChecked(False) 
@@ -1069,11 +1070,16 @@ def showHideCtrlBascule_Normal_A_BisButton(self, mFlags, mRolCanLogin) :
 def showHideCtrlBascule_Normal_A_Bis(self, mFlags, mRolCanLogin) :
     mtextMembre  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Members", None)
     mtextAppartient = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Membership", None)
+    #
+    mtextMembreCourt  = QtWidgets.QApplication.translate("bibli_ihm_asgard", "MembersCourt", None)
+    mtextAppartientCourt = QtWidgets.QApplication.translate("bibli_ihm_asgard", "MembershipCourt", None)
 
     if mRolCanLogin :   
        self.button_membreappartient.setText(mtextMembre     if mFlags else mtextAppartient)
+       self.groupBoxAffichageRoleAppart.setTitle(mtextAppartientCourt if mFlags else mtextMembreCourt)
     else :
        self.button_membreappartient.setText(mtextAppartient if mFlags else mtextMembre)
+       self.groupBoxAffichageRoleAppart.setTitle(mtextMembreCourt     if mFlags else mtextAppartientCourt)
        
     self.button_membreappartient.setToolTip("{}".format(mtextMembre + " / " + mtextAppartient))           
     self.groupBoxAffichageRoleAppartOut.setVisible(mFlags)
