@@ -2264,6 +2264,7 @@ class TREEVIEWASGARD(QTreeWidget):
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
+        #mModel = QTreeWidget.Model()
 
     def mimeTypes(self):
         mimetypes = QTreeWidget.mimeTypes(self)
@@ -2318,8 +2319,7 @@ class TREEVIEWASGARD(QTreeWidget):
            #-----------
            
     def dragMoveEvent(self, event):    #//EN COURS
-        index = self.indexAt(event.pos())
-
+        index = self.indexAt(event.pos())  
         try :
           r = self.itemFromIndex(index).text(0)
           #print("%s %s VUE ou TABLE '%s'" %("EN COURS dragMoveEvent r", str(r), str(self.returnTypeObjeEtAsgard(r)[0])  ))
@@ -3704,6 +3704,23 @@ class BASEPOSTGRES :
     #----------------------
     def __init__(self, nameBase):
         self.nameBase = nameBase
+
+        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+
+        if nameBase not in metadata.connections(False) :
+           QMessageBox.critical(self, "Error", "new : There is no defined database connection for " + nameBase)
+           mListConnectBase = []
+        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+
+        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+        uri = QgsDataSourceUri(metadata.findConnection(nameBase).uri())
+        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+
+        """
+        # mListConnectBase  === ['', 'localhost', '5432', 'geobase_snum', 'etienne.lousteau', ''],
+        # mConfigConnection === "host=localhost port=5432 dbname=geobase_snum user=etienne.lousteau password='' sslmode=2", 
+        # uri               === <QgsDataSourceUri: dbname='geobase_snum' host=localhost port=5432 user='etienne.lousteau' sslmode=allow>]
         mSettings = QgsSettings()
         self.mConnectionSettingsKey = "/PostgreSQL/connections/{}".format(self.nameBase)
         mSettings.beginGroup(self.mConnectionSettingsKey)
@@ -3727,6 +3744,23 @@ class BASEPOSTGRES :
            uri.setConnection(self.host, self.port, self.database, self.username, self.password, self.sslmode)
 
         uri.setUseEstimatedMetadata(useEstimatedMetadata)
+        
+        """
+        self.service = uri.service() or os.environ.get('PGSERVICE')
+        self.host = uri.host() or os.environ.get('PGHOST')
+        self.port = uri.port() or os.environ.get('PGPORT')
+        self.database = uri.database() or os.environ.get('PGDATABASE')
+        self.username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+        self.password = uri.password() or os.environ.get('PGPASSWORD')
+        self.sslmode = uri.sslMode() or os.environ.get('PGSSLMODE')
+
+        mListConnectBase = [self.service, self.host, self.port, self.database, self.username, self.password ]
+        if self.service:
+           mConfigConnection = "service{0} dbname={1} user={2} password='{3}' sslmode={4}".format(self.service, self.database, self.username, self.password, self.sslmode)
+        else:
+           mConfigConnection = "host={0} port={1} dbname={2} user={3} password='{4}' sslmode={5}".format(self.host, self.port, self.database, self.username, self.password, self.sslmode)
+
+
         self.nameBasemListConnectBase, self.mConfigConnection, self.uri = mListConnectBase, mConfigConnection, uri
 
     #----------------------
@@ -4319,7 +4353,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.10"
+def returnVersion() : return "version 1.2.11"
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :
