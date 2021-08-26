@@ -865,7 +865,19 @@ class Ui_Dialog_Asgard(object):
                                      self.mListeMetadata = []
                                   #gestion des réplications
                                   #=======================
-
+                                  #=======================
+                                  #gestion Layer_Styles
+                                  #--
+                                  mKeySql = dicListSql(self,'Fonction_Layer_Styles')
+                                  r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
+                                  if r != None :
+                                     # - si layer_styles existe (valeur de ls_exists) ;
+                                     # - si le rôle courant est membre de son propriétaire (valeur de ls_isowner). 
+                                     self.mLayerStyles = r
+                                  else :
+                                     self.mLayerStyles = []
+                                  #gestion Layer_Styles
+                                  #=======================
                                   #------
                                   self.comboProd.clear()
                                   self.comboEdit.clear()

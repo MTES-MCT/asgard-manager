@@ -1161,7 +1161,7 @@ def createIHMAffichage(self) :
                                 border-color: blue;      \
                                 }") 
     #Generation de l'aide
-    genereAideDynamique(self,"CREATE", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
+    genereAideDynamique(self,"CREATE", [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,200,20,21,22,23,24,25,26])
     self.groupBoxAffichageHelp.setVisible(False)
     
     #==================================================
@@ -1678,17 +1678,62 @@ def genereAideDynamique(self, mAction, mListaffichage) :
            mLibTitre19 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Dereplica", None) + "</b>"
            mLib19 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Dereplicates the dataset for synchronization with the central database.", None)
            genereObjetImageHelp(self, self.img19, "img19", 10, 455, 40, 40, "derepliquer.png", self.lib19, "lib19", mLibTitre19, mLib19, 50)
+        # Layer_styles   
+        elif i == 200 :
+           self.img200, self.lib200 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre200 = "<b><font size='5'>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Definition of permissions on the layer_styles table of QGIS", None) + "</b><\font><br><br><br><br>"
+           mLib200 = "="
+           genereObjetImageHelp(self, self.img200, "img200", 10, 455, 40, 40, "layerstyles_var0.png", self.lib200, "lib200", mLibTitre200, mLib200, 50)
+        elif i == 20 :
+           self.img20, self.lib20 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre20 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 0 « g_admin »", None) + "</b>"
+           mLib20 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "authorizes g_admin to modify, create and delete styles.", None)
+           genereObjetImageHelp(self, self.img20, "img20", 10, 455, 40, 40, "layerstyles_var0.png", self.lib20, "lib20", mLibTitre20, mLib20, 50)
+        elif i == 21 :
+           self.img21, self.lib21 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre21 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 1 « producteur »", None) + "</b>"
+           mLib21 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "same as variant 0 + authorizes the members of the group producing a schema to create, modify and delete the styles associated with the tables and views it contains.", None)
+           genereObjetImageHelp(self, self.img21, "img21", 10, 455, 40, 40, "layerstyles_var1.png", self.lib21, "lib21", mLibTitre21, mLib21, 50)
+        elif i == 22 :
+           self.img22, self.lib22 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre22 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 2 « éditeur »", None) + "</b>"
+           mLib22 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "same as variant 1 + authorizes the members of the editor group to create styles for the tables and views of the diagram, to modify and delete them, without being able to act on the styles of other users or on the default styles.", None)
+           genereObjetImageHelp(self, self.img22, "img22", 10, 455, 40, 40, "layerstyles_var2.png", self.lib22, "lib22", mLibTitre22, mLib22, 50)
+        elif i == 23 :
+           self.img23, self.lib23 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre23 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 3 « éditeur+ »", None) + "</b>"
+           mLib23 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "same as variant 2, without restriction for the action of the editors on the default styles.", None)
+           genereObjetImageHelp(self, self.img23, "img23", 10, 455, 40, 40, "layerstyles_var3.png", self.lib23, "lib23", mLibTitre23, mLib23, 50)
+        elif i == 24 :
+           self.img24, self.lib24 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre24 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 4 « éditeur++ »", None) + "</b>"
+           mLib24 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "same as variant 3, also allowing editors to act on styles created by other users.", None)
+           genereObjetImageHelp(self, self.img24, "img24", 10, 455, 40, 40, "layerstyles_var4.png", self.lib24, "lib24", mLibTitre24, mLib24, 50)
+        elif i == 25 :
+           self.img25, self.lib25 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre25 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Variante 5 « lecteur »", None) + "</b>"
+           mLib25 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "same as variant 2 + same privileges for the readers of the diagrams as for the editors.", None)
+           genereObjetImageHelp(self, self.img25, "img25", 10, 455, 40, 40, "layerstyles_var5.png", self.lib25, "lib25", mLibTitre25, mLib25, 50)
+        elif i == 26 :
+           self.img26, self.lib26 = QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp), QtWidgets.QLabel(self.Dialog.groupBoxAffichageHelp)      #
+           mLibTitre26 = "<b>" + QtWidgets.QApplication.translate("bibli_ihm_asgard", "Réinitialisation", None) + "</b>"
+           mLib26 = QtWidgets.QApplication.translate("bibli_ihm_asgard", "removal of all permissions granted on layer_styles by the above variants.", None)
+           genereObjetImageHelp(self, self.img26, "img26", 10, 455, 40, 40, "layerstyles_varRemove.png", self.lib26, "lib26", mLibTitre26, mLib26, 50)
            
     #--
     self.mLibTitre1, self.mLibTitre2, self.mLibTitre3, self.mLibTitre4, self.mLibTitre5, self.mLibTitre6, self.mLibTitre7, self.mLibTitre8, self.mLibTitre9, self.mLibTitre10, \
-    self.mLibTitre11, self.mLibTitre12, self.mLibTitre13, self.mLibTitre14, self.mLibTitre15, self.mLibTitre16, self.mLibTitre17, self.mLibTitre18, self.mLibTitre19 = \
+    self.mLibTitre11, self.mLibTitre12, self.mLibTitre13, self.mLibTitre14, self.mLibTitre15, self.mLibTitre16, self.mLibTitre17, self.mLibTitre18, self.mLibTitre19, \
+    self.mLibTitre200, self.mLibTitre20, self.mLibTitre21, self.mLibTitre22, self.mLibTitre23, self.mLibTitre24, self.mLibTitre25, self.mLibTitre26 = \
     mLibTitre1, mLibTitre2, mLibTitre3, mLibTitre4, mLibTitre5, mLibTitre6, mLibTitre7, mLibTitre8, mLibTitre9, mLibTitre10, \
-    mLibTitre11, mLibTitre12, mLibTitre13, mLibTitre14, mLibTitre15, mLibTitre16, mLibTitre17, mLibTitre18, mLibTitre19
+    mLibTitre11, mLibTitre12, mLibTitre13, mLibTitre14, mLibTitre15, mLibTitre16, mLibTitre17, mLibTitre18, mLibTitre19, \
+    mLibTitre200, mLibTitre20, mLibTitre21, mLibTitre22, mLibTitre23, mLibTitre24, mLibTitre25, mLibTitre26
     #--
     self.mLib1, self.mLib2, self.mLib3, self.mLib4, self.mLib5, self.mLib6, self.mLib7, self.mLib8, self.mLib9, self.mLib10, \
-    self.mLib11, self.mLib12, self.mLib13, self.mLib14, self.mLib15, self.mLib16, self.mLib17, self.mLib18, self.mLib19 = \
+    self.mLib11, self.mLib12, self.mLib13, self.mLib14, self.mLib15, self.mLib16, self.mLib17, self.mLib18, self.mLib19, \
+    self.mLib200, self.mLib20, self.mLib21, self.mLib22, self.mLib23, self.mLib24, self.mLib25, self.mLib26 = \
     mLib1, mLib2, mLib3, mLib4, mLib5, mLib6, mLib7, mLib8, mLib9, mLib10, \
-    mLib11, mLib12, mLib13, mLib14, mLib15, mLib16, mLib17, mLib18, mLib19
+    mLib11, mLib12, mLib13, mLib14, mLib15, mLib16, mLib17, mLib18, mLib19, \
+    mLib200, mLib20, mLib21, mLib22, mLib23, mLib24, mLib25, mLib26
     #--
   elif mAction == "UPDATE" :
     self.Dialog.img1.hide()
@@ -1729,6 +1774,23 @@ def genereAideDynamique(self, mAction, mListaffichage) :
     self.Dialog.lib18.hide()
     self.Dialog.img19.hide()
     self.Dialog.lib19.hide()
+    self.Dialog.img200.hide()
+    self.Dialog.lib200.hide()
+    self.Dialog.img20.hide()
+    self.Dialog.lib20.hide()
+    self.Dialog.img21.hide()
+    self.Dialog.lib21.hide()
+    self.Dialog.img22.hide()
+    self.Dialog.lib22.hide()
+    self.Dialog.img23.hide()
+    self.Dialog.lib23.hide()
+    self.Dialog.img24.hide()
+    self.Dialog.lib24.hide()
+    self.Dialog.img25.hide()
+    self.Dialog.lib25.hide()
+    self.Dialog.img26.hide()
+    self.Dialog.lib26.hide()
+
     mX, mY, first = 10, 15, True
     for i in mListaffichage :
         if i == 1 :
@@ -1883,6 +1945,69 @@ def genereAideDynamique(self, mAction, mListaffichage) :
            self.Dialog.img19.move(mX, mY)
            self.Dialog.lib19.move(mX + 45, mY - 5)
            mY = mY + (self.Dialog.lib19.height() + 10)
+        elif i == 200 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.lib200.show()
+           self.Dialog.lib200.move(mX + 45, mY - 5)
+           mY = mY + 50
+        elif i == 20 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img20.show()
+           self.Dialog.lib20.show()
+           self.Dialog.img20.move(mX, mY)
+           self.Dialog.lib20.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib20.height() + 10)
+        elif i == 21 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img21.show()
+           self.Dialog.lib21.show()
+           self.Dialog.img21.move(mX, mY)
+           self.Dialog.lib21.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib21.height() + 10)
+        elif i == 22 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img22.show()
+           self.Dialog.lib22.show()
+           self.Dialog.img22.move(mX, mY)
+           self.Dialog.lib22.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib22.height() + 10)
+        elif i == 23 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img23.show()
+           self.Dialog.lib23.show()
+           self.Dialog.img23.move(mX, mY)
+           self.Dialog.lib23.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib23.height() + 10)
+        elif i == 24 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img24.show()
+           self.Dialog.lib24.show()
+           self.Dialog.img24.move(mX, mY)
+           self.Dialog.lib24.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib24.height() + 10)
+        elif i == 25 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img25.show()
+           self.Dialog.lib25.show()
+           self.Dialog.img25.move(mX, mY)
+           self.Dialog.lib25.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib25.height() + 10)
+        elif i == 26 :
+           if first :
+              mX, mY, first = 10, 15, False
+           self.Dialog.img26.show()
+           self.Dialog.lib26.show()
+           self.Dialog.img26.move(mX, mY)
+           self.Dialog.lib26.move(mX + 45, mY - 5)
+           mY = mY + (self.Dialog.lib26.height() + 10)
+
     return 
 
 #==================================================

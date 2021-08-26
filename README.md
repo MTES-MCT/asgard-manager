@@ -3,7 +3,7 @@
 
 ---           
 ## version
-- [1.2.11]
+- [1.2.12]
 
 ---           
 
@@ -13,8 +13,8 @@
 ---           
 
 ## Environnement
- - Version de QGIS 3.18.1-Zürich (fonctionne en 3.x)
- - Qt 5.11.2 
+ - Version de QGIS 3.20.2 -Odense (fonctionne en 3.x)
+ - Qt 5.15.2 
  - OS Version Windows 10 (10.0)
 
 ---

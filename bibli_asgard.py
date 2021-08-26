@@ -91,6 +91,21 @@ def dicListSql(self, mKeySql):
                   SET nombase=#nom_base#, schema=#nom_schema#, nomobjet=#nom_objet#, typeobjet=#type_objet#, etat=#etat#
                   WHERE nombase=#nom_base# and schema=#nom_schema# and nomobjet=#nom_objet#; 
                                           """) 
+    #------------------
+    # LAYER_STYLES
+    #-----------------
+    #Fonction d'application des droits pour la table layer_styles
+    mdicListSql['Fonction_Layer_Styles_Droits'] = ("""
+    SELECT z_asgard_admin.asgard_layer_styles(variante := #variante#) ;
+                                          """) 
+    #Fonction Si existe layer_styles + si propriétaire
+    mdicListSql['Fonction_Layer_Styles'] = ("""
+    SELECT
+    count(*) = 1 AS ls_exists,
+    coalesce(bool_and(pg_has_role(relowner, 'USAGE')), False) AS ls_isowner
+    FROM pg_catalog.pg_class
+    WHERE relnamespace = 'public'::regnamespace AND relname = 'layer_styles' ;
+                                          """) 
     #-----------------
     #Fonctions de Contrôles à supprimer
     mdicListSql['Membre_G_admin'] = ("""SELECT pg_has_role('g_admin', 'USAGE')""")
@@ -294,7 +309,7 @@ def dicListSql(self, mKeySql):
     #---
     #Fonction de la liste des schémas, objets et type
     #nom_schema, objname, objtype
-    mdicListSql['ListeSchemaObjets'] = (r)
+    mdicListSql['ListeSchemaObjets'] = (r) 
     #==============================================
 
     #Fonction de création d'une occurrence schéma                                                                
@@ -2320,6 +2335,7 @@ class TREEVIEWASGARD(QTreeWidget):
            
     def dragMoveEvent(self, event):    #//EN COURS
         index = self.indexAt(event.pos())  
+
         try :
           r = self.itemFromIndex(index).text(0)
           #print("%s %s VUE ou TABLE '%s'" %("EN COURS dragMoveEvent r", str(r), str(self.returnTypeObjeEtAsgard(r)[0])  ))
@@ -2395,7 +2411,6 @@ class TREEVIEWASGARD(QTreeWidget):
                 event.ignore()
           #----------- 
         except :
-          print("EXCEPT")
           event.ignore()
 
     def dropEvent(self, event):  #//ARRIVEE
@@ -2515,6 +2530,17 @@ class TREEVIEWASGARD(QTreeWidget):
                       "function"          : "Fonctions",
                       "type"              : "Types",
                       "domain"            : "Domaines"
+                       }
+        #For layer_styles
+        self.mNameLayerStyles = "layer_styles"  # Nommage de la table layer_styles
+        self.dicIcoMenuLayerStyles = {
+                      "var0"             : ("Variante 0 « g_admin »",    returnIcon(myPathIcon + "\\actions\\layerstyles_var0.png"), 0),
+                      "var1"             : ("Variante 1 « producteur »", returnIcon(myPathIcon + "\\actions\\layerstyles_var1.png"), 1),
+                      "var2"             : ("Variante 2 « éditeur »",    returnIcon(myPathIcon + "\\actions\\layerstyles_var2.png"), 2),
+                      "var3"             : ("Variante 3 « éditeur+ »",   returnIcon(myPathIcon + "\\actions\\layerstyles_var3.png"), 3),
+                      "var4"             : ("Variante 4 « éditeur++ »",  returnIcon(myPathIcon + "\\actions\\layerstyles_var4.png"), 4),
+                      "var5"             : ("Variante 5 « lecteur »",    returnIcon(myPathIcon + "\\actions\\layerstyles_var5.png"), 5),
+                      "varRemove"        : ("Réinitialisation",          returnIcon(myPathIcon + "\\actions\\layerstyles_varRemove.png"), 6)
                        }
         #=====
         if self.Dialog.ctrlReplication : 
@@ -2707,20 +2733,18 @@ class TREEVIEWASGARD(QTreeWidget):
         root.setIcon(0, iconGestion)
         mListHorsAsgard, mListHorsAsgardsIcons = mListSchemaExistants , iconSchema
         root.setToolTip(0, "{}".format(",".join(mListHorsAsgard[0])))
-
         iListHorsAsgard = 0
         while iListHorsAsgard in range(len(mListHorsAsgard)) :
             mRootHorsAsgard, mRootHorsAsgardIcons = mListHorsAsgard[iListHorsAsgard], mListHorsAsgardsIcons 
             nodeHorsAsgard = QTreeWidgetItem(None, [ mRootHorsAsgard[0] ] )
             nodeHorsAsgard.setIcon(0, mListHorsAsgardsIcons)
             root.addChild( nodeHorsAsgard )
-            #print(self.mArraySchemasTables)
-            #Affiche Tables       
-            for mRootTable in self.mArraySchemasTables :
-                if mRootHorsAsgard[0] == mRootTable[0] :
-                   nodeTable = QTreeWidgetItem(None, [mRootTable[1]] )
-                   if mRootTable[2] in dicIcoObjets : nodeTable.setIcon(0, dicIcoObjets[mRootTable[2]])
-                   nodeHorsAsgard.addChild( nodeTable )                                                 
+            #Affiche Tables dans Public si layer_styles existe
+            if self.Dialog.mLayerStyles[0][0]  and mListHorsAsgard[iListHorsAsgard][0].lower() == "public" :
+               mRootTable, mRootTableIcon = self.mNameLayerStyles, dicIcoObjets["tabledereplique"]
+               nodeTable = QTreeWidgetItem(None, [mRootTable] )
+               nodeTable.setIcon(0, mRootTableIcon)
+               nodeHorsAsgard.addChild( nodeTable )                                                 
             iListHorsAsgard += 1                 
 
         #============
@@ -2997,7 +3021,7 @@ class TREEVIEWASGARD(QTreeWidget):
               self.treeMenu.exec_(self.mapToGlobal(point))           
            
         #Existant (Hors asgard)
-        elif mNameEnCours in [ libZoneActive[0] for libZoneActive in self.mListSchemaExistants] : 
+        elif mNameEnCours in [ libZoneActive[0] for libZoneActive in self.mListSchemaExistants] :
            if mNameEnCours == "public" :
               bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [0])
            else : 
@@ -3112,7 +3136,66 @@ class TREEVIEWASGARD(QTreeWidget):
                     self.fonctionAfficheDeplaceAll("")
                     self.treeMenu.exec_(self.mapToGlobal(point))
                     break 
-
+        # ** For layer_styles **
+        elif mNameEnCours == self.mNameLayerStyles :
+             zMessToolTip = QtWidgets.QApplication.translate("bibli_asgard", "You must be both a member of g_admin and the owner of the layer_styles table to manage permissions on it.", None)
+             bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [200, 20, 21, 22, 23, 24, 25, 26])
+             self.treeMenu = QMenu(self)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var0"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var0"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var0"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var1"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var1"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var1"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var2"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var2"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var2"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var3"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var3"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var3"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var4"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var4"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var4"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["var5"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["var5"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "var5"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             self.treeMenu.addSeparator()
+             #-------
+             menuIcon = self.dicIcoMenuLayerStyles["varRemove"][1]           
+             self.treeActionLayerStyles = QAction(QIcon(menuIcon), self.dicIcoMenuLayerStyles["varRemove"][0], self.treeMenu)
+             self.treeMenu.addAction(self.treeActionLayerStyles)
+             self.treeActionLayerStyles.triggered.connect(lambda : self.actionFonctionTree(item, "treeActionLayerStyles", "varRemove"))
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setEnabled(False)
+             if not self.Dialog.mLayerStyles[0][1] : self.treeActionLayerStyles.setToolTip(zMessToolTip)
+             #-------
+             if not self.Dialog.mLayerStyles[0][1] : self.treeMenu.setToolTipsVisible(True)
+             self.treeMenu.exec_(self.mapToGlobal(point))
+             #-------
         else : 
           bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [0])
           pass
@@ -3258,7 +3341,7 @@ class TREEVIEWASGARD(QTreeWidget):
          
     #**********************
     #**********************
-    def actionFonctionTree(self,mNode, mAction):
+    def actionFonctionTree(self,mNode, mAction, mOption = ""):
         self.Dialog.groupBoxAffichageSchema.setVisible(False)
         self.Dialog.groupBoxAffichageHelp.setVisible(True)
         mGetItem = mNode.text(0)
@@ -3534,6 +3617,17 @@ class TREEVIEWASGARD(QTreeWidget):
                 elif mAction == "treeActionDerepliquer" :
                    zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "you have just dereplicated the dataset for synchronization with the central database", None) + " " + mGetItem.upper()
                 zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
+           #----------------------
+           elif mAction == "treeActionLayerStyles" :
+                mKeySql = dicListSql(self,"Fonction_Layer_Styles_Droits")
+                mVarianteNewID, mVarianteOldID = self.dicIcoMenuLayerStyles[mOption][2], "#variante#"
+                dicReplace = {mVarianteOldID: mVarianteNewID}
+                #------  
+                if self.dicIcoMenuLayerStyles[mOption][2] != 6 :     
+                   zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "You have just applied new rights to the layer_styles table   !!", None) + " variante : " + str(self.dicIcoMenuLayerStyles[mOption][0] )
+                else :
+                   zMessGood = QtWidgets.QApplication.translate("bibli_asgard", "You have just reinitailized the rights on the layer_styles table   !!", None)
+                zMess, zTitre = zMessGood, QtWidgets.QApplication.translate("bibli_asgard", "Information !!!", None)
 
            #**********************
            for key, value in dicReplace.items():
@@ -3541,11 +3635,13 @@ class TREEVIEWASGARD(QTreeWidget):
                   mValue = str(value)
                elif (value is None) :
                   mValue = "''"
+               elif isinstance(value, int) :
+                  mValue = str(value)
                else :
                   value = value.replace("'", "''")
                   mValue = "'" + str(value) + "'"
                mKeySql = mKeySql.replace(key, mValue)
-           #print(mKeySql)
+           print(mKeySql)
            #**********************
            if mAction == "treeActionDiagnostic" : #map vers la boite de confirmation avec substitution de la variable schéma
               # Attention chgt des paramètres envoyé 
@@ -3704,55 +3800,55 @@ class BASEPOSTGRES :
     #----------------------
     def __init__(self, nameBase):
         self.nameBase = nameBase
-
-        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
-        metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
-
-        if nameBase not in metadata.connections(False) :
-           QMessageBox.critical(self, "Error", "new : There is no defined database connection for " + nameBase)
-           mListConnectBase = []
-        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
-
-        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
-        uri = QgsDataSourceUri(metadata.findConnection(nameBase).uri())
-        #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
-
-        """
-        # mListConnectBase  === ['', 'localhost', '5432', 'geobase_snum', 'etienne.lousteau', ''],
-        # mConfigConnection === "host=localhost port=5432 dbname=geobase_snum user=etienne.lousteau password='' sslmode=2", 
-        # uri               === <QgsDataSourceUri: dbname='geobase_snum' host=localhost port=5432 user='etienne.lousteau' sslmode=allow>]
-        mSettings = QgsSettings()
-        self.mConnectionSettingsKey = "/PostgreSQL/connections/{}".format(self.nameBase)
-        mSettings.beginGroup(self.mConnectionSettingsKey)
-        if not mSettings.contains("database") :
-           QMessageBox.critical(self, "Error", "There is no defined database connection")
-           mListConnectBase = []
-        else :
-           uri = QgsDataSourceUri()
-           settingsList = ["service", "host", "port", "database", "username", "password"]
-           self.service, self.host, self.port, self.database, self.username, self.password = map(lambda x: mSettings.value(x, "", type=str), settingsList)
-           mListConnectBase = [self.service, self.host, self.port, self.database, self.username, self.password ]
-           useEstimatedMetadata = mSettings.value("estimatedMetadata", False, type=bool)
-           self.sslmode = mSettings.enumValue("sslmode", uri.SslPrefer)
-        mSettings.endGroup()
-
-        if self.service:
-           mConfigConnection = "service{0} dbname={1} user={2} password='{3}' sslmode={4}".format(self.service, self.database, self.username, self.password, self.sslmode)
-           uri.setConnection(self.service, self.database, self.username, self.password, self.sslmode)
-        else:
-           mConfigConnection = "host={0} port={1} dbname={2} user={3} password='{4}' sslmode={5}".format(self.host, self.port, self.database, self.username, self.password, self.sslmode)
-           uri.setConnection(self.host, self.port, self.database, self.username, self.password, self.sslmode)
-
-        uri.setUseEstimatedMetadata(useEstimatedMetadata)
         
-        """
-        self.service = uri.service() or os.environ.get('PGSERVICE')
-        self.host = uri.host() or os.environ.get('PGHOST')
-        self.port = uri.port() or os.environ.get('PGPORT')
-        self.database = uri.database() or os.environ.get('PGDATABASE')
-        self.username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
-        self.password = uri.password() or os.environ.get('PGPASSWORD')
-        self.sslmode = uri.sslMode() or os.environ.get('PGSSLMODE')
+        #===========================
+        if returnSiVersionQgisSuperieureOuEgale("3.10") : 
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           metadata = QgsProviderRegistry.instance().providerMetadata('postgres')
+
+           if nameBase not in metadata.connections(False) :
+              QMessageBox.critical(self, "Error", "new : There is no defined database connection for " + nameBase)
+              mListConnectBase = []
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           uri = QgsDataSourceUri(metadata.findConnection(nameBase).uri())
+           #modification pour permettre d'utiliser les configurations du passwordManager (QGIS >=3.10)
+           self.service = uri.service() or os.environ.get('PGSERVICE')
+           self.host = uri.host() or os.environ.get('PGHOST')
+           self.port = uri.port() or os.environ.get('PGPORT')
+           self.database = uri.database() or os.environ.get('PGDATABASE')
+           self.username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+           self.password = uri.password() or os.environ.get('PGPASSWORD')
+           self.sslmode = uri.sslMode() or os.environ.get('PGSSLMODE')
+        else :
+           # mListConnectBase  === ['', 'localhost', '5432', 'geobase_snum', 'etienne.lousteau', ''],
+           # mConfigConnection === "host=localhost port=5432 dbname=geobase_snum user=etienne.lousteau password='' sslmode=2", 
+           # uri               === <QgsDataSourceUri: dbname='geobase_snum' host=localhost port=5432 user='etienne.lousteau' sslmode=allow>]
+           mSettings = QgsSettings()
+           self.mConnectionSettingsKey = "/PostgreSQL/connections/{}".format(self.nameBase)
+           mSettings.beginGroup(self.mConnectionSettingsKey)
+           if not mSettings.contains("database") :
+              QMessageBox.critical(self, "Error", "There is no defined database connection")
+              mListConnectBase = []
+           else :
+              uri = QgsDataSourceUri()
+              settingsList = ["service", "host", "port", "database", "username", "password"]
+              self.service, self.host, self.port, self.database, self.username, self.password = map(lambda x: mSettings.value(x, "", type=str), settingsList)
+              mListConnectBase = [self.service, self.host, self.port, self.database, self.username, self.password ]
+              useEstimatedMetadata = mSettings.value("estimatedMetadata", False, type=bool)
+              self.sslmode = mSettings.enumValue("sslmode", uri.SslPrefer)
+           mSettings.endGroup()
+
+           if self.service:
+              mConfigConnection = "service{0} dbname={1} user={2} password='{3}' sslmode={4}".format(self.service, self.database, self.username, self.password, self.sslmode)
+              uri.setConnection(self.service, self.database, self.username, self.password, self.sslmode)
+           else:
+              mConfigConnection = "host={0} port={1} dbname={2} user={3} password='{4}' sslmode={5}".format(self.host, self.port, self.database, self.username, self.password, self.sslmode)
+              uri.setConnection(self.host, self.port, self.database, self.username, self.password, self.sslmode)
+
+           uri.setUseEstimatedMetadata(useEstimatedMetadata)
+        
 
         mListConnectBase = [self.service, self.host, self.port, self.database, self.username, self.password ]
         if self.service:
@@ -4353,7 +4449,35 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.11"
+def returnVersion() : return "version 1.2.12"
+
+#==================================================
+def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
+    _mVersMax = 1000000  #Valeur max arbitraire
+    try :
+       _mVers = qgis.utils.Qgis.QGIS_VERSION_INT
+    except : 
+       _mVers = _mVersMax
+    if _mVersTexte == "3.4.5" :
+       _mBorne = 30405
+       _mMess = "_mVers >= '3.4.5'"                    
+    elif _mVersTexte == "3.10" : 
+       _mBorne = 31006
+       _mMess = "_mVers >= '3.10'" 
+    elif _mVersTexte == "3.16" : 
+       _mBorne = 31605
+       _mMess = "_mVers >= '3.16'" 
+    elif _mVersTexte == "3.18" : 
+       _mBorne = 31801
+       _mMess = "_mVers >= '3.18'"
+    elif _mVersTexte == "3.20" : 
+       _mBorne = 32002
+       _mMess = "_mVers >= '3.20'"
+    elif _mVersTexte == "3.21" : 
+       _mBorne = 33000
+       _mMess = "_mVers >= '3.21'"
+
+    return True if _mVers >= _mBorne else False
 
 #==================================================
 def returnInstalleEtVersionAsgard(self) :
@@ -4752,6 +4876,42 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
         mhauteur = (2 if len(mLib) == 1 else len(mLib))
         self.lib19.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
         self.lib19.setText(self.mLibTitre19 + '<br>{}'.format('<br>'.join(mLib)))
+
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib20, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib20.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib20.setText(self.mLibTitre20 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib21, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib21.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib21.setText(self.mLibTitre21 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib22, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib22.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib22.setText(self.mLibTitre22 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib23, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib23.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib23.setText(self.mLibTitre23 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib24, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib24.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib24.setText(self.mLibTitre24 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib25, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib25.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib25.setText(self.mLibTitre25 + '<br>{}'.format('<br>'.join(mLib)))
+        #-
+        mLib = bibli_ihm_asgard.returnListeTexte(self, self.mLib26, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
+        mhauteur = (2 if len(mLib) == 1 else len(mLib))
+        self.lib26.resize(self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (  mhauteur * 21) + 0)
+        self.lib26.setText(self.mLibTitre26 + '<br>{}'.format('<br>'.join(mLib)))
         #---------
 
         #Blocs fonctionnels y compris Corbeille
@@ -4805,6 +4965,9 @@ def resizeIhm(self, l_Dialog, h_Dialog) :
              else :
                 bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [17,11,13])
 
+        # ** For layer_styles **
+        elif self.Dialog.mTreePostgresql.mNameEnCours == self.Dialog.mTreePostgresql.mNameLayerStyles :
+             bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [200, 20, 21, 22, 23, 24, 25, 26])
         else : 
           bibli_ihm_asgard.genereAideDynamique(self,"UPDATE", [0])
     #Réinit les dimensions de l'IHM
