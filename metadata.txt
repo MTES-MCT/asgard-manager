@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.2.12
+version=1.2.13
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -12,11 +12,17 @@ changelog:
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
     ==========================================================================
+    ** 1.2.13 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.20
+       *------------- 
+         ** Modification sur la gestion des mdp pour un role de connexion
+         * Desormais, en modification d un role de connexion il n est plus necessaire de resaisir le mdp
+    ==========================================================================
     ** 1.2.12 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.20
        *------------- 
          ** Lecture des configuration memorisees dans le passwordManager (QGIS >=3.10)
-         .  revu avec les version anterieures a 3.10
+         .. revu avec les version anterieures a 3.10
          ** Gestion des permissions sur la table layer_styles dans l onglet Schemas
     ==========================================================================
     ** 1.2.11 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen

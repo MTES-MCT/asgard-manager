@@ -848,11 +848,18 @@ def executeSqlRole(self, Dialog) :
         if mRolnameNew == '' and (mMdpNew == '' and mRolloginNew and mode == "create") :
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "name and password required", None) 
            mContinue = False
+           """   
+           elif mRolnameNew == '' and (mMdpNew == '' and mRolloginNew and mode == "create") :
+              zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "name and password required", None) 
+              mContinue = False
+           """   
         elif mRolnameNew == '' : 
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "name required", None) 
            mContinue = False
         #elif mMdpNew == '' and self.Dialog.mTreePostgresqlDroits.mRolcanLogin and mode == "create" : 
-        elif mMdpNew == '' and mRolloginNew : 
+
+        #elif mMdpNew == '' and mRolloginNew : 
+        elif (mMdpNew == '' and mRolloginNew and mode == "create") : 
            zMess = QtWidgets.QApplication.translate("bibli_ihm_asgard", "password required", None) 
            mContinue = False
         elif mRolnameNew in [ mName[0] for mName in self.Dialog.mTreePostgresqlDroits.ArraymRolesDeGroupe] :

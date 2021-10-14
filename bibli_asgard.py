@@ -4449,7 +4449,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.12"
+def returnVersion() : return "version 1.2.13"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
