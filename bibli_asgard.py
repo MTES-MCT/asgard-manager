@@ -14,6 +14,7 @@ from .bibli_ihm_asgard import *
 from . import doerreur
 
 import re
+import csv
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import *
@@ -4449,7 +4450,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.13"
+def returnVersion() : return "version 1.2.14"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
@@ -5021,6 +5022,22 @@ def printViewTableauBord(self, Dialog):
     printDialog.paintRequested.connect(Dialog.zone_affichage_TableauBord.print_)
     printDialog.exec_() 
     return
+
+#--------
+def csvTableauBord(self, Dialog):
+    #Sauvegarde de la boite de dialogue Fichiers
+    InitDir = os.path.dirname(__file__) + "\\" + "AM_Export_Csv_" + time.strftime("%Y%m%d_%Hh%Mm%S") + ".csv"
+    TypeList = QtWidgets.QApplication.translate("bibli_graph_asgard", "Dashboard Export CSV", None) + " (*.csv)"
+    fileName = QFileDialog.getSaveFileName(None,QtWidgets.QApplication.translate("bibli_graph_asgard", "Asgard Manager Dashboard Export CSV", None),InitDir,TypeList)
+    if fileName[0] != "" : 
+       # csv header
+       header = self.Dialog.contenuCSV[0]
+       data = self.Dialog.contenuCSV[1]
+       with open(fileName[0], 'w', encoding='utf-8', newline='') as f:
+           writer = csv.writer(f, delimiter=";")
+           writer.writerow(header)
+           writer.writerows(data)
+    return        
 
 #--------
 def deletetViewTableauBord(self, Dialog):

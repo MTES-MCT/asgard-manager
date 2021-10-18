@@ -244,6 +244,10 @@ class Ui_Dialog_Confirme(object):
         
     #=For Display DashBoard
     def afficheViewTableauBord(self, mTypeAction):
+        #for CSV
+        self.headerCSV = []
+        self.dataCSV   = []
+        #for CSV
         myPathIcon = os.path.dirname(__file__)+"\\icons\\"
         dicIcoObjets = {
                       "table"             : myPathIcon + "\\objets\\table.png",
@@ -278,10 +282,22 @@ class Ui_Dialog_Confirme(object):
         mLigne +=  "<TABLE style='border-collapse:collapse' style='border-color:#958B62' border='1' style='border-style:solid' width=100%>"
         mLigne +=  "  <TR style='color:#FFFFFF' style='background-color:#958B62'>"
         if self.mDialog.ctrlReplication :
+           #for CSV
+           self.headerCSV = ['Répliqué', 'Blocs fonctionnels']
+           #for CSV
            mLigne +=     '<TH width=5% >Répliqué</TH>'
            mLigne += '    <TH width=20% >Blocs fonctionnels</TH>'
         else :
+           #for CSV
+           self.headerCSV = ['Blocs fonctionnels']
+           #for CSV
            mLigne += '    <TH width=25% >Blocs fonctionnels</TH>'
+        #for CSV
+        self.headerCSV.append('Schémas')
+        self.headerCSV.append('Nom de l\'objet')
+        self.headerCSV.append('Type de l\'objet')
+        #for CSV
+
         mLigne +=     '<TH width=25% >Schémas</TH>'
         mLigne +=     '<TH width=35% >Nom de l\'objet</TH>'
         mLigne +=     '<TH width=15% >Type de l\'objet</TH>'
@@ -294,6 +310,7 @@ class Ui_Dialog_Confirme(object):
         listBlocsExclusFlags = False
         iterator = QTreeWidgetItemIterator(self.mDialog.mTreePostgresql)
         while iterator.value():
+           dataListCSV = []
            itemValueText = iterator.value().text(0)
            
            #Blocs fonctionnels
@@ -340,11 +357,24 @@ class Ui_Dialog_Confirme(object):
               existeDansMetadata, repliquerMetadata, objetIcon = self.mDialog.mTreePostgresql.returnReplique(mSchema, mObjet, mTypeObj, self.mDialog.mListeMetadata, self.mDialog.mTreePostgresql.mListeObjetArepliquer)
               if self.mDialog.ctrlReplication :
                  if existeDansMetadata and repliquerMetadata :
+                    #for CSV
+                    dataListCSV.append('Oui')
+                    #for CSV
                     myPathiconImg = myPathIcon + "\\objets\\dashboardReplique.png"
                     mLigne +=     '<TD align=center><img src="' + myPathiconImg + '" height="15" width="15"></TD>'
                  else :   
+                    #for CSV
+                    dataListCSV.append('')
+                    #for CSV
                     mLigne +=     '<TD></TD>'
               #--
+              #for CSV
+              dataListCSV.append(str(mBloc))
+              dataListCSV.append(str(mSchema))
+              dataListCSV.append(str(mObjet))
+              dataListCSV.append(str(mTypeObj))
+              #for CSV
+              
               myPathiconImg = myPathIcon + "\\treeview\\" + str(mCodeBloc) + ".png"
               mLigne +=     '<TD style="text-indent:10px"><img src="' + myPathiconImg + '" height="15" width="15">   ' + str(mBloc) + '</TD>'
               myPathiconImg = myPathIcon + "\\objets\\schema_actif.png" if actif else myPathIcon + "\\objets\\schema_nonactif.png"
@@ -355,18 +385,21 @@ class Ui_Dialog_Confirme(object):
               mLigne += '  </TR>\n'
               findElem = False
               listBlocsExclusFlags = False
+              self.dataCSV.append(dataListCSV)
            iterator += 1
 
         mLigne += '</TABLE>\n'
         mLigne += '</BODY>\n'
         mLigne += '</HTML>'
+        self.mDialog.contenuCSV = [ self.headerCSV, self.dataCSV ]
+        """
         iterator = QTreeWidgetItemIterator(self.mDialog.mTreePostgresql)
         while iterator.value():
            itemValue = iterator.value()
            print("text %s" %(str(itemValue.text(0))))
            #----
            iterator += 1
-
+        """
         
         if self.mDialog.zone_affichage_TableauBord.toPlainText() != '' :
            mLigne = self.mDialog.zone_affichage_TableauBord.toHtml() + "<center>------------------------------------------------------------------------</center>" + mLigne

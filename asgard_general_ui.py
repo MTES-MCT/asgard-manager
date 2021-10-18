@@ -636,21 +636,31 @@ class Ui_Dialog_Asgard(object):
         self.treeActionTableauBordPrint = QAction(QIcon(menuIcon), zTitleMenu, self.diagMenu)
         self.diagMenu.addAction(self.treeActionTableauBordPrint)
         #-
+        menuIcon = bibli_asgard.returnIcon(os.path.dirname(__file__) + "\\icons\\actions\\csv.png")          
+        zTitleMenu = QtWidgets.QApplication.translate("asgard_general_ui", "Dashboard: Export CSV", None)
+        self.treeActionTableauBordCsv = QAction(QIcon(menuIcon), zTitleMenu, self.diagMenu)
+        self.diagMenu.addAction(self.treeActionTableauBordCsv)
+        #-
+        self.diagMenu.addSeparator()
+        #-
         zTitleMenu = QtWidgets.QApplication.translate("asgard_general_ui", "Dashboard: Delele result", None)
         menuIcon = bibli_asgard.returnIcon(os.path.dirname(__file__) + "\\icons\\actions\\diagnostic_efface.png")          
         self.treeActionTableauBordDelete = QAction(QIcon(menuIcon), zTitleMenu, self.diagMenu)
         self.diagMenu.addAction(self.treeActionTableauBordDelete)
         #-
         self.treeActionTableauBordPrint.triggered.connect( lambda : bibli_asgard.printViewTableauBord(self, self))
+        self.treeActionTableauBordCsv.triggered.connect( lambda : bibli_asgard.csvTableauBord(self, self))
         self.treeActionTableauBordDelete.triggered.connect( lambda : bibli_asgard.deletetViewTableauBord(self, self))
         #-
         try :
            self.treeActionTableauBordPrint.setVisible(False if self.tabWidget.currentIndex() != 4 else True)
+           self.treeActionTableauBordCsv.setVisible(False if self.tabWidget.currentIndex() != 4 else True)
            self.treeActionTableauBordDelete.setVisible(False if self.tabWidget.currentIndex() != 4 else True)
         except :
            pass
         #-
         self.treeActionTableauBordPrint.setEnabled(False if self.Dialog.zone_affichage_TableauBord.toPlainText() == '' else True)
+        self.treeActionTableauBordCsv.setEnabled(False if self.Dialog.zone_affichage_TableauBord.toPlainText() == '' else True)
         self.treeActionTableauBordDelete.setEnabled(False if self.Dialog.zone_affichage_TableauBord.toPlainText() == '' else True)
         self.diagMenu.exec_(self.tabWidget.mapToGlobal(point))
         #-------
