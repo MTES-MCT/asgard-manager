@@ -23,6 +23,10 @@ class Ui_Dialog_Confirme(object):
            self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "ASGARD extension not installed.", None)
            zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "The files required to install the ASGARD extension are missing. You have to install them manually.", None)
            myPath = os.path.dirname(__file__)+"\\icons\\logo\\asgard2.png"
+        elif mTypeAction == 'ExtensionPasInstalleePlume' :
+           self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "PLUME extension not installed.", None)
+           zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "The files required to install the PLUME extension are missing. You have to install them manually.", None)
+           myPath = os.path.dirname(__file__)+"\\icons\\logo\\plume.png"
         elif mTypeAction == 'FONCTIONreinitAllSchemasFunction' :
            self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "Reset all rights.", None)
            zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "By continuing, you will restore the standard rights of the roles designated as producer, editor and reader to all referenced schemas ", None)
@@ -80,6 +84,31 @@ class Ui_Dialog_Confirme(object):
            zMessConfirme  += "<b>" + self.mDialog.dbName.upper() + "</b>"
            zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", ". This action does not affect the rights attributed to the diagrams and objects of the database, but the information stored in the ASGARD management table (readers and editors designated for the diagrams and tree levels) will be permanently lost.", None)
            myPath = os.path.dirname(__file__)+"\\icons\\actions\\desinstalle_asgard.png"
+           # For PLUME
+        elif mTypeAction == 'FONCTIONinstallerPlume' :
+           self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "Install PLUME on the base.", None)
+           zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "By continuing, you will install the PostgreSQL PLUME extension, version ", None)
+           zMessConfirme  += "<b>" + self.mDialog.plumeVersionDefaut + "</b>"
+           zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", " on database ", None)
+           zMessConfirme  += "<b>" + self.mDialog.dbNamePlume.upper() + "</b>"
+           myPath = os.path.dirname(__file__)+"\\icons\\actions\\installe_plume.png"
+        elif mTypeAction == 'FONCTIONmajPlume' :
+           self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "Update the PLUME extension.", None)
+           zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "Continuing on, you will update the PostgreSQL PLUME extension (current version ", None)
+           zMessConfirme  += "<b>" + self.mDialog.plumeInstalle + "</b>"
+           zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", ", target version", None)
+           zMessConfirme  += "<b>" + self.mDialog.plumeVersionDefaut + "</b>"
+           zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", ") on database ", None)
+           zMessConfirme  += "<b>" + self.mDialog.dbNamePlume.upper() + "</b>"
+           zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", ". This action is irreversible.", None)
+           myPath = os.path.dirname(__file__)+"\\icons\\actions\\maj_plume.png"
+        elif mTypeAction == 'FONCTIONdesinstallerPlume' :
+           self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "Uninstall the PLUME extension.", None)
+           zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "Continuing on, you will proceed to uninstall the PostgreSQL PLUME extension on the database ", None)
+           zMessConfirme  += "<b>" + self.mDialog.dbNamePlume.upper() + "</b>"
+           zMessConfirme  += QtWidgets.QApplication.translate("confirme_ui", ". This action does not affect the rights attributed to the diagrams and objects of the database, but the information stored in the PLUME management table (readers and editors designated for the diagrams and tree levels) will be permanently lost.", None)
+           myPath = os.path.dirname(__file__)+"\\icons\\actions\\desinstalle_plume.png"
+           # For PLUME
         elif mTypeAction == 'FONCTIONasgard_DiagnosticSchema' :
            self.zMessTitle    =  QtWidgets.QApplication.translate("confirme_ui", "Look for anomalies.", None)
            zMessConfirme  = QtWidgets.QApplication.translate("confirme_ui", "Scans the schema and the objects it contains in search of missing or excess rights compared to the ASGARD standard.", None)
@@ -88,7 +117,7 @@ class Ui_Dialog_Confirme(object):
 
         self.mTypeAction = mTypeAction
         self.zMessConfirme =  QtWidgets.QApplication.translate("confirme_ui", zMessConfirme, None)
-        if self.mTypeAction != 'ExtensionPasInstallee' :
+        if self.mTypeAction != 'ExtensionPasInstallee' and self.mTypeAction != 'ExtensionPasInstalleePlume':
            if mTypeAction == 'FONCTIONasgard_DiagnosticSchema' :
               mKeySql = mKeySqlTransformee # Chgt des paramètres : mKeySqlTransformee contient déjà la requête transformée
            elif self.mTypeAction == 'FONCTIONTableauBord' :
@@ -96,7 +125,7 @@ class Ui_Dialog_Confirme(object):
            else :
               mKeySql = bibli_asgard.dicListSql(self,mTypeAction)
         else :
-           mKeySql = "ExtensionPasInstallee"  # juste pour renseigner la clé, non utilisée après 
+           mKeySql = "ExtensionPasInstallee"  # juste pour renseigner la clé, non utilisée après aussi ExtensionPasInstalleePlume
         self.zMessGood = QtWidgets.QApplication.translate("confirme_ui", "Operation performed !!", None)
 
         DialogConfirme.setObjectName("DialogConfirme")
@@ -194,10 +223,11 @@ class Ui_Dialog_Confirme(object):
         self.pushButtonAnnuler.setText(QtWidgets.QApplication.translate("confirme_ui", "Cancel", None))
         
     def executeFonctionGenerale(self, mKeySql) :
-        if self.mTypeAction == 'FONCTIONdesinstallerAsgard' or self.mTypeAction == 'ExtensionPasInstallee' :
+        if self.mTypeAction == 'FONCTIONdesinstallerAsgard' or self.mTypeAction == 'ExtensionPasInstallee' or \
+           self.mTypeAction == 'FONCTIONdesinstallerPlume'  or self.mTypeAction == 'ExtensionPasInstalleePlume' :
            self.mDialog.comboAdresse.setCurrentText("Aucun")
                                                             
-        if self.mTypeAction != 'ExtensionPasInstallee' :
+        if self.mTypeAction != 'ExtensionPasInstallee' and self.mTypeAction != 'ExtensionPasInstalleePlume':
            if self.mTypeAction == 'FONCTIONdiagnosticAsgard' or self.mTypeAction == 'FONCTIONasgard_DiagnosticSchema' :
               r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
            else :

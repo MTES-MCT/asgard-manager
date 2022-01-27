@@ -225,6 +225,8 @@ def dicListSql(self, mKeySql):
 
     #Fonction qui retourne si l'extension est installée et les numéro des versions
     mdicListSql['ReturnInstalleEtVersion'] = ("""SELECT *, CURRENT_DATABASE() FROM pg_available_extensions WHERE name = 'asgard'""")
+    #PLUME Fonction qui retourne si l'extension est installée et les numéro des versions
+    mdicListSql['ReturnInstalleEtVersionPlume'] = ("""SELECT *, CURRENT_DATABASE() FROM pg_available_extensions WHERE name = 'plume_pg'""")
     #===================
     # Menu GESTION DE LA BASE
     #Fonction de maintenance générales  Réinitialiser tous les droits 
@@ -245,7 +247,13 @@ def dicListSql(self, mKeySql):
     mdicListSql['FONCTIONmajAsgard'] = ("""ALTER EXTENSION asgard UPDATE""")
     #-
     mdicListSql['FONCTIONdesinstallerAsgard'] = ("""DROP EXTENSION asgard""")
+    #- For PLUME
+    mdicListSql['FONCTIONinstallerPlume'] = ("""CREATE EXTENSION plume_pg CASCADE""")
     #-
+    mdicListSql['FONCTIONmajPlume'] = ("""ALTER EXTENSION plume_pg UPDATE""")
+    #-
+    mdicListSql['FONCTIONdesinstallerPlume'] = ("""DROP EXTENSION plume_pg cascade""")
+    #- For PLUME
     # Menu GESTION DE LA BASE
     #===================
     
@@ -4450,7 +4458,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.14"
+def returnVersion() : return "version 1.2.16"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
@@ -4481,6 +4489,75 @@ def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
     return True if _mVers >= _mBorne else False
 
 #==================================================
+def returnInstalleEtVersionPlume(self) :
+    mKeySql = dicListSql(self,'ReturnInstalleEtVersionPlume')
+    r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.Dialog.mBaseAsGard.executeSql(self.Dialog.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
+    installeVersion = None
+    defautVersion   = None
+    dbName = None
+    if len(r) != 0 : # Cas où les fichiers d'installation de l'extension sont absents
+       if r != None :
+          installeVersion = r[0][2]     # Version installée ou None si pas installée
+          defautVersion   = r[0][1]     # Version par défaut 
+          dbName          = r[0][4]     # Nom de la base 
+       else :
+          #Géré en amont dans la fonction executeSqlNoReturn
+          pass
+    #else :
+    #   self.Dialog.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'ExtensionPasInstalleePlume', '')
+    return installeVersion, defautVersion, dbName
+
+#==================================================
+def etatMenuGestionDeLaBasePlume(self, installe_error_plume) :
+    #Affichage mess d'informations
+    zTitlePlume = QtWidgets.QApplication.translate("bibli_asgard", 'Warning !!!') 
+    zTitlePlume = "<font color=\"#0026FF\">" + zTitlePlume + "</font>  "
+    zMessPlume = QtWidgets.QApplication.translate("bibli_asgard", 'An update is available for the PLUME extension.')
+    zMessPlume += " ==== " + QtWidgets.QApplication.translate("bibli_asgard", 'The option is available in the "Database management" menu.')
+    zMessPlume ="<b><font color=\"#0026FF\";>" + zMessPlume + "</font></b>"
+    
+    if installe_error_plume : 
+       if self.isSuperUser :
+          if self.plumeVersionDefaut :
+             self.installerPlume.setVisible(True)
+             self.installerPlume.setEnabled(True)
+          else :
+             self.installerPlume.setVisible(False)
+             self.installerPlume.setEnabled(False)
+       else :
+          self.installerPlume.setVisible(True)
+          self.installerPlume.setEnabled(False)
+       #-
+       self.majPlume.setVisible(False)
+       self.majPlume.setEnabled(False)
+       #-
+       self.desinstallerPlume.setVisible(False)
+       self.desinstallerPlume.setEnabled(False)
+    else :
+       self.installerPlume.setVisible(False)
+       self.installerPlume.setEnabled(False)
+       #-
+       self.majPlume.setVisible(True)
+       #-
+       self.desinstallerPlume.setVisible(True)
+       #-
+       #self.labelInfo.clear()
+       if self.isSuperUser :
+          if self.plumeVersionDefaut != self.plumeInstalle :
+             self.majPlume.setEnabled(True)
+             #Affiche info si MAJ version 
+             self.barInfo.pushMessage(zTitlePlume, zMessPlume, Qgis.Info, duration = self.durationBarInfo)        
+          else :
+             self.majPlume.setEnabled(False)
+          #-
+          self.desinstallerPlume.setEnabled(True)
+       else :
+          self.majPlume.setEnabled(False)
+          #-
+          self.desinstallerPlume.setEnabled(False)
+    return  
+
+#==================================================
 def returnInstalleEtVersionAsgard(self) :
     mKeySql = dicListSql(self,'ReturnInstalleEtVersion')
     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.Dialog.mBaseAsGard.executeSql(self.Dialog.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
@@ -4501,7 +4578,6 @@ def returnInstalleEtVersionAsgard(self) :
      
 #==================================================
 def etatMenuGestionDeLaBase(self, installe_error) :
-
     #installe_error
     self.reinitAllSchemas.setEnabled(False if installe_error else True)
     self.diagnosticAsgard.setEnabled(False if installe_error else True)
@@ -4563,6 +4639,8 @@ def etatMenuGestionDeLaBase(self, installe_error) :
            a.setEnabled(False if installe_error else True)
            break
            
+    #- For PLUME
+    etatMenuGestionDeLaBasePlume(self, self.installe_error_plume)
 
     return  
 #==================================================

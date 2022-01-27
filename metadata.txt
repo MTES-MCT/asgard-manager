@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.2.14
+version=1.2.16
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -11,6 +11,19 @@ changelog:
     ==========================================================================
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
+    ==========================================================================
+    ** 1.2.16 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.22
+         ** Extension PLUME
+            * Changement de nom, metadata en plume_pg
+    ==========================================================================
+    ** 1.2.15 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.20
+         ** MENU GESTION DE LA BASE
+            * Options nouvelles :
+            * Installer l extension PLUME
+            * Mettre a jour l extension PLUME
+            * Desinstaller l extension PLUME
     ==========================================================================
     ** 1.2.14 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/SNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.20

@@ -82,6 +82,9 @@ class Ui_Dialog_Asgard(object):
         iconInstallerAsgard  = returnIcon(myPathIcon + "\\actions\\installe_asgard.png")
         iconMajAsgard  = returnIcon(myPathIcon + "\\actions\\maj_asgard.png")
         iconDesinstallerAsgard  = returnIcon(myPathIcon + "\\actions\\desinstalle_asgard.png")
+        iconInstallerPlume  = returnIcon(myPathIcon + "\\actions\\installe_plume.png")
+        iconMajPlume  = returnIcon(myPathIcon + "\\actions\\maj_plume.png")
+        iconDesinstallerPlume  = returnIcon(myPathIcon + "\\actions\\desinstalle_plume.png")
         iconReloadAM  = returnIcon(myPathIcon + "\\actions\\reload.png")
         
         self.mMenuBarDialog = QMenuBar(self)
@@ -157,6 +160,25 @@ class Ui_Dialog_Asgard(object):
         self.desinstallerAsgard = QAction(QIcon(iconDesinstallerAsgard),"Uninstall the ASGARD extension",Dialog)
         self.desinstallerAsgard.setText(QtWidgets.QApplication.translate("asgard_main", "Uninstall the ASGARD extension"))
         self.mMenuDialog.addAction(self.desinstallerAsgard)
+        #- For PLUME
+        self.mMenuDialog.addSeparator()
+        #-
+        self.installerPlume = QAction(QIcon(iconInstallerPlume),"Install Plume on the base",Dialog)
+        self.installerPlume.setText(QtWidgets.QApplication.translate("asgard_main", "Install Plume on the base"))
+        self.mMenuDialog.addAction(self.installerPlume)
+        #-
+        self.majPlume = QAction(QIcon(iconMajPlume),"Update the Plume extension",Dialog)
+        self.majPlume.setText(QtWidgets.QApplication.translate("asgard_main", "Update the Plume extension"))
+        self.mMenuDialog.addAction(self.majPlume)
+        #-
+        self.desinstallerPlume = QAction(QIcon(iconDesinstallerPlume),"Uninstall the Plume extension",Dialog)
+        self.desinstallerPlume.setText(QtWidgets.QApplication.translate("asgard_main", "Uninstall the Plume extension"))
+        self.mMenuDialog.addAction(self.desinstallerPlume)
+        #- Actions PLUME
+        self.installerPlume.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONinstallerPlume', ''))
+        self.majPlume.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONmajPlume', ''))
+        self.desinstallerPlume.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONdesinstallerPlume', ''))
+        #- For PLUME
         self.mMenuDialog.addSeparator()
         #- Actions
         self.reinitAllSchemas.triggered.connect(lambda : self.dialogueConfirmationAction(self.Dialog, self.mBaseAsGard, 'FONCTIONreinitAllSchemasFunction', ''))
@@ -685,8 +707,9 @@ class Ui_Dialog_Asgard(object):
         self.mMenuDialog.setEnabled(False)
 
         #Etat Menu Gestion de la base
-        self.installe_error = False    # Si extension pas installée = True
-        self.g_admin_error  = False    # Si membre de g_admin ou pas
+        self.installe_error       = False    # Si extension pas installée = True
+        self.g_admin_error        = False    # Si membre de g_admin ou pas
+        self.installe_error_plume = False    # Si extension pas installée = True
 
         debut = time.time()
 
@@ -708,6 +731,11 @@ class Ui_Dialog_Asgard(object):
               self.asgardInstalle, self.asgardVersionDefaut, self.dbName  = bibli_asgard.returnInstalleEtVersionAsgard(self) 
               self.asgardVersionDefaut_error = True if self.asgardVersionDefaut == None else False
               zTitre =  QtWidgets.QApplication.translate("asgard_general_ui", "ASGARD MANAGER : Warning", None)
+              #- For PLUME
+              self.plumeInstalle, self.plumeVersionDefaut, self.dbNamePlume  = bibli_asgard.returnInstalleEtVersionPlume(self)
+              if self.plumeInstalle == None  : self.installe_error_plume = True
+              self.plumeVersionDefaut_error = True if self.plumeVersionDefaut == None else False
+              #- For PLUME
 
               if self.asgardInstalle == None  :
                  if self.asgardVersionDefaut_error == False :
@@ -842,7 +870,7 @@ class Ui_Dialog_Asgard(object):
                                   self.comboBloc.setModel(modelcomboBloc)
                                   #print("Fin des requêtes et début TreeViews   %s" %(str(format(time.time()-debut,".3f"))))
                                   #-----
-                                  self.ctrlReplication = False   #controle pour exploiter la réplication ou pas
+                                  self.ctrlReplication = True   #controle pour exploiter la réplication ou pas
                                   #-----
                                   #=======================
                                   #gestion des réplications
@@ -904,8 +932,11 @@ class Ui_Dialog_Asgard(object):
                                   QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
                                   # Gestion Retour et Installation pourle menu GESTION DE LA BASE
                                   self.asgardInstalle, self.asgardVersionDefaut, self.dbName  = bibli_asgard.returnInstalleEtVersionAsgard(self) 
+                                  #- For PLUME
+                                  self.plumeInstalle, self.plumeVersionDefaut, self.dbNamePlume  = bibli_asgard.returnInstalleEtVersionPlume(self) 
                                   self.mMenuDialog.setEnabled(True)
                                   bibli_asgard.etatMenuGestionDeLaBase(self, self.installe_error)
+                                  #bibli_asgard.etatMenuGestionDeLaBasePlume(self, self.installe_error_plume)
                                   #print("Origine FIN   %s" %(str(format(time.time()-debut,".3f"))))
                                else : 
                                   self.cleanAndMessError( zTitre, zMess ) 
@@ -920,6 +951,9 @@ class Ui_Dialog_Asgard(object):
                 else : 
                    self.cleanAndMessError( zTitre, zMess ) 
               else :
+                 #if self.plumeVersionDefaut_error == False : #Cas où pas de fichier d'installation de l'extension
+                 #   bibli_asgard.etatMenuGestionDeLaBasePlume(self, self.installe_error_plume)
+                    
                  if self.asgardVersionDefaut_error == False : #Cas où pas de fichier d'installation de l'extension
                     # Si mContExt False et si pb avec g_admin alors mess géré dans le gestionnaire d'erreur
                     if not self.g_admin_error :
