@@ -870,7 +870,7 @@ class Ui_Dialog_Asgard(object):
                                   self.comboBloc.setModel(modelcomboBloc)
                                   #print("Fin des requêtes et début TreeViews   %s" %(str(format(time.time()-debut,".3f"))))
                                   #-----
-                                  self.ctrlReplication = True   #controle pour exploiter la réplication ou pas
+                                  self.ctrlReplication = False   #controle pour exploiter la réplication ou pas
                                   #-----
                                   #=======================
                                   #gestion des réplications
