@@ -1206,18 +1206,6 @@ class Ui_Dialog_Asgard(object):
                                     
     #------------
     def createZoneInformations(self, Dialog, mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, mlisteDesRolesDeGroupeEtConnexions ) :
-        #-- IMPORTANT pour les rôles (Gestion des schémas Case mRolgestionschema)
-        if len(mSchemasBlocs) == 0 :
-           self.asgardEditeur = None #UCase si La vue n'est pas renseigné alors tous les schémas iront dans "schémas externe Asgard"
-        else :
-           for elem in mSchemasBlocs :
-               if "z_asgard" == elem[0] :
-                  self.asgardEditeur  = elem[5]         #Renvoie None ou Nom editeur pour z_asgard
-                  break
-               else :
-                  self.asgardEditeur = None
-        #-- IMPORTANT pour les rôles (Gestion des schémas Case mRolgestionschema)
-
         #-- FILTRE schémas / obj
         self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter = mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs
         #-- FILTRE schémas / obj

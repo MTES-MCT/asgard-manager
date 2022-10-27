@@ -353,7 +353,6 @@ def dicListSql(self, mKeySql):
                 #mListeGrantBISNew# 
                 COMMENT ON ROLE "#mRolname#" IS '#mDescription#';
                 
-                #Rolgestionschema_cond2#       
                 #ResetRole#
                 #Rolgestionschema_cond1#
                                           """)
@@ -377,7 +376,6 @@ def dicListSql(self, mKeySql):
                 #mListeGrantBISNew# 
                 COMMENT ON ROLE "#mRolname#" IS '#mDescription#';
                 
-                #Rolgestionschema_cond2#       
                 #ResetRole#
                 #Rolgestionschema_cond1#
                                           """)
@@ -489,9 +487,6 @@ def dicListSql(self, mKeySql):
     #Liste des rôles de connexion et de groupe
     mdicListSql['listeDesRolesDeGroupeEtConnexions'] = ("""
     WITH
-        a_edi AS (SELECT coalesce(oid_editeur, 0) AS oid_editeur FROM z_asgard.asgardmanager_metadata WHERE nom_schema = 'z_asgard'),
-        a_pro AS (SELECT nspowner FROM pg_catalog.pg_namespace WHERE quote_ident(nspname)::regnamespace::text = 'z_asgard'),
-
     roles_1 AS (
         SELECT
             -- informations génériques
@@ -499,21 +494,21 @@ def dicListSql(self, mKeySql):
             roles.rolcreaterole, roles.rolcreatedb, roles.rolcanlogin, roles.rolreplication,
             roles.rolconnlimit, roles.rolpassword, roles.rolvaliduntil, roles.rolbypassrls,
             roles.rolconfig, roles.oid,
-
             -- commentaire sur le rôle
             shobj_description(roles.oid, 'pg_authid') AS description,
-
             -- gestion des schémas
-            roles.rolsuper OR bool_or(pg_database.datname = current_database()) AS db_create
-
+            roles.rolsuper OR roles.oid IN (
+                SELECT grantee
+                    FROM pg_database, aclexplode(datacl)
+                    WHERE datname = current_database()
+                        AND privilege_type = 'CREATE'
+                UNION
+                SELECT datdba FROM pg_database
+                    WHERE datname = current_database()
+            ) AS db_create
             FROM pg_catalog.pg_roles AS roles
-                LEFT JOIN pg_catalog.pg_database ON array_to_string(datacl, ',') ~ ('^(.*[,])*' || z_asgard.asgard_role_trans_acl(roles.oid::regrole) || '[=][cT*]*C[cT*]*[/]')
             WHERE NOT rolname ~ ANY (ARRAY['^pg_', '^postgres$'])
-            GROUP BY roles.rolname, roles.rolsuper, roles.rolinherit,
-                roles.rolcreaterole, roles.rolcreatedb, roles.rolcanlogin, roles.rolreplication,
-                roles.rolconnlimit, roles.rolpassword, roles.rolvaliduntil, roles.rolbypassrls,
-                roles.rolconfig, roles.oid
-        ),
+    ),
     roles_2 AS (
         SELECT
             roles_1.*,
@@ -523,68 +518,70 @@ def dicListSql(self, mKeySql):
             GROUP BY roles_1.rolname, roles_1.rolsuper, roles_1.rolinherit,
                 roles_1.rolcreaterole, roles_1.rolcreatedb, roles_1.rolcanlogin, roles_1.rolreplication,
                 roles_1.rolconnlimit, roles_1.rolpassword, roles_1.rolvaliduntil, roles_1.rolbypassrls,
-                roles_1.rolconfig, roles_1.oid, roles_1.description, db_create
+                roles_1.rolconfig, roles_1.oid, roles_1.description, roles_1.db_create
         ),
     roles_3 AS (
         SELECT
             roles_2.*,
-            -- gestion des schémas (suite)
-            coalesce(bool_or(parents.roleid = a_edi.oid_editeur), false) -- membre direct de l'éditeur de z_asgard
-                OR roles_2.oid = a_edi.oid_editeur -- ou l'éditeur lui-même
-                OR roles_2.rolname = 'g_admin' -- ou g_admin
-                OR roles_2.rolsuper -- ou un superutilisateur
-                AS asgard_edi,
-
             -- rôles dont le rôle est membre
             array_agg(DISTINCT parents.roleid ORDER BY parents.roleid) AS parents
-            FROM a_pro, roles_2
-                LEFT JOIN pg_catalog.pg_auth_members AS parents ON roles_2.oid = parents.member
-                LEFT JOIN a_edi ON true
+            FROM roles_2 LEFT JOIN pg_catalog.pg_auth_members AS parents ON roles_2.oid = parents.member
             GROUP BY roles_2.rolname, roles_2.rolsuper, roles_2.rolinherit,
                 roles_2.rolcreaterole, roles_2.rolcreatedb, roles_2.rolcanlogin, roles_2.rolreplication,
                 roles_2.rolconnlimit, roles_2.rolpassword, roles_2.rolvaliduntil, roles_2.rolbypassrls,
-                roles_2.rolconfig, roles_2.oid, roles_2.description, db_create, membres, a_edi.oid_editeur
+                roles_2.rolconfig, roles_2.oid, roles_2.description, roles_2.db_create, roles_2.membres
         ),
     roles_4 AS (
         SELECT
             roles_3.*,
             -- droits du rôle sur les schémas référencés par ASGARD
-            array_agg(ARRAY[nom_schema, (asgardmanager_metadata.oid_lecteur = roles_3.oid)::text] ORDER BY asgardmanager_metadata.nom_schema)
-                FILTER (WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_lecteur, 'USAGE')) AS schema_lec,
-            array_agg(ARRAY[nom_schema, (asgardmanager_metadata.oid_editeur = roles_3.oid)::text] ORDER BY asgardmanager_metadata.nom_schema)
-                FILTER (WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_editeur, 'USAGE')) AS schema_edi,
-            array_agg(ARRAY[nom_schema, (asgardmanager_metadata.oid_producteur = roles_3.oid)::text] ORDER BY asgardmanager_metadata.nom_schema)
-                FILTER (WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_producteur, 'USAGE')) AS schema_pro
+            array_agg(
+                ARRAY[nom_schema, (asgardmanager_metadata.oid_lecteur = roles_3.oid)::text]
+                ORDER BY asgardmanager_metadata.nom_schema
+            ) FILTER (
+                    WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_lecteur, 'USAGE')
+                ) AS schema_lec,
+            array_agg(
+                ARRAY[nom_schema, (asgardmanager_metadata.oid_editeur = roles_3.oid)::text]
+                ORDER BY asgardmanager_metadata.nom_schema
+            ) FILTER (
+                WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_editeur, 'USAGE')
+                ) AS schema_edi,
+            array_agg(
+                ARRAY[nom_schema, (asgardmanager_metadata.oid_producteur = roles_3.oid)::text]
+                ORDER BY asgardmanager_metadata.nom_schema
+            ) FILTER (
+                WHERE pg_has_role(roles_3.oid, asgardmanager_metadata.oid_producteur, 'USAGE')
+                ) AS schema_pro
             FROM roles_3 LEFT JOIN  z_asgard.asgardmanager_metadata ON true
             GROUP BY roles_3.rolname, roles_3.rolsuper, roles_3.rolinherit,
                 roles_3.rolcreaterole, roles_3.rolcreatedb, roles_3.rolcanlogin, roles_3.rolreplication,
                 roles_3.rolconnlimit, roles_3.rolpassword, roles_3.rolvaliduntil, roles_3.rolbypassrls,
-                roles_3.rolconfig, roles_3.oid, roles_3.description, roles_3.db_create, roles_3.asgard_edi,
-                roles_3.membres, roles_3.parents
+                roles_3.rolconfig, roles_3.oid, roles_3.description, roles_3.db_create, roles_3.membres,
+                roles_3.parents
     )
     SELECT
-    roles_4.rolname, roles_4.rolsuper, roles_4.rolinherit,
-    roles_4.rolcreaterole, roles_4.rolcreatedb, roles_4.rolcanlogin, roles_4.rolreplication,
-    roles_4.rolconnlimit, roles_4.rolpassword, roles_4.rolvaliduntil, roles_4.rolbypassrls,
-    roles_4.rolconfig, roles_4.oid, roles_4.description, membres, parents,
-    schema_lec, schema_edi, schema_pro, db_create, asgard_edi,
-
-    -- bases contenant des objets dépendants du rôle
-    array_agg(DISTINCT pg_database.datname::text ORDER BY pg_database.datname::text) FILTER (WHERE pg_database.datname IS NOT NULL) AS db_dependances
-    FROM roles_4
-        LEFT JOIN pg_catalog.pg_shdepend
-            ON roles_4.oid = pg_shdepend.refobjid AND pg_shdepend.refclassid = 'pg_authid'::regclass
-        LEFT JOIN pg_catalog.pg_database
-            ON pg_shdepend.dbid = pg_database.oid
-                OR pg_shdepend.classid = 'pg_database'::regclass AND pg_shdepend.objid = pg_database.oid
-    GROUP BY roles_4.rolname, roles_4.rolsuper, roles_4.rolinherit,
+        roles_4.rolname, roles_4.rolsuper, roles_4.rolinherit,
         roles_4.rolcreaterole, roles_4.rolcreatedb, roles_4.rolcanlogin, roles_4.rolreplication,
         roles_4.rolconnlimit, roles_4.rolpassword, roles_4.rolvaliduntil, roles_4.rolbypassrls,
-        roles_4.rolconfig, roles_4.oid, roles_4.description, db_create, asgard_edi, membres, parents,
-        schema_lec, schema_edi, schema_pro
-    ORDER BY roles_4.rolname
-    ; 
-                                                       """) 
+        roles_4.rolconfig, roles_4.oid, roles_4.description, roles_4.membres, roles_4.parents,
+        roles_4.schema_lec, roles_4.schema_edi, roles_4.schema_pro, roles_4.db_create,
+        -- bases contenant des objets dépendants du rôle
+        array_agg(
+            DISTINCT pg_database.datname::text ORDER BY pg_database.datname::text
+        ) FILTER (WHERE pg_database.datname IS NOT NULL) AS db_dependances
+        FROM roles_4
+            LEFT JOIN pg_catalog.pg_shdepend
+                ON roles_4.oid = pg_shdepend.refobjid AND pg_shdepend.refclassid = 'pg_authid'::regclass
+            LEFT JOIN pg_catalog.pg_database
+                ON pg_shdepend.dbid = pg_database.oid
+                    OR pg_shdepend.classid = 'pg_database'::regclass AND pg_shdepend.objid = pg_database.oid
+        GROUP BY roles_4.rolname, roles_4.rolsuper, roles_4.rolinherit,
+            roles_4.rolcreaterole, roles_4.rolcreatedb, roles_4.rolcanlogin, roles_4.rolreplication,
+            roles_4.rolconnlimit, roles_4.rolpassword, roles_4.rolvaliduntil, roles_4.rolbypassrls,
+            roles_4.rolconfig, roles_4.oid, roles_4.description, roles_4.db_create, roles_4.membres,
+            roles_4.parents, roles_4.schema_lec, roles_4.schema_edi, roles_4.schema_pro
+        ORDER BY roles_4.rolname ;                                                        """) 
     
     #Table de relation n à n roles/groupes
     mdicListSql['relationRolesGroupes'] = ("""
@@ -1755,9 +1752,9 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
             if mNameEnCours == self.ArraymRolesDeGroupe[i][0] : 
                mGroupeRole     = True if self.ArraymRolesDeGroupe[i][5] else False
                self.mGroupeRole = mGroupeRole
-               mRolDependances =  True if self.ArraymRolesDeGroupe[i][21] == None else False
+               mRolDependances =  True if self.ArraymRolesDeGroupe[i][20] == None else False
                self.mRolDependances = mRolDependances
-               mListeRolDependances =  self.ArraymRolesDeGroupe[i][21] if self.ArraymRolesDeGroupe[i][21] != None  else []
+               mListeRolDependances =  self.ArraymRolesDeGroupe[i][20] if self.ArraymRolesDeGroupe[i][20] != None  else []
                break
 
         self.Dialog.groupBoxAffichageRoleAttribut.setVisible(False)
@@ -1898,7 +1895,6 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         self.Dialog.groupBoxAffichageRightDroits.setVisible(True)
         #**********************
         if mAction == "treeActionConnexion_new" or mAction == "treeActionGroupe_New" :
-           self.Dialog.case_rolgestionschema.setEnabled((False if self.Dialog.asgardEditeur == None else True))   #Désactive la case gestion schéma
 
            if mAction == "treeActionConnexion_new" :
               mRolcanLogin = True
@@ -2078,15 +2074,14 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                         self.mRolbypassrls   = self.ArraymRolesDeGroupe[iParcours][10]
                         self.mRollogin       = self.ArraymRolesDeGroupe[iParcours][5] 
                         
-                        self.mRolgestionschema = True if (self.ArraymRolesDeGroupe[iParcours][19] and self.ArraymRolesDeGroupe[iParcours][20]) else False
-                        self.mDbCreate         = True if self.ArraymRolesDeGroupe[iParcours][19]  else False   # Attention à la confusion avec mRolcreatedb
-                        self.mAsgardEdit       = True if self.ArraymRolesDeGroupe[iParcours][20]  else False   # Attention à la confusion avec self.Dialog.asgardEditeur
-                        self.mRolDependances = self.ArraymRolesDeGroupe[iParcours][21]
+                        self.mRolgestionschema = True if self.ArraymRolesDeGroupe[iParcours][19] else False
+                        #self.mDbCreate         = True if self.ArraymRolesDeGroupe[iParcours][19]  else False   # Attention à la confusion avec mRolcreatedb
+                        self.mRolDependances = self.ArraymRolesDeGroupe[iParcours][20]
                                     
                         #---- Gestion ToolTip for "gestion schémas" 
                         mMessToolTipTexte = self.returnToolTipGestionSchemas()
                                  
-                        mCondDisabled_case_rolgestionschema = (self.Dialog.asgardEditeur == None or self.mRolsuper == True or self.mRolname == "g_admin")
+                        mCondDisabled_case_rolgestionschema = (self.mRolsuper == True or self.mRolname == "g_admin")
                         if mCondDisabled_case_rolgestionschema :  #Désactive la case gestion schéma for conditions
                            self.Dialog.case_rolgestionschema.setEnabled(False)
                         else :
@@ -2196,76 +2191,12 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         
     #---- Gestion ToolTip for "gestion schémas" 
     def returnToolTipGestionSchemas(self) :
-        #-Si g_admin ou rolsuper 
-        mCondGadminRolsuper                       = (self.mRolsuper == True or self.mRolname == "g_admin")
-        messCondGadminRolsuper                    = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Le rôle g_admin et les super-utilisateurs sont toujours habilités à gérer les schémas.", None)
-        #-Si il n'y a pas d'éditeur sur z_asgard (et que le rôle n'est ni g_admin ni un super-utilisateur) 
-        mCondNoEditAndNogadminNoRolsuper          = (self.Dialog.asgardEditeur == None and (self.mRolsuper == False and self.mRolname != "g_admin"))
-        messCondNoEditAndNogadminNoRolsuper       = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'Pour pouvoir déléguer la gestion des schémas, vous devez préalablement désigner un éditeur pour le schéma "z_asgard".', None)
-        #-Si create_db vaut False et asgard_edi vaut False
-        mCondNocreatedbNoasgardedit               = (self.mDbCreate == False and self.mAsgardEdit == False)
-        messCondNocreatedbNoasgardedit            = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'En activant cette option, vous conférez au rôle le privilège CREATE sur la base et l\'appartenance au rôle éditeur du schéma "z_asgard"', None)
-        #-Si create_db vaut False et le rôle est l'éditeur de z_asgard
-        mCondNocreatedbEditegalrole               = (self.mDbCreate == False and (self.Dialog.asgardEditeur == self.mRolname))
-        messCondNocreatedbEditegalrole            = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'Le rôle est l\'éditeur du schéma "z_asgard". En activant cette option, vous lui conférez le privilège CREATE sur la base.', None)
-        #
-        #-Si create_db vaut False et asgard_edi vaut True
-        mCondNocreatedbAsgardedit                 = (self.mDbCreate == False and self.mAsgardEdit == True)
-        messCondNocreatedbAsgardedit              = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'Le rôle est déjà membre du rôle éditeur du schéma "z_asgard". En activant cette option, vous lui conférez le privilège CREATE sur la base.', None)
-        #-Si create_db vaut True et asgard_edi vaut False
-        mCondCreatedbNoasgardedit                 = (self.mDbCreate == True and self.mAsgardEdit == False)
-        messCondCreatedbNoasgardedit              = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'Le rôle dispose déjà du privilège CREATE sur la base. En activant cette option, vous le rendez membre du rôle éditeur du schéma "z_asgard".', None)
-        #-Si create_db vaut True, asgard_edi vaut True et le rôle n'est pas l'éditeur de z_asgard
-        mCondCreatedbAsgardeditEditpasegalrole    = (self.mDbCreate == True and self.mAsgardEdit == True and (self.Dialog.asgardEditeur != self.mRolname))
-        messCondCreatedbAsgardeditEditpasegalrole = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'En désactivant cette option, vous retirez au rôle le privilège CREATE sur la base et l\'appartenance au rôle éditeur du schéma "z_asgard".', None)
-        #-Si create_db vaut True, asgard_edi vaut True et le rôle est l'éditeur de z_asgard
-        mCondCreatedbAsgardeditEditegalrole       = (self.mDbCreate == True and self.mAsgardEdit == True and (self.Dialog.asgardEditeur == self.mRolname))
-        messCondCreatedbAsgardeditEditegalrole    = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'Le rôle est l\'éditeur du schéma "z_asgard". En désactivant cette option, vous lui retirez le privilège CREATE sur la base.', None)
-
-        #===== Affectation
-        mMessToolTipTexte = ""
-        if mCondGadminRolsuper :                                                   
-           mMessToolTipTexte = messCondGadminRolsuper
-        else :
-           if mCondNoEditAndNogadminNoRolsuper :
-              mMessToolTipTexte = messCondNoEditAndNogadminNoRolsuper
-           else :
-              if mCondNocreatedbNoasgardedit :
-                 mMessToolTipTexte = messCondNocreatedbNoasgardedit
-              else :
-                 if mCondNocreatedbEditegalrole :
-                    mMessToolTipTexte = messCondNocreatedbEditegalrole
-                 else :
-                    if mCondNocreatedbAsgardedit :
-                       mMessToolTipTexte = messCondNocreatedbAsgardedit
-                    else :
-                       if mCondCreatedbNoasgardedit :
-                          mMessToolTipTexte = messCondCreatedbNoasgardedit
-                       else :
-                          if mCondCreatedbAsgardeditEditpasegalrole :
-                             mMessToolTipTexte = messCondCreatedbAsgardeditEditpasegalrole
-                          else :
-                             if mCondCreatedbAsgardeditEditegalrole :
-                                mMessToolTipTexte = messCondCreatedbAsgardeditEditegalrole
-        #Pour Test
-        a = ("mCondGadminRolsuper  %s" %(str(mCondGadminRolsuper)))   
-        a += "<br>" + ("mCondNoEditAndNogadminNoRolsuper  %s" %(str(mCondNoEditAndNogadminNoRolsuper)))   
-        a += "<br>" + ("mCondNocreatedbNoasgardedit  %s" %(str(mCondNocreatedbNoasgardedit)))   
-        a += "<br>" + ("mCondNocreatedbEditegalrole  %s" %(str(mCondNocreatedbEditegalrole))) 
-          
-        a += "<br><br>" + ("\nmCondNocreatedbAsgardedit  %s" %(str(mCondNocreatedbAsgardedit)))   
-        a += "<br>" + ("mCondCreatedbNoasgardedit  %s" %(str(mCondCreatedbNoasgardedit)))   
-        a += "<br>" + ("mCondCreatedbAsgardeditEditpasegalrole  %s" %(str(mCondCreatedbAsgardeditEditpasegalrole)))   
-        a += "<br>" + ("mCondCreatedbAsgardeditEditegalrole  %s" %(str(mCondCreatedbAsgardeditEditegalrole)))   
-
-        b = ("self.mRolsuper  %s" %(str(self.mRolsuper)))   
-        b += "<br>" + ("self.mRolname  %s" %(str(self.mRolname)))   
-        b += "<br>" + ("self.Dialog.asgardEditeur  %s" %(str(self.Dialog.asgardEditeur)))   
-        b += "<br>" + ("self.mDbCreate  %s" %(str(self.mDbCreate)))   
-        b += "<br>" + ("self.mAsgardEdit  %s" %(str(self.mAsgardEdit)))
-        #QMessageBox.information(None,"Information", b + "<br><br>" + a)   
-        #Pour Test
-
+        if self.mRolsuper or self.mRolname == "g_admin":
+            mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", "Le rôle g_admin et les super-utilisateurs sont toujours habilités à gérer les schémas.", None)
+        elif self.mRolgestionschema:
+            mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'En désactivant cette option, vous retirez au rôle le privilège CREATE sur la base.', None)
+        else:
+            mMessToolTipTexte = QtWidgets.QApplication.translate("bibli_ihm_asgard", 'En activant cette option, vous conférez au rôle le privilège CREATE sur la base.', None)
         return mMessToolTipTexte
         
 #========================================================
@@ -2804,6 +2735,7 @@ class TREEVIEWASGARD(QTreeWidget):
 
                    #Affiche Tables       
                    # Si arborescence des objets
+                   ## print(self.mArraySchemasTables)
                    if self.Dialog.arboObjet :                   
                       for mRootTable in self.mArraySchemasTables :
                           if mSchemaActif[0] == mRootTable[0] :
@@ -4458,7 +4390,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.2.16"
+def returnVersion() : return "version 1.3.0"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :

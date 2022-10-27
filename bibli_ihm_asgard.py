@@ -955,7 +955,6 @@ def executeSqlRole(self, Dialog) :
               dicReplace['#Role_g_admin_createrole#'] = ''
               dicReplace['#ResetRole#'] = ''
            dicReplace['#Rolgestionschema_cond1#'] = ''
-           dicReplace['#Rolgestionschema_cond2#'] = ''      
            #-
            #------                                        
            for key, value in dicReplace.items():
@@ -1002,42 +1001,16 @@ def executeSqlRole(self, Dialog) :
                            value = ''   
                      #--- pour les BIS
                         
-                     #Gestion Gestion des schémas Case mRolgestionschema   self.asgardEditeur / self.dbName
+                     #Gestion des schémas Case mRolgestionschema 
                      elif key == '#mRolgestionschema#' : 
 
                        if not mGConnexionOuGroupe :  #Groupe
-                          if mode == "create" :
-                             if self.asgardEditeur != None :
-                                if dicReplace[key] :   # Cochée
-                                   value     = 'GRANT CREATE ON DATABASE "'  + str(self.dbName)        + '" TO "'   + str(dicReplace['#mRolname#']) + '" ;'
-                                   dicReplace['#Rolgestionschema_cond1#'] = value
-                                   if dicReplace['#mRolname#'] != self.asgardEditeur : # si Role courant différent du role de l'éditeur
-                                      value = 'GRANT "'                     + str(self.asgardEditeur) + '" TO "'   + str(dicReplace['#mRolname#']) + '" ;'
-                                      dicReplace['#Rolgestionschema_cond2#'] = value
-                                else :                  #déCochée
-                                   value = 'REVOKE CREATE ON DATABASE "' + str(self.dbName)        + '" FROM "' + str(dicReplace['#mRolname#']) + '" ;'
-                                   dicReplace['#Rolgestionschema_cond1#'] = value
-                                   if dicReplace['#mRolname#'] != self.asgardEditeur : # si Role courant différent du role de l'éditeur
-                                      value = 'REVOKE "'                    + str(self.asgardEditeur) + '" FROM "' + str(dicReplace['#mRolname#']) + '" ;'
-                                      dicReplace['#Rolgestionschema_cond2#'] = value
-                             else :
-                                value = ''
-                          elif mode == "update" :
-                             if (self.dicNewValueRole["mRolgestionschema"] != dicOldValueRole["mRolgestionschema"]) and mode == "update" : #si chgt de case
-                                if dicReplace[key] :   # Cochée
-                                   value     = 'GRANT CREATE ON DATABASE "'  + str(self.dbName)        + '" TO "'   + str(dicReplace['#mRolname#']) + '" ;'
-                                   dicReplace['#Rolgestionschema_cond1#'] = value
-                                   if dicReplace['#mRolname#'] != self.asgardEditeur : # si Role courant différent du role de l'éditeur
-                                      value = 'GRANT "'                     + str(self.asgardEditeur) + '" TO "'   + str(dicReplace['#mRolname#']) + '" ;'
-                                      dicReplace['#Rolgestionschema_cond2#'] = value
-                                else :                  #déCochée
-                                   value = 'REVOKE CREATE ON DATABASE "' + str(self.dbName)        + '" FROM "' + str(dicReplace['#mRolname#']) + '" ;'
-                                   dicReplace['#Rolgestionschema_cond1#'] = value
-                                   if dicReplace['#mRolname#'] != self.asgardEditeur : # si Role courant différent du role de l'éditeur
-                                      value = 'REVOKE "'                    + str(self.asgardEditeur) + '" FROM "' + str(dicReplace['#mRolname#']) + '" ;'
-                                      dicReplace['#Rolgestionschema_cond2#'] = value
-                             else :
-                                value = ''
+                          if dicReplace[key] :   # Cochée
+                             value     = 'GRANT CREATE ON DATABASE "'  + str(self.dbName)        + '" TO "'   + str(dicReplace['#mRolname#']) + '" ;'
+                             dicReplace['#Rolgestionschema_cond1#'] = value
+                          else :                  #déCochée
+                             value = 'REVOKE CREATE ON DATABASE "' + str(self.dbName)        + '" FROM "' + str(dicReplace['#mRolname#']) + '" ;'
+                             dicReplace['#Rolgestionschema_cond1#'] = value
                        else :
                           value = ''
                      else :
