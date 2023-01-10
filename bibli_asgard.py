@@ -1406,11 +1406,14 @@ def returnOutInAppartNonappart(self, ArraymRolesDeGroupe, mIdFind) :
     #-------
     #order by 
     mOrderByChoiceGroupe, mOrderByChoiceConnexion  = "1", "2"
-    llTempMembre = [ [ [(mOrderByChoiceGroupe if eee[1][2] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[1].split("."),ee] for ee in [ e for e in mListRoleGroupMembreComplet ] ] ]
-    mListRoleGroupMembreComplet = [l[1] for l in sorted(llTempMembre, key=lambda colonnes: colonnes[0], reverse = True)]
+    # A supprimer si Ok : llTempMembre = [ [ [(mOrderByChoiceGroupe if eee[1][2] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[1].split("."),ee] for ee in [ e for e in mListRoleGroupMembreComplet ] ] ]
+    # A supprimer si Ok : mListRoleGroupMembreComplet = [l[1] for l in sorted(llTempMembre, key=lambda colonnes: colonnes[0], reverse = True)]
+    mListRoleGroupMembreComplet = [l for l in sorted(mListRoleGroupMembreComplet, key=lambda colonnes: colonnes[1].lower(), reverse = True)]
     #------
-    llTempParent = [ [ [(mOrderByChoiceGroupe if eee[1][2] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[1].split("."),ee] for ee in [ e for e in mListRoleGroupParentComplet ] ] ]
-    mListRoleGroupParentComplet = [l[1] for l in sorted(llTempParent, key=lambda colonnes: colonnes[0], reverse = True)]
+    # A supprimer si Ok : llTempParent = [ [ [(mOrderByChoiceGroupe if eee[1][2] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[1].split("."),ee] for ee in [ e for e in mListRoleGroupParentComplet ] ] ]
+    # A supprimer si Ok : mListRoleGroupParentComplet = [l[1] for l in sorted(llTempParent, key=lambda colonnes: colonnes[0], reverse = True)]
+
+    mListRoleGroupParentComplet = [l for l in sorted(mListRoleGroupParentComplet, key=lambda colonnes: colonnes[1].lower(), reverse = True)]
 
     return mListRoleGroupMembreComplet, mListRoleGroupParentComplet   
 
@@ -1702,8 +1705,9 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
 
         #order by   
         mOrderByChoiceGroupe, mOrderByChoiceConnexion  = "1", "2"
-        llTemp = [ [ [(mOrderByChoiceGroupe if eee[1][5] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[0].split("."),ee] for ee in [ e for e in self.ArraymRolesDeGroupe ] ] ]
-        self.ArraymRolesDeGroupe = [l[1] for l in sorted(llTemp, key=lambda colonnes: colonnes[0], reverse = False)]
+        # A SUPPRIMER si OK : llTemp = [ [ [(mOrderByChoiceGroupe if eee[1][5] else mOrderByChoiceConnexion) + eee[0][len(eee[0]) - 1 ] ], eee[1] ] for eee in [ [ee[0].split("."),ee] for ee in [ e for e in self.ArraymRolesDeGroupe ] ] ]
+        # A SUPPRIMER si OK : self.ArraymRolesDeGroupe = [l[1] for l in sorted(llTemp, key=lambda colonnes: colonnes[0], reverse = False)]
+        self.ArraymRolesDeGroupe = [l for l in sorted(self.ArraymRolesDeGroupe, key=lambda colonnes: colonnes[0].lower(), reverse = False)]
         #order by
         #============
         #Affiche Droits 
@@ -4390,7 +4394,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.3.0"
+def returnVersion() : return "version 1.3.1"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
