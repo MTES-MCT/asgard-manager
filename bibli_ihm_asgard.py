@@ -2,7 +2,7 @@
 # créé sept 2020
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QMainWindow, 
+from PyQt5.QtWidgets import (QAction, QMenu , QApplication, QMessageBox, QFileDialog, QTextEdit, QMainWindow, QCompleter,
                             QTableView, QDockWidget, QVBoxLayout, QTabWidget, QWidget, QAbstractItemView)
  
 from PyQt5.QtCore import *
@@ -1262,9 +1262,11 @@ def createIHMAffichage(self) :
     self.labelNiv1.setObjectName("labelNiv1")
     self.labelNiv1.setAlignment(Qt.AlignRight)
     #--------                            
-    self.zoneNiv1 = QtWidgets.QLineEdit(self.groupBoxAffichageSchemaArbo)
+    self.zoneNiv1 = QtWidgets.QComboBox(self.groupBoxAffichageSchemaArbo)
     self.zoneNiv1.setGeometry(QtCore.QRect(130,15,210,23))
-    self.zoneNiv1.setObjectName("zoneNiv1") 
+    self.zoneNiv1.setEditable(True)
+    self.zoneNiv1.setInsertPolicy(self.zoneNiv1.InsertAtTop)
+    self.zoneNiv1.setObjectName("zoneNiv1")
     #-------- 
     #--------  
     self.labelNiv1_abr = QtWidgets.QLabel(self.groupBoxAffichageSchemaArbo)     
@@ -1272,31 +1274,38 @@ def createIHMAffichage(self) :
     self.labelNiv1_abr.setObjectName("labelNiv1_abr")
     self.labelNiv1_abr.setAlignment(Qt.AlignRight)
     self.labelNiv1_abr.setStyleSheet("QLabel {font: italic 10px;}")
-    #--------                            
-    self.zoneNiv1_abr = QtWidgets.QLineEdit(self.groupBoxAffichageSchemaArbo)
+    #--------
+    self.zoneNiv1_abr = QtWidgets.QComboBox(self.groupBoxAffichageSchemaArbo)
     self.zoneNiv1_abr.setGeometry(QtCore.QRect(130,45,210,23))
-    self.zoneNiv1_abr.setObjectName("zoneNiv1_abr") 
-    self.zoneNiv1_abr.setStyleSheet("QLineEdit {font: italic 10px;}")
+    self.zoneNiv1_abr.setEditable(True)
+    self.zoneNiv1_abr.setInsertPolicy(self.zoneNiv1_abr.InsertAtTop)
+    self.zoneNiv1_abr.setObjectName("zoneNiv1_abr")
+    #--------  
     #--------  
     self.labelNiv2 = QtWidgets.QLabel(self.groupBoxAffichageSchemaArbo)     
     self.labelNiv2.setGeometry(QtCore.QRect(0,79,120,18))
     self.labelNiv2.setObjectName("labelNiv2")
     self.labelNiv2.setAlignment(Qt.AlignRight)
     #--------                            
-    self.zoneNiv2 = QtWidgets.QLineEdit(self.groupBoxAffichageSchemaArbo)
+    self.zoneNiv2 = QtWidgets.QComboBox(self.groupBoxAffichageSchemaArbo)
     self.zoneNiv2.setGeometry(QtCore.QRect(130,75,210,23))
-    self.zoneNiv2.setObjectName("zoneNiv2") 
+    self.zoneNiv2.setEditable(True)
+    self.zoneNiv2.setInsertPolicy(self.zoneNiv2.InsertAtTop)
+    self.zoneNiv2.setObjectName("zoneNiv2")
+    #--------  
     #--------  
     self.labelNiv2_abr = QtWidgets.QLabel(self.groupBoxAffichageSchemaArbo)     
     self.labelNiv2_abr.setGeometry(QtCore.QRect(0,104,120,18))
     self.labelNiv2_abr.setObjectName("labelNiv2_abr")
     self.labelNiv2_abr.setAlignment(Qt.AlignRight)
     self.labelNiv2_abr.setStyleSheet("QLabel {font: italic 10px;}")
-    #--------                            
-    self.zoneNiv2_abr = QtWidgets.QLineEdit(self.groupBoxAffichageSchemaArbo)
+    #--------
+    #--------  
+    self.zoneNiv2_abr = QtWidgets.QComboBox(self.groupBoxAffichageSchemaArbo)
     self.zoneNiv2_abr.setGeometry(QtCore.QRect(130,100,210,23))
-    self.zoneNiv2_abr.setObjectName("zoneNiv2_abr") 
-    self.zoneNiv2_abr.setStyleSheet("QLineEdit {font: italic 10px;}")
+    self.zoneNiv2_abr.setEditable(True)
+    self.zoneNiv2_abr.setInsertPolicy(self.zoneNiv2_abr.InsertAtTop)
+    self.zoneNiv2_abr.setObjectName("zoneNiv2_abr")
     #--------      
     self.zoneSchema.setFocus(Qt.OtherFocusReason)                                     
     self.groupBoxAffichageSchema.setVisible(False)

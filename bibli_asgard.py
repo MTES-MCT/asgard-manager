@@ -257,6 +257,9 @@ def dicListSql(self, mKeySql):
     # Menu GESTION DE LA BASE
     #===================
     
+    #Liste des libellés des niv1, niv1_abr, niv2, niv2_abvextensions du serveur la vue gestion_schema_usr   
+    mdicListSql['ListeArboNiv1Niv2'] = ("""SELECT niv1, niv1_abr, niv2, niv2_abr FROM z_asgard."gestion_schema_usr";""")
+    
     #Liste des extensions du serveur la vue gestion_schema_usr   
     mdicListSql['ListeExtension'] = ("""SELECT * FROM pg_available_extensions""")
     
@@ -1739,6 +1742,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         self.itemClicked.connect( self.ihmsDroits )                                                      
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.menuContextuelAsgardDroits)
+        self.currentItemChanged.connect( self.ihmsDroitsCurrentIndexChanged )                                                      
 
     #-------------                                                    
     def menuContextuelAsgardDroits(self, point):
@@ -2034,6 +2038,11 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
 
         #----------------------
 
+
+    #-------------                                                    
+    def ihmsDroitsCurrentIndexChanged(self, itemCurrent, itemPrevious):
+        self.ihmsDroits( itemCurrent, self.currentColumn() )
+        return
 
     #**********************
     def ihmsDroits(self, item, column): 
@@ -2430,8 +2439,10 @@ class TREEVIEWASGARD(QTreeWidget):
      
     #-------------
     #-------------
-    def affiche(self, Dialog, myPathIcon, mServeurName, mConfigConnection, mArraySchemas, mArraySchemasTables, mSchemasBlocs, mArrayRolesEditeursLecteurs, ArraymRolesProducteurs, filtreActif = ""): 
+    def affiche(self, Dialog, myPathIcon, mServeurName, mConfigConnection, mArraySchemas, mArraySchemasTables, mSchemasBlocs, mArrayRolesEditeursLecteurs, ArraymRolesProducteurs, filtreActif = "", listeDesArbos = None): 
         self.Dialog = Dialog 
+        self.listeDesArbos = listeDesArbos
+        
         iconCursorInterdit = returnIcon(myPathIcon + "\\treeview\\cursor_interdit.png")
         iconGestion = returnIcon(myPathIcon + "\\treeview\\racine.png")
         iconRole = returnIcon(myPathIcon + "\\treeview\\roles.png")
@@ -2819,6 +2830,7 @@ class TREEVIEWASGARD(QTreeWidget):
         self.itemClicked.connect( self.ihms )                                                      
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.menuContextuelAsgard)
+        self.currentItemChanged.connect( self.ihmsCurrentIndexChanged )                                                      
 
     #-------------                                                    
     def menuContextuelAsgard(self, point):
@@ -3312,7 +3324,7 @@ class TREEVIEWASGARD(QTreeWidget):
                     self.mNiv1_abr      = ""
                     self.mNiv2          = ""
                     self.mNiv2_abr      = ""
-                    self.initIhmSchema(self.Dialog, self.mode, self.mSchema, self.mBloc, self.mActif, self.mProd, self.mEdit, self.mLect, self.mNomenclature, self.mNiv1, self.mNiv1_abr, self.mNiv2, self.mNiv2_abr)
+                    self.initIhmSchema(self.Dialog, self.mode, self.mSchema, self.mBloc, self.mActif, self.mProd, self.mEdit, self.mLect, self.mNomenclature, self.mNiv1, self.mNiv1_abr, self.mNiv2, self.mNiv2_abr, self.listeDesArbos)
                     break
                  iParcours += 1
         #----------------------
@@ -3586,7 +3598,6 @@ class TREEVIEWASGARD(QTreeWidget):
                   value = value.replace("'", "''")
                   mValue = "'" + str(value) + "'"
                mKeySql = mKeySql.replace(key, mValue)
-           print(mKeySql)
            #**********************
            if mAction == "treeActionDiagnostic" : #map vers la boite de confirmation avec substitution de la variable schéma
               # Attention chgt des paramètres envoyé 
@@ -3603,8 +3614,14 @@ class TREEVIEWASGARD(QTreeWidget):
         return  
         
     #-------------                                                    
+    def ihmsCurrentIndexChanged(self, itemCurrent, itemPrevious):
+        self.ihms( itemCurrent, self.currentColumn() )
+        return
+
+    #-------------                                                    
     def ihms(self, item, column):
         mItemValue = self.returnValueItem(item, column)
+        
         #self.itemEnCours = mItemValue  # Pour mémoriser l'expand
         self.Dialog.groupBoxAffichageSchema.setVisible(False)
         self.Dialog.groupBoxAffichageHelp.setVisible(False)
@@ -3632,7 +3649,7 @@ class TREEVIEWASGARD(QTreeWidget):
                         self.mNiv1_abr      = self.mSchemasBlocs[iParcours][9]  if self.mSchemasBlocs[iParcours][9] != None else ""
                         self.mNiv2          = self.mSchemasBlocs[iParcours][10] if self.mSchemasBlocs[iParcours][10] != None else ""
                         self.mNiv2_abr      = self.mSchemasBlocs[iParcours][11] if self.mSchemasBlocs[iParcours][11] != None else ""
-                        self.initIhmSchema(self.Dialog, self.mode, self.mSchema, self.mBloc, self.mActif, self.mProd, self.mEdit, self.mLect, self.mNomenclature, self.mNiv1, self.mNiv1_abr, self.mNiv2, self.mNiv2_abr)
+                        self.initIhmSchema(self.Dialog, self.mode, self.mSchema, self.mBloc, self.mActif, self.mProd, self.mEdit, self.mLect, self.mNomenclature, self.mNiv1, self.mNiv1_abr, self.mNiv2, self.mNiv2_abr, self.listeDesArbos)
                         #Affichage si aucune valeur modifiée
                         tId    = ('id_schema', 'id_bloc', 'id_actif', 'id_producteur', 'id_editeur', 'id_lecteur', 'id_nomenclature', 'id_niv1', 'id_niv1_abr', 'id_niv2', 'id_Niv2_abr')
                         tValue = (self.mSchemaID, mBlocTemp, self.mActif, self.mProd, self.mEdit, self.mLect, self.mNomenclature, self.mNiv1, self.mNiv1_abr, self.mNiv2, self.mNiv2_abr)
@@ -3641,7 +3658,7 @@ class TREEVIEWASGARD(QTreeWidget):
         return
         
     #------ 
-    def initIhmSchema(self, Dialog, mode, mSchema, mBloc, mActif, mProd, mEdit, mLect, mNomenclature, mNiv1, mNiv1_abr, mNiv2, mNiv2_abr) :
+    def initIhmSchema(self, Dialog, mode, mSchema, mBloc, mActif, mProd, mEdit, mLect, mNomenclature, mNiv1, mNiv1_abr, mNiv2, mNiv2_abr, listeDesArbos) :
         Dialog.zoneSchema.setText(mSchema)
         #Delete Corbeille
         if self.mode == "create" :
@@ -3673,14 +3690,41 @@ class TREEVIEWASGARD(QTreeWidget):
                      Dialog.comboProd.addItem(mSchemaFind[4])
                      break
 
+        #------------
+        Dialog.zoneNiv1.clear()
+        Dialog.zoneNiv1_abr.clear()
+        Dialog.zoneNiv2.clear()
+        Dialog.zoneNiv2_abr.clear()
+        #-
+        Dialog.zoneNiv1.addItems(listeDesArbos[0])
+        mCompleter = QCompleter(listeDesArbos[0], Dialog)
+        mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        mCompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        Dialog.zoneNiv1.setCompleter(mCompleter)
+        #-
+        Dialog.zoneNiv1_abr.addItems(listeDesArbos[1])
+        mCompleter = QCompleter(listeDesArbos[1], Dialog)
+        mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        Dialog.zoneNiv1_abr.setCompleter(mCompleter)
+        #-
+        Dialog.zoneNiv2.addItems(listeDesArbos[2])
+        mCompleter = QCompleter(listeDesArbos[2], Dialog)
+        mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        Dialog.zoneNiv2.setCompleter(mCompleter)
+        #-
+        Dialog.zoneNiv2_abr.addItems(listeDesArbos[3])
+        mCompleter = QCompleter(listeDesArbos[3], Dialog)
+        mCompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        Dialog.zoneNiv2_abr.setCompleter(mCompleter)
+        #------------
         Dialog.comboProd.setCurrentText(mProd)
         Dialog.comboEdit.setCurrentText(mEdit) 
         Dialog.comboLect.setCurrentText(mLect)
         Dialog.caseNomenclature.setChecked(mNomenclature)
-        Dialog.zoneNiv1.setText(mNiv1)
-        Dialog.zoneNiv1_abr.setText(mNiv1_abr)
-        Dialog.zoneNiv2.setText(mNiv2)
-        Dialog.zoneNiv2_abr.setText(mNiv2_abr)
+        Dialog.zoneNiv1.setCurrentText(mNiv1)
+        Dialog.zoneNiv1_abr.setCurrentText(mNiv1_abr)
+        Dialog.zoneNiv2.setCurrentText(mNiv2)
+        Dialog.zoneNiv2_abr.setCurrentText(mNiv2_abr)
         return
               
     #-------------
@@ -4394,7 +4438,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.3.1"
+def returnVersion() : return "version 1.3.2"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :

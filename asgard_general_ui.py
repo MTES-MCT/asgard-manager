@@ -846,98 +846,114 @@ class Ui_Dialog_Asgard(object):
                                #gestion des roles de groupes
                                mKeySql = dicListSql(self,'listeDesRolesDeGroupeEtConnexions')
                                #print(mKeySql)
-                               r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
-                               if r != None : 
-                                  #print("listeDesRolesDeGroupeEtConnexions   %s" %(str(format(time.time()-debut,".3f"))))
-                                  mlisteDesRolesDeGroupeEtConnexions = [row for row in r] 
-                                  #print("listeDesRolesDeGroupeEtConnexions II  %s" %(str(format(time.time()-debut,".3f"))))
-                                  #------
-                                  #Alimentation  
-                                  #Blocs fonctionnels 
-                                  self.comboBloc.clear()
-                                  #Gestion des blocs Qgis3.ini
-                                  dicListBlocs = returnLoadBlocParam() 
-                                  #Ajout des blocs qui sont dans gestion_schema_usr mais pas dans le qgis_global_settings
-                                  dicListBlocs = returnDicBlocUniquementNonReference(dicListBlocs, mSchemasBlocs)
-                                  self.mSchemasBlocs = mSchemasBlocs
-                                  self.dicListBlocs = dicListBlocs
-                               
-                                  modelcomboBloc = QStandardItemModel()
-                                  for key, value in dicListBlocs.items() :
-                                     modelcomboBlocCol1 = QStandardItem("(%s) %s" %(str(key),str(value)))
-                                     modelcomboBlocCol2 = QStandardItem(str(key))
-                                     modelcomboBloc.appendRow([modelcomboBlocCol1, modelcomboBlocCol2])
-                                  self.comboBloc.setModel(modelcomboBloc)
-                                  #print("Fin des requêtes et début TreeViews   %s" %(str(format(time.time()-debut,".3f"))))
-                                  #-----
-                                  self.ctrlReplication = False   #controle pour exploiter la réplication ou pas
-                                  #-----
-                                  #=======================
-                                  #gestion des réplications
-                                  #--
-                                  self.labelCaseZoneFilterRepliquer.setVisible(self.ctrlReplication)
-                                  self.caseZoneFilterRepliquer.setVisible(self.ctrlReplication)
-                                  self.labelCaseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
-                                  self.caseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
-                                  self.sep3.setVisible(self.ctrlReplication)
-                                  self.sep4.setVisible(self.ctrlReplication)
-                                  #--
-                                  if self.ctrlReplication :
-                                     #Création Schéma, Séquence, Table si elle n'existe pas 
-                                     mKeySql = dicListSql(self,'Fonction_CreateSchemaTableReplication')
-                                     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSqlCreate(Dialog, self.mBaseAsGard.mConnectEnCours, self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
-                                     if r != False :
-                                        pass
-                                     else :
-                                        #Géré en amont dans la fonction executeSqlNoReturn
-                                        pass 
-                                     #-- 
-                                     mKeySql = dicListSql(self,'Fonction_Liste_Replication')
-                                     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
-                                     if r != None :
-                                        # nombase, schema, nomobjet, typeobjet, etat 
-                                        self.mListeMetadata = r
+                               r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
+                                
+                               if r != None :
+                                  # Liste des arborescences 
+                                  mKeySql = dicListSql(self,'ListeArboNiv1Niv2')
+                                  r_ListeArboNiv1Niv2, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
+                                  mlisteArborescence = [row for row in r_ListeArboNiv1Niv2]
+                                  self.arboNiv1, self.arboNiv1Abr, self.arboNiv2, self.arboNiv2Abr = [], [], [], []
+                                  for elem in mlisteArborescence :
+                                      if (elem[0] != None and elem[0] not in self.arboNiv1)    : self.arboNiv1.append(elem[0]) 
+                                      if (elem[1] != None and elem[1] not in self.arboNiv1Abr) : self.arboNiv1Abr.append(elem[1]) 
+                                      if (elem[2] != None and elem[2] not in self.arboNiv2)    : self.arboNiv2.append(elem[2]) 
+                                      if (elem[3] != None and elem[3] not in self.arboNiv2Abr) : self.arboNiv2Abr.append(elem[3]) 
+                                  self.mListeDesArbos = [ sorted(list(set(self.arboNiv1))), sorted(list(set(self.arboNiv1Abr))), sorted(list(set(self.arboNiv2))), sorted(list(set(self.arboNiv2Abr))) ]
+                                  
+                                  if r != None : 
+                                     #print("listeDesRolesDeGroupeEtConnexions   %s" %(str(format(time.time()-debut,".3f"))))
+                                     mlisteDesRolesDeGroupeEtConnexions = [row for row in r] 
+                                     #print("listeDesRolesDeGroupeEtConnexions II  %s" %(str(format(time.time()-debut,".3f"))))
+                                     #------
+                                     #Alimentation  
+                                     #Blocs fonctionnels 
+                                     self.comboBloc.clear()
+                                     #Gestion des blocs Qgis3.ini
+                                     dicListBlocs = returnLoadBlocParam() 
+                                     #Ajout des blocs qui sont dans gestion_schema_usr mais pas dans le qgis_global_settings
+                                     dicListBlocs = returnDicBlocUniquementNonReference(dicListBlocs, mSchemasBlocs)
+                                     self.mSchemasBlocs = mSchemasBlocs
+                                     self.dicListBlocs = dicListBlocs
+                                  
+                                     modelcomboBloc = QStandardItemModel()
+                                     for key, value in dicListBlocs.items() :
+                                        modelcomboBlocCol1 = QStandardItem("(%s) %s" %(str(key),str(value)))
+                                        modelcomboBlocCol2 = QStandardItem(str(key))
+                                        modelcomboBloc.appendRow([modelcomboBlocCol1, modelcomboBlocCol2])
+                                     self.comboBloc.setModel(modelcomboBloc)
+                                     #print("Fin des requêtes et début TreeViews   %s" %(str(format(time.time()-debut,".3f"))))
+                                     #-----
+                                     self.ctrlReplication = False   #controle pour exploiter la réplication ou pas
+                                     #-----
+                                     #=======================
+                                     #gestion des réplications
+                                     #--
+                                     self.labelCaseZoneFilterRepliquer.setVisible(self.ctrlReplication)
+                                     self.caseZoneFilterRepliquer.setVisible(self.ctrlReplication)
+                                     self.labelCaseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
+                                     self.caseZoneFilterDerepliquer.setVisible(self.ctrlReplication)
+                                     self.sep3.setVisible(self.ctrlReplication)
+                                     self.sep4.setVisible(self.ctrlReplication)
+                                     #--
+                                     if self.ctrlReplication :
+                                        #Création Schéma, Séquence, Table si elle n'existe pas 
+                                        mKeySql = dicListSql(self,'Fonction_CreateSchemaTableReplication')
+                                        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSqlCreate(Dialog, self.mBaseAsGard.mConnectEnCours, self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql)
+                                        if r != False :
+                                           pass
+                                        else :
+                                           #Géré en amont dans la fonction executeSqlNoReturn
+                                           pass 
+                                        #-- 
+                                        mKeySql = dicListSql(self,'Fonction_Liste_Replication')
+                                        r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
+                                        if r != None :
+                                           # nombase, schema, nomobjet, typeobjet, etat 
+                                           self.mListeMetadata = r
+                                        else :
+                                           self.mListeMetadata = []
                                      else :
                                         self.mListeMetadata = []
-                                  else :
-                                     self.mListeMetadata = []
-                                  #gestion des réplications
-                                  #=======================
-                                  #=======================
-                                  #gestion Layer_Styles
-                                  #--
-                                  mKeySql = dicListSql(self,'Fonction_Layer_Styles')
-                                  r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
-                                  if r != None :
-                                     # - si layer_styles existe (valeur de ls_exists) ;
-                                     # - si le rôle courant est membre de son propriétaire (valeur de ls_isowner). 
-                                     self.mLayerStyles = r
-                                  else :
-                                     self.mLayerStyles = []
-                                  #gestion Layer_Styles
-                                  #=======================
-                                  #------
-                                  self.comboProd.clear()
-                                  self.comboEdit.clear()
-                                  self.comboLect.clear()
-                                  #------
-                                  #self.comboProd.addItem('Aucun')  #Nécessite un Prod
-                                  self.comboEdit.addItem('Aucun')
-                                  self.comboLect.addItem('Aucun')
-                                  self.comboProd.addItems(mRolesProducteurs)    
-                                  self.comboEdit.addItems(mRolesEditeursLecteurs)    
-                                  self.comboLect.addItems(mRolesEditeursLecteurs) 
-                                  QApplication.instance().setOverrideCursor(Qt.WaitCursor)
-                                  self.createZoneInformations( Dialog, mNameBase, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, mlisteDesRolesDeGroupeEtConnexions )
-                                  QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
-                                  # Gestion Retour et Installation pourle menu GESTION DE LA BASE
-                                  self.asgardInstalle, self.asgardVersionDefaut, self.dbName  = bibli_asgard.returnInstalleEtVersionAsgard(self) 
-                                  #- For PLUME
-                                  self.plumeInstalle, self.plumeVersionDefaut, self.dbNamePlume  = bibli_asgard.returnInstalleEtVersionPlume(self) 
-                                  self.mMenuDialog.setEnabled(True)
-                                  bibli_asgard.etatMenuGestionDeLaBase(self, self.installe_error)
-                                  #bibli_asgard.etatMenuGestionDeLaBasePlume(self, self.installe_error_plume)
-                                  #print("Origine FIN   %s" %(str(format(time.time()-debut,".3f"))))
+                                     #gestion des réplications
+                                     #=======================
+                                     #=======================
+                                     #gestion Layer_Styles
+                                     #--
+                                     mKeySql = dicListSql(self,'Fonction_Layer_Styles')
+                                     r, zMessError_Code, zMessError_Erreur, zMessError_Diag = self.mBaseAsGard.executeSql(self.mBaseAsGard.mConnectEnCoursPointeur, mKeySql) 
+                                     if r != None :
+                                        # - si layer_styles existe (valeur de ls_exists) ;
+                                        # - si le rôle courant est membre de son propriétaire (valeur de ls_isowner). 
+                                        self.mLayerStyles = r
+                                     else :
+                                        self.mLayerStyles = []
+                                     #gestion Layer_Styles
+                                     #=======================
+                                     #------
+                                     self.comboProd.clear()
+                                     self.comboEdit.clear()
+                                     self.comboLect.clear()
+                                     #------
+                                     #self.comboProd.addItem('Aucun')  #Nécessite un Prod
+                                     self.comboEdit.addItem('Aucun')
+                                     self.comboLect.addItem('Aucun')
+                                     self.comboProd.addItems(mRolesProducteurs)    
+                                     self.comboEdit.addItems(mRolesEditeursLecteurs)    
+                                     self.comboLect.addItems(mRolesEditeursLecteurs) 
+                                     QApplication.instance().setOverrideCursor(Qt.WaitCursor)
+                                     self.createZoneInformations( Dialog, mNameBase, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, mlisteDesRolesDeGroupeEtConnexions, listeDesArbos = self.mListeDesArbos )
+                                     QApplication.instance().setOverrideCursor(Qt.ArrowCursor)
+                                     # Gestion Retour et Installation pourle menu GESTION DE LA BASE
+                                     self.asgardInstalle, self.asgardVersionDefaut, self.dbName  = bibli_asgard.returnInstalleEtVersionAsgard(self) 
+                                     #- For PLUME
+                                     self.plumeInstalle, self.plumeVersionDefaut, self.dbNamePlume  = bibli_asgard.returnInstalleEtVersionPlume(self) 
+                                     self.mMenuDialog.setEnabled(True)
+                                     bibli_asgard.etatMenuGestionDeLaBase(self, self.installe_error)
+                                     #bibli_asgard.etatMenuGestionDeLaBasePlume(self, self.installe_error_plume)
+                                     #print("Origine FIN   %s" %(str(format(time.time()-debut,".3f"))))
+                                  else : 
+                                     self.cleanAndMessError( zTitre, zMess ) 
                                else : 
                                   self.cleanAndMessError( zTitre, zMess ) 
                             else : 
@@ -1040,10 +1056,10 @@ class Ui_Dialog_Asgard(object):
         #mlecteurNew, mlecteurOld = mlecteurNewTemp, "#lecteur#"
         #Modif 2021/03/10
         mNomenclatureNew, mNomenclatureOld = (True if self.caseNomenclature.isChecked() else False), "#nomenclature#"
-        mNiv1New, mNiv1Old = self.zoneNiv1.text(), "#niv1#"
-        mNiv1AbrNew, mNiv1AbrOld = self.zoneNiv1_abr.text(), "#niv1_abr#"
-        mNiv2New, mNiv2Old = self.zoneNiv2.text(), "#niv2#"
-        mNiv2AbrNew, mNiv2AbrOld = self.zoneNiv2_abr.text(), "#niv2_abr#"
+        mNiv1New, mNiv1Old = self.zoneNiv1.currentText(), "#niv1#"
+        mNiv1AbrNew, mNiv1AbrOld = self.zoneNiv1_abr.currentText(), "#niv1_abr#"
+        mNiv2New, mNiv2Old = self.zoneNiv2.currentText(), "#niv2#"
+        mNiv2AbrNew, mNiv2AbrOld = self.zoneNiv2_abr.currentText(), "#niv2_abr#"
         #Contrôles
         mContinue = True
         if (mproducteurNew == mediteurNew) or (mproducteurNew == mlecteurNew) :
@@ -1205,7 +1221,7 @@ class Ui_Dialog_Asgard(object):
         return icon
                                     
     #------------
-    def createZoneInformations(self, Dialog, mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, mlisteDesRolesDeGroupeEtConnexions ) :
+    def createZoneInformations(self, Dialog, mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, mlisteDesRolesDeGroupeEtConnexions, listeDesArbos = None ) :
         #-- FILTRE schémas / obj
         self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter = mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs
         #-- FILTRE schémas / obj
@@ -1218,7 +1234,7 @@ class Ui_Dialog_Asgard(object):
         self.mTreePostgresql.setObjectName("mTreePostgresql")
         self.mTreePostgresql.clear()
         
-        self.mTreePostgresql.affiche(Dialog, self.myPathIcon, mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, self.zoneFilter.text())
+        self.mTreePostgresql.affiche(Dialog, self.myPathIcon, mServeurName, mConfigConnection, mSchemas, mSchemasTables, mSchemasBlocs, mRolesEditeursLecteurs, mRolesProducteurs, self.zoneFilter.text(), listeDesArbos)
         self.mTreePostgresql.show()
         #print("mTreePostgresql   %s" %(str(format(time.time()-debut,".3f"))))
         
