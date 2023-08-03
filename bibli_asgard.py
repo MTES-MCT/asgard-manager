@@ -2253,7 +2253,13 @@ class TREEVIEWASGARD(QTreeWidget):
         if len(selectedItems) < 1:
             return
         mItemWidget = selectedItems[0].text(0)
-
+        #
+        # [Interdiction des Drag&Drop si racine = Administration]
+        mListDepart = self.returnValueItem(selectedItems[0], 0)
+        if len(mListDepart) > 0 :
+           if mListDepart[-1] == "Administration" : return 
+        # [Interdiction des Drag&Drop si racine = Administration]
+        #
         if event.mimeData().hasFormat('text/plain'):
            #-----------
            if schemaExiste(mItemWidget, self.mListSchemaActifs) :
@@ -2267,11 +2273,13 @@ class TREEVIEWASGARD(QTreeWidget):
            else:
             if selectedItems[0].parent() != None : #Pas les blocs
               # si type objet dans la liste des types d'objets
-              #print(self.mArraySchemasTables)
+              #
+              # [Interdiction des Drag&Drop si racine = schémas externes à Asgard]
+              if str(selectedItems[0].parent().data(0, Qt.DisplayRole)) == QtWidgets.QApplication.translate("bibli_asgard", "Schemes outside Asgard", None) : return 
+              # [Interdiction des Drag&Drop si racine = schémas externes à Asgard]
+              #
               for mNameObjet in self.mArraySchemasTables  :
-                  #mSchemaDepart = self.returnValueItem(self.currentItem(), 0)[1]  # Hyper important si noms objets identiques dans schéma diff.
                   mSchemaDepart = self.returnValueItem(self.currentItem(), 0)[2] if self.Dialog.arboObjet else self.returnValueItem(self.currentItem(), 0)[1] # Hyper important si noms objets identiques dans schéma diff.
-                  #print(mSchemaDepart)
                   #Meme Type
                   if (self.returnTypeObjeEtAsgard(mItemWidget)[0] == mNameObjet[2])  :
                      # et Meme Nom
@@ -4438,7 +4446,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.3.2"
+def returnVersion() : return "version 1.3.3"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
