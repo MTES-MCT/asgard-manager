@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.3.3
+version=1.3.4
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -12,7 +12,11 @@ changelog:
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
     ==========================================================================
-    ** 1.3.3 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DSNUM/UNI/DRC Site de Rouen
+    ** 1.3.4 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.32
+            * Correction d un bug lors de l utilisation du filtre et apres clique sur un schema
+    ==========================================================================
+    ** 1.3.3 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.30
             * Correction d un bug deplacement des schemas du bloc fonctionnel *schemas externes a Asgard*
             * Modification pour empecher le deplacement des objets du bloc fonctionnel *Administration*
@@ -22,7 +26,7 @@ changelog:
             * Ajout de listes deroulantes pour la gestion de l arborescence (niv1, niv1_abr, niv2, niv2_abr)
             * Gestion du focus clavier en parcourant les Treeviews des schemas et des roles
     ==========================================================================
-    ** 1.3.1 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DSNUM/UNI/DRC Site de Rouen
+    ** 1.3.1 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.28
             * Trie par ordre alphabetique des roles de groupe et de connexion
     ==========================================================================

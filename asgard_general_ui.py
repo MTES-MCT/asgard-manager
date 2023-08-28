@@ -1301,7 +1301,7 @@ class Ui_Dialog_Asgard(object):
         self.mTreePostgresql = TREEVIEWASGARD(self.groupBoxAffichageLeft)
         self.mTreePostgresql.setObjectName("mTreePostgresql")
         self.mTreePostgresql.clear()
-        self.mTreePostgresql.affiche(self.Dialog, self.myPathIcon, self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter, mTextFilter)
+        self.mTreePostgresql.affiche(self.Dialog, self.myPathIcon, self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter, mTextFilter, self.mListeDesArbos)
         self.mTreePostgresql.show()
         self.returnItemTreePostgresql("RESTORE", self.mTreePostgresql, mReturnItemTreePostgresql, mReturnItemTreePostgresqlSelect)
         return
@@ -1315,7 +1315,7 @@ class Ui_Dialog_Asgard(object):
         self.mTreePostgresql = TREEVIEWASGARD(self.groupBoxAffichageLeft)
         self.mTreePostgresql.setObjectName("mTreePostgresql")
         self.mTreePostgresql.clear()
-        self.mTreePostgresql.affiche(self.Dialog, self.myPathIcon, self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter, mTextFilter)
+        self.mTreePostgresql.affiche(self.Dialog, self.myPathIcon, self.mServeurNameFilter, self.mConfigConnectionFilter, self.mSchemasFilter, self.mSchemasTablesFilter, self.mSchemasBlocsFilter, self.mRolesEditeursLecteursFilter, self.mRolesProducteursFilter, mTextFilter, self.mListeDesArbos)
         self.mTreePostgresql.show()
         self.returnItemTreePostgresql("RESTORE", self.mTreePostgresql, mReturnItemTreePostgresql, mReturnItemTreePostgresqlSelect)
         return
