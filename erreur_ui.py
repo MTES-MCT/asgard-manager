@@ -67,7 +67,7 @@ class Ui_Dialog(object):
         self.textEdit.setGeometry(QtCore.QRect(10, 90, 500, 150))
         #----------
         self.labelRedmine = QtWidgets.QTextBrowser(Dialog)
-        self.labelRedmine.setGeometry(QtCore.QRect(15, Dialog.height() - 30, 500, 25))
+        self.labelRedmine.setGeometry(QtCore.QRect(15, int( Dialog.height() ) - 30, 500, 25))
         self.labelRedmine.setAlignment(Qt.AlignLeft)        
         self.labelRedmine.setObjectName("labelRedmine")
         self.labelRedmine.setStyleSheet("QTextBrowser {   \
@@ -75,7 +75,7 @@ class Ui_Dialog(object):
                                 background-color: transparent;      \
                                 }") 
         self.labelRedmineTitre = QtWidgets.QLabel(Dialog)
-        self.labelRedmineTitre.setGeometry(QtCore.QRect(20, Dialog.height() - 50, 440, 30))
+        self.labelRedmineTitre.setGeometry(QtCore.QRect(20, int( Dialog.height() ) - 50, 440, 30))
         self.labelRedmineTitre.setAlignment(Qt.AlignLeft)        
         self.labelRedmineTitre.setObjectName("labelRedmineTitre")
         self.labelRedmineTitre.setStyleSheet("QLabel { color: #958B62; font : bold; }") 

@@ -296,7 +296,7 @@ class Ui_Dialog_Asgard(object):
         #==========================              
         #Zone affichage  displayInformations                
         self.displayInformations = QtWidgets.QGroupBox(self.tab_widget_Explo)
-        self.displayInformations.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformations.setGeometry(QtCore.QRect(10, 10, int( self.tabWidget.width() ) -20 , int( self.tabWidget.height() ) - 40))
         self.displayInformations.setObjectName("displayInformations") 
         self.displayInformations.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -309,7 +309,7 @@ class Ui_Dialog_Asgard(object):
                 
         #==========================         
         self.groupBoxAffichageLeft = QtWidgets.QGroupBox(self.displayInformations)  
-        self.groupBoxAffichageLeft.setGeometry(QtCore.QRect(0,0,(self.displayInformations.width() - 10)/2,self.displayInformations.height() - 0))
+        self.groupBoxAffichageLeft.setGeometry(QtCore.QRect(0,0,int( (self.displayInformations.width() - 10)/2 ),int( self.displayInformations.height() - 0 )))
         self.groupBoxAffichageLeft.setObjectName("groupBoxAffichageLeft")
         self.groupBoxAffichageLeft.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -400,7 +400,7 @@ class Ui_Dialog_Asgard(object):
         #==========================              
         #Zone affichage  displayInformationsDroits                
         self.displayInformationsDroits = QtWidgets.QGroupBox(self.tab_widget_Droits)
-        self.displayInformationsDroits.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformationsDroits.setGeometry(QtCore.QRect(10, 10, int( self.tabWidget.width() ) -20 , int( self.tabWidget.height() ) - 40))
         self.displayInformationsDroits.setObjectName("displayInformationsDroits") 
         self.displayInformationsDroits.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -412,7 +412,7 @@ class Ui_Dialog_Asgard(object):
                                 }")      
         #==========================         
         self.groupBoxAffichageLeftDroits = QtWidgets.QGroupBox(self.displayInformationsDroits)  
-        self.groupBoxAffichageLeftDroits.setGeometry(QtCore.QRect(0,0,(self.displayInformationsDroits.width() - 10) * self.mSectionGauche,self.displayInformationsDroits.height() - 0))
+        self.groupBoxAffichageLeftDroits.setGeometry(QtCore.QRect(0,0,int((( self.displayInformationsDroits.width() - 10) * self.mSectionGauche)),int( self.displayInformationsDroits.height() ) - 0))
         self.groupBoxAffichageLeftDroits.setObjectName("groupBoxAffichageLeftDroits")
         self.groupBoxAffichageLeftDroits.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -430,7 +430,7 @@ class Ui_Dialog_Asgard(object):
         #==========================              
         #Zone affichage  displayInformationsDash                
         self.displayInformationsDash = QtWidgets.QGroupBox(self.tab_widget_Dash)
-        self.displayInformationsDash.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformationsDash.setGeometry(QtCore.QRect(10, 10, int( self.tabWidget.width() ) -20 ,int( self.tabWidget.height() ) - 40))
         self.displayInformationsDash.setObjectName("displayInformationsDash") 
         self.displayInformationsDash.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -442,7 +442,7 @@ class Ui_Dialog_Asgard(object):
                                 }")      
         #==========================         
         self.groupBoxAffichageLeftDash = QtWidgets.QGroupBox(self.displayInformationsDash)  
-        self.groupBoxAffichageLeftDash.setGeometry(QtCore.QRect(0,0,(self.displayInformationsDash.width() - 10) * self.mSectionGauche,self.displayInformationsDash.height() - 0))
+        self.groupBoxAffichageLeftDash.setGeometry(QtCore.QRect(0,0,int( (self.displayInformationsDash.width() - 10) * self.mSectionGauche ),int( self.displayInformationsDash.height() ) - 0))
         self.groupBoxAffichageLeftDash.setObjectName("groupBoxAffichageLeftDash")
         self.groupBoxAffichageLeftDash.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -460,7 +460,7 @@ class Ui_Dialog_Asgard(object):
         #==========================              
         #Zone affichage  displayInformationsDiagnostic               
         self.displayInformationsDiagnostic = QtWidgets.QGroupBox(self.tab_widget_Diagnostic)
-        self.displayInformationsDiagnostic.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformationsDiagnostic.setGeometry(QtCore.QRect(10, 10, int( self.tabWidget.width() ) -20 ,int( self.tabWidget.height() ) - 40))
         self.displayInformationsDiagnostic.setObjectName("displayInformationsDiagnostic") 
         self.displayInformationsDiagnostic.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -477,7 +477,7 @@ class Ui_Dialog_Asgard(object):
         #==========================              
         #Zone affichage  displayInformationsDiagnostic               
         self.displayInformationsTableauBord = QtWidgets.QGroupBox(self.tab_widget_TableauBord)
-        self.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, self.tabWidget.width() -20 ,self.tabWidget.height() - 40))
+        self.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, int( self.tabWidget.width() ) -20 ,int( self.tabWidget.height() ) - 40))
         self.displayInformationsTableauBord.setObjectName("displayInformationsTableauBord") 
         self.displayInformationsTableauBord.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -509,11 +509,11 @@ class Ui_Dialog_Asgard(object):
         #Boutons  
         #------       
         self.okhButton = QtWidgets.QPushButton(self.groupBoxDown)
-        self.okhButton.setGeometry(QtCore.QRect(((self.displayInformations.width() -200) / 3) + 100 + ((self.displayInformations.width() -200) / 3), 10, 100,23))
+        self.okhButton.setGeometry(QtCore.QRect( int( (self.displayInformations.width() -200 / 3) + 100 + (self.displayInformations.width() -200) / 3), 10, 100,23))
         self.okhButton.setObjectName("okhButton")
         #------                                    
         self.helpButton = QtWidgets.QPushButton(self.groupBoxDown)
-        self.helpButton.setGeometry(QtCore.QRect((self.displayInformations.width() -200) / 3, 10, 100,23))
+        self.helpButton.setGeometry(QtCore.QRect(int( (self.displayInformations.width() -200) / 3), 10, 100,23))
         self.helpButton.setObjectName("helpButton")
         #------  
         #Connections  

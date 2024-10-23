@@ -19,12 +19,12 @@ class Ui_Dialog(object):
         Dialog.setWindowIcon(icon)
 
         self.groupDialog = QtWidgets.QGroupBox(Dialog)
-        self.groupDialog.setGeometry(QtCore.QRect(5, 5, Dialog.width()-10,  Dialog.height()-10))
+        self.groupDialog.setGeometry(QtCore.QRect(5, 5, int( Dialog.width() )-10,  int( Dialog.height() )-10))
         self.groupDialog.setObjectName("groupDialog")
         self.groupDialog.setStyleSheet("QGroupBox {border: 3px solid #958B62;}")
         
         self.label_2 = QtWidgets.QLabel(self.groupDialog)
-        self.label_2.setGeometry(QtCore.QRect((self.groupDialog.width()/2) - 100, 5, 200, 30))
+        self.label_2.setGeometry(QtCore.QRect((int( self.groupDialog.width()/2 ) - 100), 5, 200, 30))
         self.label_2.setAlignment(Qt.AlignCenter)        
         font = QtGui.QFont()
         font.setPointSize(15) 
@@ -46,7 +46,7 @@ class Ui_Dialog(object):
         myDefPath = myPath.replace("\\","/");
         carIcon2 = QtGui.QImage(myDefPath)
         self.labelImage2.setPixmap(QtGui.QPixmap.fromImage(carIcon2))
-        self.labelImage2.setGeometry(QtCore.QRect(self.groupDialog.width()/2 - 55, 40, self.groupDialog.width()/2 + 50, self.groupDialog.height() - 80))
+        self.labelImage2.setGeometry(QtCore.QRect(int( self.groupDialog.width()/2 ) - 55, 40, int( self.groupDialog.width()/2 ) + 50, int( self.groupDialog.height() ) - 80))
         self.labelImage2.setObjectName("labelImage2")
         #self.labelImage2.setStyleSheet("QLabel {border: 3px solid #958B62;}")
 
@@ -77,7 +77,7 @@ class Ui_Dialog(object):
 
         self.pushButton = QtWidgets.QPushButton(self.groupDialog)
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setGeometry(QtCore.QRect(410, self.groupDialog.height() - 35, 100, 25))
+        self.pushButton.setGeometry(QtCore.QRect(410, int( self.groupDialog.height() ) - 35, 100, 25))
         self.pushButton.clicked.connect(Dialog.reject)
 
         self.retranslateUi(Dialog)

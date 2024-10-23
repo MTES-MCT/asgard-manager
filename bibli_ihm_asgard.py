@@ -26,7 +26,7 @@ import textwrap
 #==================================================
 def createIHMAffichageTableauBord(self) :
     self.zone_affichage_TableauBord = QtWidgets.QTextEdit(self.displayInformationsTableauBord)
-    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, self.displayInformationsTableauBord.width() -20 ,self.displayInformationsTableauBord.height() - 20))
+    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, int( self.displayInformationsTableauBord.width()) -20 ,int( self.displayInformationsTableauBord.height() ) - 20))
     self.zone_affichage_TableauBord.setObjectName("zone_affichage_TableauBord") 
     self.zone_affichage_TableauBord.setAcceptRichText(True)
     return
@@ -36,7 +36,7 @@ def createIHMAffichageTableauBord(self) :
 #==================================================
 def createIHMAffichageDiagnostic(self) :
     self.zone_affichage_diagnostic = QtWidgets.QTextEdit(self.displayInformationsDiagnostic)
-    self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, self.displayInformationsDiagnostic.width() -20 ,self.displayInformationsDiagnostic.height() - 20))
+    self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, int( self.displayInformationsDiagnostic.width() ) -20 , int( self.displayInformationsDiagnostic.height() ) - 20))
     self.zone_affichage_diagnostic.setObjectName("zone_affichage_diagnostic") 
     self.zone_affichage_diagnostic.setAcceptRichText(True)
     return
@@ -53,11 +53,11 @@ def createIHMAffichageDash(self) :
        self.dbName = "Ma base de données"
        
     self.labelChoiceGraph = QtWidgets.QLabel(self.groupBoxAffichageLeftDash)
-    self.labelChoiceGraph.setGeometry(QtCore.QRect(15,6,self.groupBoxAffichageLeftDash.width() - 20,20))
+    self.labelChoiceGraph.setGeometry(QtCore.QRect(15,6,int( self.groupBoxAffichageLeftDash.width() ) - 20,20))
     self.labelChoiceGraph.setObjectName("labelChoiceGraph")
     self.labelChoiceGraph.setAlignment(Qt.AlignLeft)
     self.comboChoiceGraph = QtWidgets.QComboBox(self.groupBoxAffichageLeftDash)
-    self.comboChoiceGraph.setGeometry(QtCore.QRect(10,21,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.comboChoiceGraph.setGeometry(QtCore.QRect(10,21,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.comboChoiceGraph.setObjectName("comboChoiceGraph")
     #--------
     self.dicChoiceGraph = {
@@ -73,7 +73,7 @@ def createIHMAffichageDash(self) :
 
     #-- Cadre Paramètres
     self.groupBoxParametre = QtWidgets.QGroupBox(self.groupBoxAffichageLeftDash)
-    self.groupBoxParametre.setGeometry(QtCore.QRect(10,50,self.groupBoxAffichageLeftDash.width() - 20, 235))
+    self.groupBoxParametre.setGeometry(QtCore.QRect(10,50,int( self.groupBoxAffichageLeftDash.width() ) - 20, 235))
     self.groupBoxParametre.setObjectName("groupBoxParametre")
     self.groupBoxParametre.setStyleSheet("QGroupBox {   \
                                 border-width: 2px;       \
@@ -83,7 +83,7 @@ def createIHMAffichageDash(self) :
  
     #Radio pie/bar
     self.groupBoxRadioPieBar = QtWidgets.QGroupBox(self.groupBoxAffichageLeftDash)
-    self.groupBoxRadioPieBar.setGeometry(QtCore.QRect(10,50,self.groupBoxAffichageLeftDash.width() - 20, 45))
+    self.groupBoxRadioPieBar.setGeometry(QtCore.QRect(10,50,int( self.groupBoxAffichageLeftDash.width() ) - 20, 45))
     self.groupBoxRadioPieBar.setObjectName("groupBoxRadioPieBar")
     self.groupBoxRadioPieBar.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -94,7 +94,7 @@ def createIHMAffichageDash(self) :
                                 padding: 6px;            \
                                 }")        
     self.labelTypeGraph = QtWidgets.QLabel(self.groupBoxRadioPieBar)
-    self.labelTypeGraph.setGeometry(QtCore.QRect(5,5,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.labelTypeGraph.setGeometry(QtCore.QRect(5,5,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.labelTypeGraph.setObjectName("labelTypeGraph")
     self.labelTypeGraph.setAlignment(Qt.AlignLeft)
     #--
@@ -137,7 +137,7 @@ def createIHMAffichageDash(self) :
     self.spinBoxMax.setObjectName("spinBoxMax")
     #--
     self.groupBoxBar = QtWidgets.QGroupBox(self.groupBoxRadioPieBar)
-    self.groupBoxBar.setGeometry(QtCore.QRect(10,30,self.groupBoxRadioPieBar.width() - 20, 25))
+    self.groupBoxBar.setGeometry(QtCore.QRect(10,30,int( self.groupBoxRadioPieBar.width() ) - 20, 25))
     self.groupBoxBar.setObjectName("groupBoxBar")
     self.groupBoxBar.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -159,7 +159,7 @@ def createIHMAffichageDash(self) :
     #--
 
     self.groupBoxCheckEtiquette = QtWidgets.QGroupBox(self.groupBoxAffichageLeftDash)
-    self.groupBoxCheckEtiquette.setGeometry(QtCore.QRect(10,95,self.groupBoxAffichageLeftDash.width() - 20, 65))
+    self.groupBoxCheckEtiquette.setGeometry(QtCore.QRect(10,95,int( self.groupBoxAffichageLeftDash.width() ) - 20, 65))
     self.groupBoxCheckEtiquette.setObjectName("groupBoxCheckEtiquette")
     self.groupBoxCheckEtiquette.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -170,29 +170,29 @@ def createIHMAffichageDash(self) :
                                 padding: 6px;            \
                                 }")        
     self.caseEtiGraph = QtWidgets.QCheckBox(self.groupBoxCheckEtiquette)    
-    self.caseEtiGraph.setGeometry(QtCore.QRect(5,0,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseEtiGraph.setGeometry(QtCore.QRect(5,0,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseEtiGraph.setObjectName("caseEtiGraph")
     self.caseEtiGraph.setChecked(True) 
     self.caseEtiGraph.toggled.connect(lambda : ShowHideTreeGraphSchemaBlocs(self)) 
     #--
     self.caseEtiLibelle = QtWidgets.QCheckBox(self.groupBoxCheckEtiquette)    
-    self.caseEtiLibelle.setGeometry(QtCore.QRect(35,15,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseEtiLibelle.setGeometry(QtCore.QRect(35,15,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseEtiLibelle.setObjectName("caseEtiLibelle")
     self.caseEtiLibelle.setChecked(True) 
     #--
     self.caseEtiPourc = QtWidgets.QCheckBox(self.groupBoxCheckEtiquette)    
-    self.caseEtiPourc.setGeometry(QtCore.QRect(35,30,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseEtiPourc.setGeometry(QtCore.QRect(35,30,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseEtiPourc.setObjectName("caseEtiPourc")
     self.caseEtiPourc.setChecked(False) 
     #--
     self.caseEtiValeur = QtWidgets.QCheckBox(self.groupBoxCheckEtiquette)    
-    self.caseEtiValeur.setGeometry(QtCore.QRect(35,45,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseEtiValeur.setGeometry(QtCore.QRect(35,45,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseEtiValeur.setObjectName("caseEtiValeur")
     self.caseEtiValeur.setChecked(False) 
     #--
     #Chekcked Legende
     self.groupBoxCheckLegende = QtWidgets.QGroupBox(self.groupBoxAffichageLeftDash)
-    self.groupBoxCheckLegende.setGeometry(QtCore.QRect(10,160,self.groupBoxAffichageLeftDash.width() - 20, 80))
+    self.groupBoxCheckLegende.setGeometry(QtCore.QRect(10,160,int( self.groupBoxAffichageLeftDash.width() ) - 20, 80))
     self.groupBoxCheckLegende.setObjectName("groupBoxCheckLegende")
     self.groupBoxCheckLegende.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -203,35 +203,35 @@ def createIHMAffichageDash(self) :
                                 padding: 6px;            \
                                 }")        
     self.caseLegGraph = QtWidgets.QCheckBox(self.groupBoxCheckLegende)    
-    self.caseLegGraph.setGeometry(QtCore.QRect(5,0,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseLegGraph.setGeometry(QtCore.QRect(5,0,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseLegGraph.setObjectName("LabelLegGraph")
     self.caseLegGraph.setChecked(True) 
     self.caseLegGraph.toggled.connect(lambda : ShowHideTreeGraphSchemaBlocs(self)) 
     #--
     self.caseLegNord = QtWidgets.QRadioButton(self.groupBoxCheckLegende)    
-    self.caseLegNord.setGeometry(QtCore.QRect(35,15,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseLegNord.setGeometry(QtCore.QRect(35,15,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseLegNord.setObjectName("caseLegNord")
     self.caseLegNord.setChecked(True) 
     #--
     self.caseLegOuest = QtWidgets.QRadioButton(self.groupBoxCheckLegende)    
-    self.caseLegOuest.setGeometry(QtCore.QRect(35,30,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseLegOuest.setGeometry(QtCore.QRect(35,30,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseLegOuest.setObjectName("caseLegOuest")
     self.caseLegOuest.setChecked(False) 
     #--
     self.caseLegEst = QtWidgets.QRadioButton(self.groupBoxCheckLegende)    
-    self.caseLegEst.setGeometry(QtCore.QRect(35,45,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseLegEst.setGeometry(QtCore.QRect(35,45,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseLegEst.setObjectName("caseLegEst")
     self.caseLegEst.setChecked(False) 
     #--
     self.caseLegSud = QtWidgets.QRadioButton(self.groupBoxCheckLegende)    
-    self.caseLegSud.setGeometry(QtCore.QRect(35,60,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseLegSud.setGeometry(QtCore.QRect(35,60,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseLegSud.setObjectName("caseLegSud")
     self.caseLegSud.setChecked(False) 
     #--
     #--
     #Titre et animation
     self.groupBoxCheckTitreAnim = QtWidgets.QGroupBox(self.groupBoxAffichageLeftDash)
-    self.groupBoxCheckTitreAnim.setGeometry(QtCore.QRect(10,240,self.groupBoxAffichageLeftDash.width() - 20, 55))
+    self.groupBoxCheckTitreAnim.setGeometry(QtCore.QRect(10,240,int( self.groupBoxAffichageLeftDash.width() ) - 20, 55))
     self.groupBoxCheckTitreAnim.setObjectName("groupBoxCheckTitreAnim")
     self.groupBoxCheckTitreAnim.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -242,17 +242,17 @@ def createIHMAffichageDash(self) :
                                 padding: 6px;            \
                                 }")        
     self.caseTitreGraph = QtWidgets.QCheckBox(self.groupBoxCheckTitreAnim)    
-    self.caseTitreGraph.setGeometry(QtCore.QRect(5,0,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseTitreGraph.setGeometry(QtCore.QRect(5,0,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseTitreGraph.setObjectName("LabelTitreGraph")
     self.caseTitreGraph.setChecked(True) 
     self.caseTitreGraph.toggled.connect(lambda : ShowHideTreeGraphSchemaBlocs(self)) 
     #--
     self.zoneTitre = QtWidgets.QLineEdit(self.groupBoxCheckTitreAnim)    
-    self.zoneTitre.setGeometry(QtCore.QRect(50,2,self.groupBoxAffichageLeftDash.width() - 75,20))
+    self.zoneTitre.setGeometry(QtCore.QRect(50,2,int( self.groupBoxAffichageLeftDash.width() ) - 75,20))
     self.zoneTitre.setObjectName("zoneTitre")
     #--
     self.caseAnimationGraph = QtWidgets.QCheckBox(self.groupBoxCheckTitreAnim)    
-    self.caseAnimationGraph.setGeometry(QtCore.QRect(5,20,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.caseAnimationGraph.setGeometry(QtCore.QRect(5,20,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
     self.caseAnimationGraph.setObjectName("caseAnimationGraph")
     self.caseAnimationGraph.setChecked(True) 
     #--
@@ -263,15 +263,15 @@ def createIHMAffichageDash(self) :
     self.mTreeGraphSchemasBlocs.setVisible(False)
     #--------                   
     self.executeButtonGraphColor = QtWidgets.QPushButton(self.groupBoxAffichageLeftDash)
-    self.executeButtonGraphColor.setGeometry(QtCore.QRect(self.groupBoxAffichageLeftDash.width()/2 - 50, self.groupBoxAffichageLeftDash.height() - 55, 100,23))
+    self.executeButtonGraphColor.setGeometry(QtCore.QRect(int( self.groupBoxAffichageLeftDash.width()/2 ) - 50, int( self.groupBoxAffichageLeftDash.height() ) - 55, 100,23))
     self.executeButtonGraphColor.setObjectName("executeButtonGraphColor") 
     #--------                   
     self.executeButtonGraph = QtWidgets.QPushButton(self.groupBoxAffichageLeftDash)
-    self.executeButtonGraph.setGeometry(QtCore.QRect(self.groupBoxAffichageLeftDash.width()/2 - 50, self.groupBoxAffichageLeftDash.height() - 30, 100,23))
+    self.executeButtonGraph.setGeometry(QtCore.QRect(int( self.groupBoxAffichageLeftDash.width()/2 ) - 50, int( self.groupBoxAffichageLeftDash.height() ) - 30, 100,23))
     self.executeButtonGraph.setObjectName("executeButtonSchema") 
 
-    self.executeButtonGraphColor.setGeometry(QtCore.QRect((self.groupBoxAffichageLeftDash.width() - 200) / 3, self.groupBoxAffichageLeftDash.height() - 30, 100,23))
-    self.executeButtonGraph.setGeometry(QtCore.QRect(((self.groupBoxAffichageLeftDash.width() - 200) / 3 * 2) + 100, self.groupBoxAffichageLeftDash.height() - 30, 100,23))
+    self.executeButtonGraphColor.setGeometry(QtCore.QRect(int((self.groupBoxAffichageLeftDash.width() - 200) / 3), int(self.groupBoxAffichageLeftDash.height()) - 30, 100, 23))
+    self.executeButtonGraph.setGeometry(QtCore.QRect((int((self.groupBoxAffichageLeftDash.width()     - 200) / 3) * 2) + 100, int( self.groupBoxAffichageLeftDash.height() ) - 30, 100,23))
 
     #Connections 
     self.executeButtonGraphColor.clicked.connect(lambda : bibli_graph_asgard.executeGraphColorBloc(self))
@@ -285,7 +285,7 @@ def createIHMAffichageDash(self) :
     mL = self.displayInformationsDash.width() - self.groupBoxAffichageLeftDash.width() - 10
     mH = self.displayInformationsDash.height() - 0
     self.groupBoxAffichageRightDash = QtWidgets.QGroupBox(self.displayInformationsDash)
-    self.groupBoxAffichageRightDash.setGeometry(QtCore.QRect(mX, mY, mL, mH))
+    self.groupBoxAffichageRightDash.setGeometry(QtCore.QRect(int( mX ), int( mY ), int( mL ), int( mH )))
     self.groupBoxAffichageRightDash.setObjectName("groupBoxAffichageRightDash")
     self.groupBoxAffichageRightDash.setStyleSheet("QGroupBox {   \
                                 border-style: dashed;    \
@@ -392,7 +392,7 @@ def ShowHideTreeGraphSchemaBlocs(self) :
 #==================================================
 def createIHMAffichageDroits(self) :
     self.groupBoxAffichageRightDroits = QtWidgets.QGroupBox(self.displayInformationsDroits)
-    self.groupBoxAffichageRightDroits.setGeometry(QtCore.QRect(self.groupBoxAffichageLeftDroits.width() + 10, 0, 400, self.displayInformationsDroits.height() - 0))
+    self.groupBoxAffichageRightDroits.setGeometry(QtCore.QRect(int( self.groupBoxAffichageLeftDroits.width() ) + 10, 0, 400, int( self.displayInformationsDroits.height() ) - 0))
     self.groupBoxAffichageRightDroits.setObjectName("groupBoxAffichageRightDroits")
     self.groupBoxAffichageRightDroits.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -411,7 +411,7 @@ def createIHMAffichageDroits(self) :
     mY = 0
     mL = self.displayInformationsDroits.width() - self.groupBoxAffichageLeftDroits.width() - self.groupBoxAffichageRightDroits.width() - 25
     mH = self.displayInformationsDroits.height() - 0
-    self.groupBoxAffichageRightDroitsSchemasZone.setGeometry(QtCore.QRect(mX, mY, mL, mH))
+    self.groupBoxAffichageRightDroitsSchemasZone.setGeometry(QtCore.QRect(int( mX ), int( mY ), int( mL ), int( mH)))
     self.groupBoxAffichageRightDroitsSchemasZone.setObjectName("groupBoxAffichageRightDroitsSchemasZone")
     self.groupBoxAffichageRightDroitsSchemasZone.setStyleSheet("QGroupBox {   \
                                 border-style: dashed;    \
@@ -424,7 +424,7 @@ def createIHMAffichageDroits(self) :
     self.groupBoxAffichageRightDroitsSchemasZone.setVisible(True)
     #---------
     self.groupBoxAffichageRightDroitsSchemas = QtWidgets.QGroupBox(self.groupBoxAffichageRightDroitsSchemasZone)
-    self.groupBoxAffichageRightDroitsSchemas.setGeometry(QtCore.QRect(2, 2, self.groupBoxAffichageRightDroitsSchemasZone.width() - 4, self.groupBoxAffichageRightDroitsSchemasZone.height() - 4))
+    self.groupBoxAffichageRightDroitsSchemas.setGeometry(QtCore.QRect(2, 2, int( self.groupBoxAffichageRightDroitsSchemasZone.width() ) - 4, int( self.groupBoxAffichageRightDroitsSchemasZone.height()) - 4))
     self.groupBoxAffichageRightDroitsSchemas.setObjectName("groupBoxAffichageRightDroitsSchemas")
     self.groupBoxAffichageRightDroitsSchemas.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -439,7 +439,7 @@ def createIHMAffichageDroits(self) :
     #==================================================
     #Affichage Help
     self.groupBoxAffichageHelpDroits = QtWidgets.QGroupBox(self.groupBoxAffichageRightDroits)
-    self.groupBoxAffichageHelpDroits.setGeometry(QtCore.QRect(10, 10, self.Dialog.groupBoxAffichageRightDroits.width() - 20, self.Dialog.groupBoxAffichageRightDroits.height() - 20))
+    self.groupBoxAffichageHelpDroits.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.groupBoxAffichageRightDroits.width() ) - 20, int( self.Dialog.groupBoxAffichageRightDroits.height() ) - 20))
     self.groupBoxAffichageHelpDroits.setObjectName("groupBoxAffichageHelpDroits")
     self.groupBoxAffichageHelpDroits.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -452,7 +452,7 @@ def createIHMAffichageDroits(self) :
     #==================================================
     #Option Roles et Groupes Attributs
     self.groupBoxAffichageRoleAttribut= QtWidgets.QGroupBox(self.groupBoxAffichageRightDroits)
-    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(5,5,self.Dialog.groupBoxAffichageRightDroits.width() - 10 , 185))
+    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(5,5,int( self.Dialog.groupBoxAffichageRightDroits.width() ) - 10 , 185))
     self.groupBoxAffichageRoleAttribut.setObjectName("groupBoxAffichageRoleAttribut")
     self.groupBoxAffichageRoleAttribut.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -530,7 +530,9 @@ def createIHMAffichageDroits(self) :
     #-------- Simple/Complet                            
     self.button_simplecomplet = QtWidgets.QPushButton(self.groupBoxAffichageRoleAttributDroits)
     y, l, h = 8, 100, 15 
-    x = (self.groupBoxAffichageRoleAttributDroits.width() / 2) - (l/2)    
+    x = (self.groupBoxAffichageRoleAttributDroits.width() / 2) - (l/2)
+    x, y, l, h = int(x), int(y), int(l), int(h)
+         
     self.button_simplecomplet.setGeometry(QtCore.QRect(x, y, l, h))
     self.button_simplecomplet.setObjectName("button_simplecomplet")
     #self.button_simplecomplet.setChecked(False) 
@@ -676,7 +678,7 @@ def createIHMAffichageDroits(self) :
     #==================================================
     #Option Roles et Groupes Appartenance
     self.groupBoxAffichageRoleAppart= QtWidgets.QGroupBox(self.groupBoxAffichageRightDroits)
-    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(10, self.groupBoxAffichageRoleAttribut.y() + self.groupBoxAffichageRoleAttribut.height()  ,self.Dialog.groupBoxAffichageRoleAttributGenerale.width(), self.Dialog.groupBoxAffichageRightDroits.height() - self.groupBoxAffichageRoleAttribut.height() - 50))
+    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(10, int( self.groupBoxAffichageRoleAttribut.y() + self.groupBoxAffichageRoleAttribut.height() )  ,int( self.Dialog.groupBoxAffichageRoleAttributGenerale.width() ), int( self.Dialog.groupBoxAffichageRightDroits.height() - self.groupBoxAffichageRoleAttribut.height() ) - 50))
     self.groupBoxAffichageRoleAppart.setObjectName("groupBoxAffichageRoleAppart")
     self.groupBoxAffichageRoleAppart.setStyleSheet("QGroupBox {   \
                                 border-width: 2px;       \
@@ -686,7 +688,7 @@ def createIHMAffichageDroits(self) :
     self.y_button_membreappartient = 8 + 15
     #--------                                  
     self.groupBoxAffichageRoleAppartOut= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient ) ))
     self.groupBoxAffichageRoleAppartOut.setObjectName("groupBoxAffichageRoleAppartOut")
     self.groupBoxAffichageRoleAppartOut.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -694,7 +696,7 @@ def createIHMAffichageDroits(self) :
                                 }") 
     #-                                  
     self.groupBoxAffichageRoleAppartOutBIS= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient ) ))
     self.groupBoxAffichageRoleAppartOutBIS.setObjectName("groupBoxAffichageRoleAppartOutBIS")
     self.groupBoxAffichageRoleAppartOutBIS.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -718,7 +720,8 @@ def createIHMAffichageDroits(self) :
     #-- 
     self.button_membreappartient = QtWidgets.QPushButton(self.groupBoxAffichageRoleAppart)
     y, l, h = 8, 160, 15 
-    x = (self.groupBoxAffichageRoleAppart.width() / 2) - (l/2) # alignement centré    
+    x = (self.groupBoxAffichageRoleAppart.width() / 2) - (l/2) # alignement centré 
+    x, y, l, h = int(x), int(y), int(l), int(h)       
     #x = (self.groupBoxAffichageRoleAppart.width() - (l + 30)) # alignement à droite    
     self.button_membreappartient.setGeometry(QtCore.QRect(x, y, l, h))
     self.button_membreappartient.setObjectName("button_membreappartient")
@@ -740,12 +743,12 @@ def createIHMAffichageDroits(self) :
     #------ 
     #------ 
     self.executeDroits = QtWidgets.QPushButton(self.groupBoxAffichageRoleAppart)
-    self.executeDroits.setGeometry(QtCore.QRect(self.groupBoxAffichageRoleAppartOut.width() , (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) , 20, 60))
+    self.executeDroits.setGeometry(QtCore.QRect(int( self.groupBoxAffichageRoleAppartOut.width() ) , int( (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) ) , 20, 60))
     self.executeDroits.setObjectName("executeDroits") 
     self.executeDroits.setVisible(False)
     #-------- 
     self.labelOutIn = QtWidgets.QLabel(self.groupBoxAffichageRoleAppart)     
-    self.labelOutIn.setGeometry(QtCore.QRect(self.groupBoxAffichageRoleAppartOut.width() , (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) , 20, 60))
+    self.labelOutIn.setGeometry(QtCore.QRect(int( self.groupBoxAffichageRoleAppartOut.width() ) , int( (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) ), 20, 60))
     self.labelOutIn.setObjectName("labelOutIn")
     self.labelOutIn.setVisible(False)
     #Connections 
@@ -753,7 +756,7 @@ def createIHMAffichageDroits(self) :
                                 
     #--------                                  
     self.groupBoxAffichageRoleAppartIn= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 12, int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
     self.groupBoxAffichageRoleAppartIn.setObjectName("groupBoxAffichageRoleAppartIn")
     self.groupBoxAffichageRoleAppartIn.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -761,7 +764,7 @@ def createIHMAffichageDroits(self) :
                                 }")                                         
     #-                                  
     self.groupBoxAffichageRoleAppartInBIS= QtWidgets.QGroupBox(self.groupBoxAffichageRoleAppart)
-    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 12, int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
     self.groupBoxAffichageRoleAppartInBIS.setObjectName("groupBoxAffichageRoleAppartInBIS")
     self.groupBoxAffichageRoleAppartInBIS.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -776,7 +779,7 @@ def createIHMAffichageDroits(self) :
     #Boutons  
     #------ 
     self.executeButtonRole = QtWidgets.QPushButton(self.groupBoxAffichageRightDroits)
-    self.executeButtonRole.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) - (self.executeButtonRole.width() /2) + self.groupBoxAffichageRoleAppart.x(), self.groupBoxAffichageRightDroits.height() - 33, 100,23))
+    self.executeButtonRole.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) - (self.executeButtonRole.width() /2) ) + self.groupBoxAffichageRoleAppart.x(), int( self.groupBoxAffichageRightDroits.height() ) - 33, 100,23))
     self.executeButtonRole.setObjectName("executeButtonRole") 
     self.executeButtonRole.setVisible(False)    
     #Connections 
@@ -1090,14 +1093,14 @@ def showHideCtrlSimpleComplet(self, mFlags) :
     self.button_simplecomplet.setText(mtext)
     self.button_simplecomplet.setToolTip("{}".format(mtextComplete + " / " + mtextSimplifie))           
 
-    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(5,5,self.Dialog.groupBoxAffichageRightDroits.width() - 10, mHauteurRoleAttribut))
+    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(5,5,int( self.Dialog.groupBoxAffichageRightDroits.width() ) - 10, mHauteurRoleAttribut))
     self.groupBoxAffichageRoleAttributDroits.setGeometry(QtCore.QRect(5, 130, 380 , mHauteurRoleAttributDroits))
 
-    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(10, self.groupBoxAffichageRoleAttribut.y() + self.groupBoxAffichageRoleAttribut.height() ,self.Dialog.groupBoxAffichageRoleAttributGenerale.width(), self.Dialog.groupBoxAffichageRightDroits.height() - self.groupBoxAffichageRoleAttribut.height() - 50))
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
-    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
-    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 2 + self.y_button_membreappartient,(self.groupBoxAffichageRoleAppart.width() /2) - 12, self.groupBoxAffichageRoleAppart.height() - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(10, int( self.groupBoxAffichageRoleAttribut.y() + self.groupBoxAffichageRoleAttribut.height() ),int( self.Dialog.groupBoxAffichageRoleAttributGenerale.width() ), int( self.Dialog.groupBoxAffichageRightDroits.height() - self.groupBoxAffichageRoleAttribut.height() ) - 50))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(2, 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 12, int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 2 + self.y_button_membreappartient,int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 12, int( self.groupBoxAffichageRoleAppart.height() ) - 4 - self.y_button_membreappartient))
 
 
     if hasattr(self.Dialog, 'mTreePostgresqlMembresOut') :  #Pas d'affichage de l'instance Treeview
@@ -1109,8 +1112,8 @@ def showHideCtrlSimpleComplet(self, mFlags) :
     if hasattr(self.Dialog, 'mTreePostgresqlMembresIn') :  #Pas d'affichage de l'instance Treeview
        self.mTreePostgresqlMembresIn.setGeometry(5 ,5 , self.groupBoxAffichageRoleAppartIn.width() - 10, self.groupBoxAffichageRoleAppartIn.height() - 10 )
 
-    self.executeDroits.setGeometry(QtCore.QRect(self.groupBoxAffichageRoleAppartOut.width() , (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) , 20, 60))
-    self.executeButtonRole.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) - (self.executeButtonRole.width() /2) + self.groupBoxAffichageRoleAppart.x(), self.groupBoxAffichageRightDroits.height() - 33, 100,23))
+    self.executeDroits.setGeometry(QtCore.QRect(int( self.groupBoxAffichageRoleAppartOut.width() ) , int( (self.groupBoxAffichageRoleAppart.height()/2) - (self.executeDroits.height()/2) ) , 20, 60))
+    self.executeButtonRole.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) - (self.executeButtonRole.width() /2) ) + self.groupBoxAffichageRoleAppart.x(), int( self.groupBoxAffichageRightDroits.height() ) - 33, 100,23))
 
     return   
 #==================================================
@@ -1119,7 +1122,7 @@ def showHideCtrlSimpleComplet(self, mFlags) :
     
 def createIHMAffichage(self) :
     self.groupBoxAffichageRight = QtWidgets.QGroupBox(self.displayInformations)
-    self.groupBoxAffichageRight.setGeometry(QtCore.QRect(((self.displayInformations.width() - 40)/2) + 30, 0, ((self.displayInformations.width() - 40)/2) + 10 ,self.displayInformations.height() - 0))
+    self.groupBoxAffichageRight.setGeometry(QtCore.QRect(int( ((self.displayInformations.width() - 40)/2) ) + 30, 0, int( ((self.displayInformations.width() - 40)/2) ) + 10 ,int( self.displayInformations.height() ) - 0))
     self.groupBoxAffichageRight.setObjectName("groupBoxAffichageRight")
     self.groupBoxAffichageRight.setStyleSheet("QGroupBox {   \
                                 border-style: outset;    \
@@ -1134,7 +1137,7 @@ def createIHMAffichage(self) :
     #==================================================
     #Affichage Help
     self.groupBoxAffichageHelp = QtWidgets.QGroupBox(self.groupBoxAffichageRight)
-    self.groupBoxAffichageHelp.setGeometry(QtCore.QRect(10, 10, self.Dialog.groupBoxAffichageRight.width() - 20, self.Dialog.groupBoxAffichageRight.height() - 20))
+    self.groupBoxAffichageHelp.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.groupBoxAffichageRight.width() ) - 20, int( self.Dialog.groupBoxAffichageRight.height() ) - 20))
     self.groupBoxAffichageHelp.setObjectName("groupBoxAffichageHelp")
     self.groupBoxAffichageHelp.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -1147,7 +1150,7 @@ def createIHMAffichage(self) :
     #==================================================
     #Option Schémas Niv 1
     self.groupBoxAffichageSchema = QtWidgets.QGroupBox(self.groupBoxAffichageRight)
-    self.groupBoxAffichageSchema.setGeometry(QtCore.QRect(10,10,self.Dialog.groupBoxAffichageRight.width() - 10, 450))
+    self.groupBoxAffichageSchema.setGeometry(QtCore.QRect(10,10,int( self.Dialog.groupBoxAffichageRight.width() ) - 10, 450))
     self.groupBoxAffichageSchema.setObjectName("groupBoxAffichageSchema")
     self.groupBoxAffichageSchema.setStyleSheet("QGroupBox {   \
                                 border-width: 0px;       \
@@ -1349,7 +1352,7 @@ def genereObjetImageHelp(self, mNameObjet, mName,mX, mY, mL, mH, mIcon, mNameObj
     mRatio = 0.14
     mLib = returnListeTexte(self, mLibelle, self.Dialog.groupBoxAffichageHelp.width() * mRatio)
     mhauteur = (2 if len(mLib) == 1 else len(mLib))
-    mNameObjetLib.setGeometry(QtCore.QRect(mX , mY -5, self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib, (mhauteur * 21) + 0))
+    mNameObjetLib.setGeometry(QtCore.QRect(mX , mY -5, int( self.Dialog.groupBoxAffichageHelp.width() - mDeltaImgLib ), int( (mhauteur * 21) ) + 0))
     mNameObjetLib.setObjectName(mNameLib)
     mNameObjetLib.setText(mLibTitre + '<br>{}'.format('<br>'.join(mLib)))
     #mNameObjetLib.setStyleSheet("QLabel { border: 2px solid red;}") 
@@ -1368,7 +1371,7 @@ def genereObjetImageHelpDroits(self, mNameObjet, mName,mX, mY, mL, mH, mIcon, mN
     mRatio = 0.14
     mLib = returnListeTexte(self, mLibelle, self.Dialog.groupBoxAffichageHelpDroits.width() * mRatio)
     mhauteur = (2 if len(mLib) == 1 else len(mLib))
-    mNameObjetLib.setGeometry(QtCore.QRect(mX , mY -5, self.Dialog.groupBoxAffichageHelpDroits.width() - mDeltaImgLib, (mhauteur * 21) + 0))
+    mNameObjetLib.setGeometry(QtCore.QRect(mX , mY -5, int( self.Dialog.groupBoxAffichageHelpDroits.width() - mDeltaImgLib ), int( (mhauteur * 21) ) + 0))
     mNameObjetLib.setObjectName(mNameLib)
     mNameObjetLib.setText(mLibTitre + '<br>{}'.format('<br>'.join(mLib)))
     #mNameObjetLib.setStyleSheet("QLabel { border: 2px solid red;}") 

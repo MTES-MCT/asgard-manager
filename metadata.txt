@@ -3,7 +3,7 @@ name = ASGARD MANAGER
 description=ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 about=This plugin ASGARD Manager - Gestion automatique et simplifiee des droits dans les bases de donnees
 category = Tools
-version=1.3.4
+version=1.3.5
 qgisMinimumVersion=3.0
 # Optional items:
 changelog:
@@ -11,6 +11,10 @@ changelog:
     ==========================================================================
     = ASGARD MANAGER 
     = Gestion automatique et simplifiee des droits dans les bases de donnees
+    ==========================================================================
+    ** 1.3.5 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DNUM/UNI/DRC Site de Rouen
+               Version under Qgis 3.34
+            * Correction d un bug pour la gestion des coordonnees en Integer et non plus en Float
     ==========================================================================
     ** 1.3.4 : Didier LECLERC CMSIG MTE-MCTRCT-Mer/SG/DNUM/UNI/DRC Site de Rouen
                Version under Qgis 3.32

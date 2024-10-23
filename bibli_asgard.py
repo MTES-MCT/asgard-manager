@@ -644,7 +644,7 @@ class TREEVIEWASGARDGRAPHOPTIONS(QTreeWidget):
         self.Dialog = Dialog 
         mYOptions = 50
         mHOptions = (self.Dialog.groupBoxAffichageLeftDash.height()/2) - 50
-        self.setGeometry(15, mYOptions, self.Dialog.groupBoxAffichageLeftDash.width() - 30, mHOptions)
+        self.setGeometry(15, mYOptions, int(self.Dialog.groupBoxAffichageLeftDash.width()) - 30, mHOptions)
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -794,7 +794,7 @@ class TREEVIEWASGARDGRAPHSCHEMASBLOCS(QTreeWidget):
         self.Dialog = Dialog 
         mYBlocs = self.Dialog.groupBoxParametre.y() + self.Dialog.groupBoxParametre.height() + 10
         mHBlocs = (self.Dialog.groupBoxAffichageLeftDash.height() - (self.Dialog.groupBoxParametre.y() + self.Dialog.groupBoxParametre.height() + 50))
-        self.setGeometry(15, mYBlocs, self.Dialog.groupBoxAffichageLeftDash.width() - 30, mHBlocs)                                                 
+        self.setGeometry(15, mYBlocs, int(self.Dialog.groupBoxAffichageLeftDash.width()) - 30, mHBlocs)                                                 
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -869,7 +869,7 @@ class TREEVIEWASGARDSCHEMALECTEUR(QTreeWidget):
     #===============================              
     def afficheSchemaLecteur(self, Dialog, myPathIcon, mRolnameID, ArraymlisteDesRolesDeGroupeEtConnexions): 
         self.Dialog = Dialog 
-        self.setGeometry(5, 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+        self.setGeometry(5, 5,  int(self.Dialog.groupBoxAffichageRightDroitsSchemas.width()) - 10, int((self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3))
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -918,7 +918,7 @@ class TREEVIEWASGARDSCHEMAEDITEUR(QTreeWidget):
     #===============================              
     def afficheSchemaEditeur(self, Dialog, myPathIcon, mRolnameID, ArraymlisteDesRolesDeGroupeEtConnexions): 
         self.Dialog = Dialog 
-        self.setGeometry(5, self.Dialog.groupBoxAffichageLeftDroits.height()/3 + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3 )
+        self.setGeometry(5, int(self.Dialog.groupBoxAffichageLeftDroits.height()/3) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (int((self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3) ) )
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -967,7 +967,7 @@ class TREEVIEWASGARDSCHEMAPRODUCTEUR(QTreeWidget):
     #===============================              
     def afficheSchemaProducteur(self, Dialog, myPathIcon, mRolnameID, ArraymlisteDesRolesDeGroupeEtConnexions): 
         self.Dialog = Dialog 
-        self.setGeometry(5, ((self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+        self.setGeometry(5, (int(self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  int(self.Dialog.groupBoxAffichageRightDroitsSchemas.width()) - 10, int((self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)) 
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1033,7 +1033,7 @@ class TREEVIEWASGARDMEMBRESOUT(QTreeWidget):
                zMessHeaderLabels += t + " / "
         self.setHeaderLabels([mServeurName])
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
-        self.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() -10 )
+        self.setGeometry(5, 5, int(self.Dialog.groupBoxAffichageRoleAppartOut.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartOut.height()) -10 )
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1099,7 +1099,7 @@ class TREEVIEWASGARDMEMBRESOUT(QTreeWidget):
                zMessHeaderLabels += t + " / "
         self.setHeaderLabels([mServeurName])
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
-        self.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() -10 )
+        self.setGeometry(5, 5, int(self.Dialog.groupBoxAffichageRoleAppartOut.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartOut.height()) -10 )
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1193,7 +1193,7 @@ def addDeplaceGif(**kwargs) :
        _movie = QtGui.QMovie(kwargs['_gif'])
        kwargs['_objet'].setMovie(_movie)
        _movie.start()
-    kwargs['_objet'].setGeometry(QtCore.QRect(kwargs['_x'], kwargs['_y'], kwargs['_l'], kwargs['_h']))
+    kwargs['_objet'].setGeometry(QtCore.QRect(int( kwargs['_x'] ), int( kwargs['_y'] ), int( kwargs['_l'] ), int( kwargs['_h'] )))
     return
 
 #============     
@@ -1511,7 +1511,7 @@ class TREEVIEWASGARDMEMBRESIN(QTreeWidget):
                zMessHeaderLabels += t + " / "
         self.setHeaderLabels([mServeurName])
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
-        self.setGeometry(5,5, self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        self.setGeometry(5,5, int(self.Dialog.groupBoxAffichageRoleAppartIn.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartIn.height()) - 10 )
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1578,7 +1578,7 @@ class TREEVIEWASGARDMEMBRESIN(QTreeWidget):
                zMessHeaderLabels += t + " / "
         self.setHeaderLabels([mServeurName])
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
-        self.setGeometry(5,5, self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        self.setGeometry(5,5, int(self.Dialog.groupBoxAffichageRoleAppartIn.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartIn.height()) - 10 )
         #---
         self.header().setStretchLastSection(False)
         self.header().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1700,7 +1700,7 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
                zMessHeaderLabels += t + " / "
         self.setHeaderLabels([mServeurName])
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
-        self.setGeometry(15, 15, self.Dialog.groupBoxAffichageLeftDroits.width() - 30, self.Dialog.groupBoxAffichageLeftDroits.height() - 30)
+        self.setGeometry(15, 15, int(self.Dialog.groupBoxAffichageLeftDroits.width()) - 30, int(self.Dialog.groupBoxAffichageLeftDroits.height()) - 30)
         
         #===============================
         #============
@@ -2162,22 +2162,22 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         Dialog.mTreePostgresqlMembresOut.clear()
         Dialog.mTreePostgresqlMembresOut.afficheDroitsOut(self.Dialog, self.myPathIcon, mServeurNameOut, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresOut.show()
-        Dialog.mTreePostgresqlMembresOut.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() - 10 )
+        Dialog.mTreePostgresqlMembresOut.setGeometry(5, 5, int(self.Dialog.groupBoxAffichageRoleAppartOut.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartOut.height()) - 10 )
         #-
         Dialog.mTreePostgresqlMembresOutBIS.clear()
         Dialog.mTreePostgresqlMembresOutBIS.afficheDroitsOutBIS(self.Dialog, self.myPathIcon, mServeurNameOutBIS, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresOutBIS.show()
-        Dialog.mTreePostgresqlMembresOutBIS.setGeometry(5, 5, self.Dialog.groupBoxAffichageRoleAppartOut.width() - 10, self.Dialog.groupBoxAffichageRoleAppartOut.height() - 10 )
+        Dialog.mTreePostgresqlMembresOutBIS.setGeometry(5, 5, int(self.Dialog.groupBoxAffichageRoleAppartOut.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartOut.height()) - 10 )
         # Tree In
         Dialog.mTreePostgresqlMembresIn.clear()
         Dialog.mTreePostgresqlMembresIn.afficheDroitsIn(self.Dialog, self.myPathIcon, mServeurNameIn, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresIn.show()
-        Dialog.mTreePostgresqlMembresIn.setGeometry(5 ,5 , self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        Dialog.mTreePostgresqlMembresIn.setGeometry(5 ,5 , int(self.Dialog.groupBoxAffichageRoleAppartIn.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartIn.height()) - 10 )
         #-
         Dialog.mTreePostgresqlMembresInBIS.clear()
         Dialog.mTreePostgresqlMembresInBIS.afficheDroitsInBIS(self.Dialog, self.myPathIcon, mServeurNameInBIS, mRolnameID, mRolcanLogin, self.mConfigConnection, self.ArraymlisteDesRolesDeGroupeEtConnexions)
         Dialog.mTreePostgresqlMembresInBIS.show()
-        Dialog.mTreePostgresqlMembresInBIS.setGeometry(5 ,5 , self.Dialog.groupBoxAffichageRoleAppartIn.width() - 10, self.Dialog.groupBoxAffichageRoleAppartIn.height() - 10 )
+        Dialog.mTreePostgresqlMembresInBIS.setGeometry(5 ,5 , int(self.Dialog.groupBoxAffichageRoleAppartIn.width()) - 10, int(self.Dialog.groupBoxAffichageRoleAppartIn.height()) - 10 )
 
         #mServeurNameIn = QtWidgets.QApplication.translate("bibli_asgard", "Belongs to group :", None)    
 
@@ -2188,16 +2188,16 @@ class TREEVIEWASGARDDROITS(QTreeWidget):
         if self.mode == "update" :
            Dialog.mTreePostgresqlSchemaLecteur.afficheSchemaLecteur(self.Dialog, self.myPathIcon, mRolnameID, self.ArraymlisteDesRolesDeGroupeEtConnexions)
            Dialog.mTreePostgresqlSchemaLecteur.show()
-           Dialog.mTreePostgresqlSchemaLecteur.setGeometry(5, ((self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+           Dialog.mTreePostgresqlSchemaLecteur.setGeometry(5, (int(self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  int(self.Dialog.groupBoxAffichageRightDroitsSchemas.width()) - 10, (int(((self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3) )))
            #Dialog.mTreePostgresqlSchemaLecteur.setGeometry(5, 5, self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10 , (self.Dialog.groupBoxAffichageRightDroitsSchemas.height() - 20)/3)
  
            Dialog.mTreePostgresqlSchemaEditeur.afficheSchemaEditeur(self.Dialog, self.myPathIcon, mRolnameID, self.ArraymlisteDesRolesDeGroupeEtConnexions)
            Dialog.mTreePostgresqlSchemaEditeur.show()
-           Dialog.mTreePostgresqlSchemaEditeur.setGeometry(5, self.Dialog.groupBoxAffichageLeftDroits.height()/3 + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+           Dialog.mTreePostgresqlSchemaEditeur.setGeometry(5, int(self.Dialog.groupBoxAffichageLeftDroits.height()/3) + 5,  int(self.Dialog.groupBoxAffichageRightDroitsSchemas.width()) - 10, int((self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3))
 
            Dialog.mTreePostgresqlSchemaProducteur.afficheSchemaProducteur(self.Dialog, self.myPathIcon, mRolnameID, self.ArraymlisteDesRolesDeGroupeEtConnexions)
            Dialog.mTreePostgresqlSchemaProducteur.show()
-           Dialog.mTreePostgresqlSchemaProducteur.setGeometry(5, 5, self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10 , (self.Dialog.groupBoxAffichageRightDroitsSchemas.height() - 20)/3)
+           Dialog.mTreePostgresqlSchemaProducteur.setGeometry(5, 5, int(self.Dialog.groupBoxAffichageRightDroitsSchemas.width()) - 10 , int((self.Dialog.groupBoxAffichageRightDroitsSchemas.height() - 20)/3))
            #Dialog.mTreePostgresqlSchemaProducteur.setGeometry(5, ((self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
 
         return
@@ -2525,7 +2525,7 @@ class TREEVIEWASGARD(QTreeWidget):
         self.setHeaderLabels(mTempServeurName)
         self.headerItem().setToolTip(0, zMessHeaderLabels[:-3])
         y = 35  # 15
-        self.setGeometry(15, y, self.Dialog.groupBoxAffichageLeft.width() - 30, self.Dialog.groupBoxAffichageLeft.height() - 50)
+        self.setGeometry(15, y, int(self.Dialog.groupBoxAffichageLeft.width()) - 30, int(self.Dialog.groupBoxAffichageLeft.height()) - 50)
         self.mDepartCouper = ''
         
         # FILTRE
@@ -4446,7 +4446,7 @@ def createParam(monFichierParam, dicWithValue, mBlocs,  carDebut, carFin) :
        return    
 
 #==================================================
-def returnVersion() : return "version 1.3.4"
+def returnVersion() : return "version 1.3.5"
 
 #==================================================
 def returnSiVersionQgisSuperieureOuEgale(_mVersTexte) :
@@ -4673,87 +4673,88 @@ def returnIcon( iconAdress) :
 
 #==================================================
 def resizeIhm(self, l_Dialog, h_Dialog) :
+    l_Dialog, h_Dialog = int(l_Dialog), int(h_Dialog)
     self.Dialog.tabWidget.setGeometry(QtCore.QRect(10, 70, l_Dialog -20 ,h_Dialog - 130))
-    self.Dialog.displayInformations.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
-    self.groupBoxAffichageLeft.setGeometry(QtCore.QRect(0,0,(self.Dialog.displayInformations.width() - 40)/2,self.Dialog.displayInformations.height() - 0))
+    self.Dialog.displayInformations.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.tabWidget.width() ) -20 ,int( self.Dialog.tabWidget.height() ) - 40))
+    self.groupBoxAffichageLeft.setGeometry(QtCore.QRect(0,0,(int(( self.Dialog.displayInformations.width() - 40)/2) ),int( self.Dialog.displayInformations.height() - 0)) )
     #----
-    self.Dialog.displayInformationsDroits.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
-    self.groupBoxAffichageLeftDroits.setGeometry(QtCore.QRect(0,0,(self.Dialog.displayInformationsDroits.width() - 10) * self.Dialog.mSectionGauche,self.Dialog.displayInformationsDroits.height() - 0))
+    self.Dialog.displayInformationsDroits.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.tabWidget.width() ) -20 , int( self.Dialog.tabWidget.height() ) - 40))
+    self.groupBoxAffichageLeftDroits.setGeometry(QtCore.QRect(0,0,int( (self.Dialog.displayInformationsDroits.width() - 10) * self.Dialog.mSectionGauche) ,int( self.Dialog.displayInformationsDroits.height()) - 0))
     #----
     self.groupBoxDown.setGeometry(QtCore.QRect(10,h_Dialog - 50,l_Dialog -20,40))    
-    self.okhButton.setGeometry(QtCore.QRect(((self.Dialog.displayInformations.width() -200) / 3) + 100 + ((self.Dialog.displayInformations.width() -200) / 3), 10, 100,23))
-    self.helpButton.setGeometry(QtCore.QRect((self.Dialog.displayInformations.width() -200) / 3, 10, 100,23))
+    self.okhButton.setGeometry(QtCore.QRect(int( ((self.Dialog.displayInformations.width() -200) / 3) + 100 + ((self.Dialog.displayInformations.width() -200) / 3) ), 10, 100,23))
+    self.helpButton.setGeometry(QtCore.QRect(int( (self.Dialog.displayInformations.width() -200) / 3 ), 10, 100,23))
     #----
-    self.groupBoxAffichageRight.setGeometry(QtCore.QRect(((self.Dialog.displayInformations.width() - 40)/2) + 20, 0, ((self.Dialog.displayInformations.width() - 40)/2) + 20 ,self.displayInformations.height() - 0))
-    self.groupBoxAffichageSchema.setGeometry(QtCore.QRect(10,10,self.groupBoxAffichageRight.width() - 20, 450))
+    self.groupBoxAffichageRight.setGeometry(QtCore.QRect(int( ((self.Dialog.displayInformations.width() - 40)/2) ) + 20, 0, int( (self.Dialog.displayInformations.width() - 40)/2 ) + 20 ,int( self.displayInformations.height() ) - 0))
+    self.groupBoxAffichageSchema.setGeometry(QtCore.QRect(10,10,int( self.groupBoxAffichageRight.width() ) - 20, 450))
     #----
-    self.groupBoxAffichageRightDroits.setGeometry(QtCore.QRect(self.groupBoxAffichageLeftDroits.width() + 10, 0, 400, self.displayInformationsDroits.height() - 0))
+    self.groupBoxAffichageRightDroits.setGeometry(QtCore.QRect(int( self.groupBoxAffichageLeftDroits.width() ) + 10, 0, 400, int( self.displayInformationsDroits.height() ) - 0))
     #----
     mX = self.groupBoxAffichageRightDroits.x() + self.groupBoxAffichageRightDroits.width() + 10
     mY = 0
     mL = self.displayInformationsDroits.width() - self.groupBoxAffichageLeftDroits.width() - self.groupBoxAffichageRightDroits.width() - 25
     mH = self.displayInformationsDroits.height() - 0
-    self.groupBoxAffichageRightDroitsSchemasZone.setGeometry(QtCore.QRect(mX, mY, mL, mH))
-    self.groupBoxAffichageRightDroitsSchemas.setGeometry(QtCore.QRect(2, 2, self.groupBoxAffichageRightDroitsSchemasZone.width() - 4, self.groupBoxAffichageRightDroitsSchemasZone.height() - 4))
+    self.groupBoxAffichageRightDroitsSchemasZone.setGeometry(QtCore.QRect(int( mX ), int( mY ), int( mL ), int( mH )))
+    self.groupBoxAffichageRightDroitsSchemas.setGeometry(QtCore.QRect(2, 2, int( self.groupBoxAffichageRightDroitsSchemasZone.width() ) - 4, int( self.groupBoxAffichageRightDroitsSchemasZone.height() ) - 4))
     #----
-    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(0,0,self.Dialog.groupBoxAffichageRightDroits.width() , self.Dialog.groupBoxAffichageRightDroits.height()/2 - 5))
-    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(0, self.Dialog.groupBoxAffichageRightDroits.height()/2 + 5,self.Dialog.groupBoxAffichageRightDroits.width() , self.Dialog.groupBoxAffichageRightDroits.height()/2 - 5))
-    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height()))
-    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10 , self.groupBoxAffichageRoleAppart.height()))
-    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10, self.groupBoxAffichageRoleAppart.height() ))
-    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect((self.groupBoxAffichageRoleAppart.width() /2) + 10 , 0 + self.y_button_membreappartient, (self.groupBoxAffichageRoleAppart.width() /2) - 10, self.groupBoxAffichageRoleAppart.height() ))
+    self.groupBoxAffichageRoleAttribut.setGeometry(QtCore.QRect(0,0,int( self.Dialog.groupBoxAffichageRightDroits.width() ) , int( self.Dialog.groupBoxAffichageRightDroits.height()/2 ) - 5))
+    self.groupBoxAffichageRoleAppart.setGeometry(QtCore.QRect(0, int( self.Dialog.groupBoxAffichageRightDroits.height()/2 ) + 5,int( self.Dialog.groupBoxAffichageRightDroits.width() ) , int( self.Dialog.groupBoxAffichageRightDroits.height()/2 ) - 5))
+    self.groupBoxAffichageRoleAppartOut.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() )))
+    self.groupBoxAffichageRoleAppartOutBIS.setGeometry(QtCore.QRect(0, 0 + self.y_button_membreappartient, int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10 , int( self.groupBoxAffichageRoleAppart.height() )))
+    self.groupBoxAffichageRoleAppartIn.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 0 + self.y_button_membreappartient, int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10, int( self.groupBoxAffichageRoleAppart.height() ) ))
+    self.groupBoxAffichageRoleAppartInBIS.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageRoleAppart.width() /2) ) + 10 , 0 + self.y_button_membreappartient, int( (self.groupBoxAffichageRoleAppart.width() /2) ) - 10, int( self.groupBoxAffichageRoleAppart.height()) ))
     #----
-    self.Dialog.displayInformationsDash.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
-    self.groupBoxAffichageLeftDash.setGeometry(QtCore.QRect(0,0,(self.displayInformationsDash.width() - 10) * self.mSectionGauche,self.displayInformationsDash.height() - 0))
+    self.Dialog.displayInformationsDash.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.tabWidget.width() ) -20 ,int( self.Dialog.tabWidget.height() ) - 40))
+    self.groupBoxAffichageLeftDash.setGeometry(QtCore.QRect(0,0,int(( (self.displayInformationsDash.width() - 10) ) * self.mSectionGauche),int( self.displayInformationsDash.height() ) - 0))
     #----
-    self.Dialog.displayInformationsDiagnostic.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
-    self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, self.displayInformationsDiagnostic.width() -20 ,self.displayInformationsDiagnostic.height() - 20))
+    self.Dialog.displayInformationsDiagnostic.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.tabWidget.width() ) -20 ,int( self.Dialog.tabWidget.height() ) - 40))
+    self.zone_affichage_diagnostic.setGeometry(QtCore.QRect(10, 10, int( self.displayInformationsDiagnostic.width() ) -20 ,int( self.displayInformationsDiagnostic.height() ) - 20))
     #----
-    self.Dialog.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, self.Dialog.tabWidget.width() -20 ,self.Dialog.tabWidget.height() - 40))
-    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, self.displayInformationsTableauBord.width() -20 ,self.displayInformationsTableauBord.height() - 20))
+    self.Dialog.displayInformationsTableauBord.setGeometry(QtCore.QRect(10, 10, int( self.Dialog.tabWidget.width() ) -20 ,int( self.Dialog.tabWidget.height() ) - 40))
+    self.zone_affichage_TableauBord.setGeometry(QtCore.QRect(10, 10, int( self.displayInformationsTableauBord.width() ) -20 ,int( self.displayInformationsTableauBord.height() ) - 20))
     #----
 
-    self.groupBoxParametre.setGeometry(QtCore.QRect(10,50,self.groupBoxAffichageLeftDash.width() - 20, 235))
-    self.groupBoxRadioPieBar.setGeometry(QtCore.QRect(10,50,self.groupBoxAffichageLeftDash.width() - 20, 45))
-    self.groupBoxCheckEtiquette.setGeometry(QtCore.QRect(10,95,self.groupBoxAffichageLeftDash.width() - 20, 65))
-    self.groupBoxCheckLegende.setGeometry(QtCore.QRect(10,160,self.groupBoxAffichageLeftDash.width() - 20, 80))
-    self.groupBoxCheckTitreAnim.setGeometry(QtCore.QRect(10,240,self.groupBoxAffichageLeftDash.width() - 20, 55))
-    self.zoneTitre.setGeometry(QtCore.QRect(50,2,self.groupBoxAffichageLeftDash.width() - 75,20))
+    self.groupBoxParametre.setGeometry(QtCore.QRect(10,50,int( self.groupBoxAffichageLeftDash.width() ) - 20, 235))
+    self.groupBoxRadioPieBar.setGeometry(QtCore.QRect(10,50,int( self.groupBoxAffichageLeftDash.width() ) - 20, 45))
+    self.groupBoxCheckEtiquette.setGeometry(QtCore.QRect(10,95,int( self.groupBoxAffichageLeftDash.width() ) - 20, 65))
+    self.groupBoxCheckLegende.setGeometry(QtCore.QRect(10,160,int( self.groupBoxAffichageLeftDash.width() ) - 20, 80))
+    self.groupBoxCheckTitreAnim.setGeometry(QtCore.QRect(10,240,int( self.groupBoxAffichageLeftDash.width() ) - 20, 55))
+    self.zoneTitre.setGeometry(QtCore.QRect(50,2,int( self.groupBoxAffichageLeftDash.width() ) - 75,20))
 
     #-
     mX = self.groupBoxAffichageLeftDash.width() + 10
     mY = 0
     mL = self.displayInformationsDash.width() - self.groupBoxAffichageLeftDash.width() - 10
     mH = self.displayInformationsDash.height() - 0
-    self.groupBoxAffichageRightDash.setGeometry(QtCore.QRect(mX, mY, mL, mH))
-    self.labelChoiceGraph.setGeometry(QtCore.QRect(10,10,self.groupBoxAffichageLeftDash.width() - 20,20))
-    self.comboChoiceGraph.setGeometry(QtCore.QRect(10,30,self.groupBoxAffichageLeftDash.width() - 20,23))
+    self.groupBoxAffichageRightDash.setGeometry(QtCore.QRect(int( mX ), int( mY ), int( mL ), int( mH )))
+    self.labelChoiceGraph.setGeometry(QtCore.QRect(10,10,int( self.groupBoxAffichageLeftDash.width() ) - 20,20))
+    self.comboChoiceGraph.setGeometry(QtCore.QRect(10,30,int( self.groupBoxAffichageLeftDash.width() ) - 20,23))
  
-    self.executeButtonGraphColor.setGeometry(QtCore.QRect((self.groupBoxAffichageLeftDash.width() - 200) / 3, self.groupBoxAffichageLeftDash.height() - 30, 100,23))
-    self.executeButtonGraph.setGeometry(QtCore.QRect(((self.groupBoxAffichageLeftDash.width() - 200) / 3 * 2) + 100, self.groupBoxAffichageLeftDash.height() - 30, 100,23))
+    self.executeButtonGraphColor.setGeometry(QtCore.QRect(int( (self.groupBoxAffichageLeftDash.width() - 200) / 3), int( self.groupBoxAffichageLeftDash.height() ) - 30, 100,23))
+    self.executeButtonGraph.setGeometry(QtCore.QRect((int( (self.groupBoxAffichageLeftDash.width() - 200) / 3) * 2) + 100, int( self.groupBoxAffichageLeftDash.height() ) - 30, 100,23))
 
     if hasattr(self.Dialog, 'mTreeGraphSchemasBlocs') :  #Pas d'affichage de l'instance Treeview
        mYBlocs = self.groupBoxParametre.y() + self.groupBoxParametre.height() + 10
        mHBlocs = (self.groupBoxAffichageLeftDash.height() - (self.groupBoxParametre.y() + self.groupBoxParametre.height() + 50))
-       self.mTreeGraphSchemasBlocs.setGeometry(15, mYBlocs, self.groupBoxAffichageLeftDash.width() - 30, mHBlocs)                                                 
+       self.mTreeGraphSchemasBlocs.setGeometry(15, int( mYBlocs), int( self.groupBoxAffichageLeftDash.width() ) - 30, int( mHBlocs ))                                                 
     #----
     #----
-    self.groupBoxAffichageHelp.setGeometry(QtCore.QRect(10, 10, self.groupBoxAffichageRight.width() - 20, self.groupBoxAffichageRight.height() - 20))
-    self.groupBoxAffichageHelpDroits.setGeometry(QtCore.QRect(10, 10, self.groupBoxAffichageRightDroits.width() - 20, self.groupBoxAffichageRightDroits.height() - 20))
+    self.groupBoxAffichageHelp.setGeometry(QtCore.QRect(10, 10, int( self.groupBoxAffichageRight.width() ) - 20, int( self.groupBoxAffichageRight.height() ) - 20))
+    self.groupBoxAffichageHelpDroits.setGeometry(QtCore.QRect(10, 10, int( self.groupBoxAffichageRightDroits.width() ) - 20, int( self.groupBoxAffichageRightDroits.height() ) - 20))
     #----
 
     if hasattr(self.Dialog, 'mTreePostgresql') :  #Pas d'affichage de l'instance Treeview
        y = 35  # 15
-       self.mTreePostgresql.setGeometry(15, y, self.groupBoxAffichageLeft.width() - 30, self.groupBoxAffichageLeft.height() - 50)
+       self.mTreePostgresql.setGeometry(15, y, int( self.groupBoxAffichageLeft.width() ) - 30, int( self.groupBoxAffichageLeft.height() ) - 50)
     if hasattr(self.Dialog, 'mTreePostgresqlDroits') :  #Pas d'affichage de l'instance Treeview
-       self.mTreePostgresqlDroits.setGeometry(15, 15, self.groupBoxAffichageLeftDroits.width() - 30, self.groupBoxAffichageLeftDroits.height() - 30)
+       self.mTreePostgresqlDroits.setGeometry(15, 15, int( self.groupBoxAffichageLeftDroits.width() ) - 30, int( self.groupBoxAffichageLeftDroits.height() ) - 30)
     if hasattr(self.Dialog, 'mTreePostgresqlSchemaLecteur') :  #Pas d'affichage de l'instance Treeview
-       self.mTreePostgresqlSchemaLecteur.setGeometry(5, ((self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+       self.mTreePostgresqlSchemaLecteur.setGeometry(5, (int( (self.Dialog.groupBoxAffichageLeftDroits.height()/3) ) *2) + 5,  int( self.Dialog.groupBoxAffichageRightDroitsSchemas.width() ) - 10, (int((( self.Dialog.groupBoxAffichageLeftDroits.height() ) - 20)/3)))
        #self.mTreePostgresqlSchemaLecteur.setGeometry(5, 5,  self.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.groupBoxAffichageLeftDroits.height() - 20)/3)
     if hasattr(self.Dialog, 'mTreePostgresqlSchemaEditeur') :  #Pas d'affichage de l'instance Treeview
-       self.mTreePostgresqlSchemaEditeur.setGeometry(5, self.Dialog.groupBoxAffichageLeftDroits.height()/3 + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
+       self.mTreePostgresqlSchemaEditeur.setGeometry(5, int( self.Dialog.groupBoxAffichageLeftDroits.height()/3 ) + 5,  int( self.Dialog.groupBoxAffichageRightDroitsSchemas.width() ) - 10, int( (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3 ))
     if hasattr(self.Dialog, 'mTreePostgresqlSchemaProducteur') :  #Pas d'affichage de l'instance Treeview
-       self.mTreePostgresqlSchemaProducteur.setGeometry(5, 5,  self.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.groupBoxAffichageLeftDroits.height() - 20)/3)
+       self.mTreePostgresqlSchemaProducteur.setGeometry(5, 5,  int( self.groupBoxAffichageRightDroitsSchemas.width() ) - 10, int( (self.groupBoxAffichageLeftDroits.height() - 20)/3 ))
        #self.mTreePostgresqlSchemaProducteur.setGeometry(5, ((self.Dialog.groupBoxAffichageLeftDroits.height()/3) *2) + 5,  self.Dialog.groupBoxAffichageRightDroitsSchemas.width() - 10, (self.Dialog.groupBoxAffichageLeftDroits.height() - 20)/3)
 
     #----

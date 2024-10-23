@@ -49,7 +49,7 @@ class Ui_Dialog_ColorBloc(object):
                          20:"n", 21:"o", 22:"q", 23:"t", 24:"u", 25:"v", 26:"y"}
         #========
         self.groupBoxAll = QtWidgets.QGroupBox(DialogColorBloc)
-        self.groupBoxAll.setGeometry(QtCore.QRect(10,90,DialogColorBloc.width() - 20, DialogColorBloc.height() - 150))
+        self.groupBoxAll.setGeometry(QtCore.QRect(10,90,int( DialogColorBloc.width() - 20 ), int( DialogColorBloc.height() ) - 150))
         self.groupBoxAll.setObjectName("groupBoxAll")
         self.groupBoxAll.setStyleSheet("QGroupBox {   \
                                 border-style: dashed; border-width: 1px;       \
@@ -58,7 +58,7 @@ class Ui_Dialog_ColorBloc(object):
                                 }")
         #-
         self.tabWidgetColor = QTabWidget(self.groupBoxAll)
-        self.tabWidgetColor.setGeometry(QtCore.QRect(0, 0, self.groupBoxAll.width() ,self.groupBoxAll.height()))
+        self.tabWidgetColor.setGeometry(QtCore.QRect(0, 0, int( self.groupBoxAll.width() ) ,int( self.groupBoxAll.height() ) ))
         #--------------------------
         self.tabWidgetColor_premier = QWidget()
         self.tabWidgetColor_premier.setObjectName("tabWidgetColor_premier")
@@ -201,12 +201,12 @@ class Ui_Dialog_ColorBloc(object):
         #========
         self.pushButton = QtWidgets.QPushButton(DialogColorBloc)
         self.pushButton.setObjectName("pushButton")
-        self.pushButton.setGeometry(QtCore.QRect(DialogColorBloc.width() / 2 - 100, DialogColorBloc.height() - 50, 80, 25))
+        self.pushButton.setGeometry(QtCore.QRect(int( (DialogColorBloc.width() / 2 )) - 100, int( DialogColorBloc.height() ) - 50, 80, 25))
         self.pushButton.clicked.connect(lambda : self.functionSaveColor())
         #----------
         self.pushButtonAnnuler = QtWidgets.QPushButton(DialogColorBloc)
         self.pushButtonAnnuler.setObjectName("pushButtonAnnuler")
-        self.pushButtonAnnuler.setGeometry(QtCore.QRect(DialogColorBloc.width() / 2 + 20, DialogColorBloc.height() - 50, 80, 25))
+        self.pushButtonAnnuler.setGeometry(QtCore.QRect(int( DialogColorBloc.width() / 2 ) + 20, int( DialogColorBloc.height() ) - 50, 80, 25))
         self.pushButtonAnnuler.clicked.connect(DialogColorBloc.reject)
         #----------
         DialogColorBloc.setWindowTitle("ASGARD Manager - (" + str(bibli_asgard.returnVersion()) + ")")

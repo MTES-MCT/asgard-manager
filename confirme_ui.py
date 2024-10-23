@@ -177,14 +177,14 @@ class Ui_Dialog_Confirme(object):
         self.pushButton = QtWidgets.QPushButton(DialogConfirme)
         self.pushButton.setObjectName("pushButton")
         if self.mTypeAction != 'ExtensionPasInstallee' :
-           self.pushButton.setGeometry(QtCore.QRect(DialogConfirme.width() / 2 - 100, 310, 80, 25))
+           self.pushButton.setGeometry(QtCore.QRect(int( DialogConfirme.width() / 2 ) - 100, 310, 80, 25))
         else :
-           self.pushButton.setGeometry(QtCore.QRect(DialogConfirme.width() / 2 - 40, 310, 80, 25))
+           self.pushButton.setGeometry(QtCore.QRect(int( DialogConfirme.width() / 2 ) - 40, 310, 80, 25))
         self.pushButton.clicked.connect(lambda : self.executeFonctionGenerale(mKeySql))
         #----------
         self.pushButtonAnnuler = QtWidgets.QPushButton(DialogConfirme)
         self.pushButtonAnnuler.setObjectName("pushButtonAnnuler")
-        self.pushButtonAnnuler.setGeometry(QtCore.QRect(DialogConfirme.width() / 2 + 20, 310, 80, 25))
+        self.pushButtonAnnuler.setGeometry(QtCore.QRect(int( DialogConfirme.width() / 2 ) + 20, 310, 80, 25))
         self.pushButtonAnnuler.clicked.connect(DialogConfirme.reject)
         if self.mTypeAction == 'ExtensionPasInstallee' :
            self.pushButtonAnnuler.setVisible(False) 
